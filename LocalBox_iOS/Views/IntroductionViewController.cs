@@ -69,7 +69,8 @@ namespace LocalBox_iOS
 															"Voer hieronder de url naar de te registeren LocalBox in", null, 
 															"Annuleer", "Open URL");
 				alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
-				alertOpenUrl.GetTextField(0).Text = "https://";
+
+				alertOpenUrl.GetTextField(0).Text = "http://lox-development.rednose.nl"; //TODO for release build: restore to "https://"
 
 				alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => 
 				{

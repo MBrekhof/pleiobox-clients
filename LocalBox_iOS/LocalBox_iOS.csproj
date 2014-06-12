@@ -90,8 +90,8 @@
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <BuildIpa>true</BuildIpa>
-    <CodesignProvision>1AED1F0E-43C6-483A-A63F-2796FCDCB83E</CodesignProvision>
-    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
+    <CodesignKey>iPhone Distribution: Ministerie van Financien</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
