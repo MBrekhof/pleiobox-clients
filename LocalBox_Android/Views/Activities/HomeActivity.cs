@@ -725,7 +725,7 @@ namespace localbox.android
 			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
 			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
 
-			editTextUrl.Text = "https://";
+			editTextUrl.Text = "http://lox-development.rednose.nl"; //TODO for release build: restore to "https://"
 
 			buttonOpenUrl.Click +=(sender, args) => {
 				if (String.IsNullOrEmpty (editTextUrl.Text)) {
