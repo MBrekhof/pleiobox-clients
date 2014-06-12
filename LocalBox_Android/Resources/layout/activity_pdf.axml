@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <RelativeLayout
+        android:id="@+id/pdf_fullscreen_custom_actionbar"
+        android:background="#8FCAE4"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:id="@+id/textview_filename_pdf"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:ellipsize="start"
+            android:maxLines="1"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:text="Document_naam.png" />
+        <ImageButton
+            android:id="@+id/button_save_pdf"
+            android:layout_marginTop="6dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_top_opslaan" />
+    </RelativeLayout>
+    <pdftron.PDF.PDFViewCtrl
+        android:id="@+id/view_pdf"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</LinearLayout>

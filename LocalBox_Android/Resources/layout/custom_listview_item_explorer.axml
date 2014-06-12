@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
+    android:padding="8dp">
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:paddingLeft="10dip">
+        <ImageView
+            android:id="@+id/list_item_image_explorer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:src="@drawable/icon"
+            android:layout_alignParentLeft="true" />
+        <TextView
+            android:id="@+id/list_item_textview_explorer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/graytext"
+            android:textSize="18sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="ABC"
+            android:paddingTop="7dp"
+            android:layout_toRightOf="@+id/list_item_image_explorer"
+            android:layout_toLeftOf="@+id/list_item_image_explorer_special_type" />
+        <ImageView
+            android:id="@+id/list_item_image_explorer_special_type"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="7dp" />
+    </RelativeLayout>
+</RelativeLayout>

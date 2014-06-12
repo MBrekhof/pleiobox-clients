@@ -1,0 +1,9 @@
+LocalBox_Android/obj
+BouncyCastle/bin
+LocalBox_Common/bin
+LocalBox_iOS/bin
+LocalBox_iOS/obj
+LocalBox_Common/obj
+BouncyCastle/obj
+LocalBox_iOS.userprefs
+LocalBox_Android.userprefs

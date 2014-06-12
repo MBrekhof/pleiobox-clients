@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tab_host_default_height">48dp</dimen>
+    <dimen name="pin_dialog_width">270dp</dimen>
+    <dimen name="pin_dialog_height">400dp</dimen>
+    <dimen name = "bevinding_bottom_margin">32dp</dimen>
+</resources>

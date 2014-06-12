@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+    <LinearLayout
+        android:id="@+id/custom_actionbar_fragment_move_file"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/lightblue">
+        <ImageButton
+            android:id="@+id/imagebutton_back_move_file"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="7dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ic_top_terug" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:text="Kies een map om het bestand naar te verplaatsen" />
+    </LinearLayout>
+    <ListView
+        android:id="@+id/listViewMoveFile"
+        android:layout_width="match_parent"
+        android:layout_height="350dp" />
+    <Button
+        android:id="@+id/button_move_file_to_selected_folder"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Opslaan" />
+</LinearLayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gebruikersnaam"
+            android:hint="Gebruikersnaam"
+            android:layout_weight="50" />
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/wachtwoord"
+            android:hint="Wachtwoord"
+            android:layout_weight="50"
+            android:password="true" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/buttonAccessKey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Haal OAuth accessKey op" />
+    <Button
+        android:id="@+id/buttonRefreshAccessKey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Presenteer OAuth key en zonodig refresh!" />
+    <Button
+        android:id="@+id/buttonFileList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Haal filelist op" />
+    <Button
+        android:id="@+id/buttonEncryptUsingAes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate shared secret key and encrypt a string using AES 256" />
+    <Button
+        android:id="@+id/buttonEncryptUsingPGP"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Encrypt AES shared secret key using PGP" />
+    <Button
+        android:id="@+id/buttonDecryptUsingPGP"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Decrypt AES shared secret key using PGP" />
+    <Button
+        android:id="@+id/buttonDecryptUsingAes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Decrypt string using AES 256 with decrypted shared secret key" />
+</LinearLayout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:p1="http://schemas.android.com/apk/res/android"
+    p1:orientation="horizontal"
+    p1:layout_width="fill_parent"
+    p1:layout_height="wrap_content"
+    p1:layout_marginTop="8dp"
+    p1:id="@+id/linearLayout3"
+    p1:minWidth="25px"
+    p1:minHeight="25px"
+    p1:background="#FFFFFF"
+    style="@style/Keypad_Grid">
+    <LinearLayout
+        p1:orientation="vertical"
+        p1:minWidth="25px"
+        p1:minHeight="25px"
+        p1:layout_width="fill_parent"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/linearLayout4"
+        p1:layout_weight="1"
+        p1:layout_marginRight="1dp">
+        <Button
+            p1:text="1"
+            p1:id="@+id/button1"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="4"
+            p1:id="@+id/button4"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="7"
+            p1:id="@+id/button7"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="Ok"
+            p1:id="@+id/ok"
+            style="@style/Keypad_Button" />
+    </LinearLayout>
+    <LinearLayout
+        p1:orientation="vertical"
+        p1:minWidth="25px"
+        p1:minHeight="25px"
+        p1:layout_width="fill_parent"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/linearLayout5"
+        p1:layout_weight="1">
+        <Button
+            p1:text="2"
+            p1:id="@+id/button2"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="5"
+            p1:id="@+id/button5"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="8"
+            p1:id="@+id/button8"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="0"
+            p1:id="@+id/button0"
+            style="@style/Keypad_Button" />
+    </LinearLayout>
+    <LinearLayout
+        p1:orientation="vertical"
+        p1:minWidth="25px"
+        p1:minHeight="25px"
+        p1:layout_width="fill_parent"
+        p1:layout_height="fill_parent"
+        p1:id="@+id/linearLayout6"
+        p1:layout_weight="1"
+        p1:layout_marginLeft="1dp">
+        <Button
+            p1:text="3"
+            p1:id="@+id/button3"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="6"
+            p1:id="@+id/button6"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <Button
+            p1:text="9"
+            p1:id="@+id/button9"
+            style="@style/Keypad_Button"
+            p1:layout_marginBottom="1dp" />
+        <ImageButton
+            p1:src="@drawable/icon_backspace"
+            p1:id="@+id/back"
+            style="@style/Keypad_Button" />
+    </LinearLayout>
+</LinearLayout>

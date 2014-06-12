@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="U moet een passphrase instellen voordat u deze LocalBox kunt gebruiken" />
+    <EditText
+        android:id="@+id/editText_dialog_new_passphrase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Passphrase..."
+        android:inputType="textPassword"
+        android:ems="10">
+        <requestFocus />
+    </EditText>
+    <EditText
+        android:id="@+id/editText_dialog_new_passphrase_verify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Herhaal ingevoerde passphrase..."
+        android:inputType="textPassword"
+        android:ems="10" />
+</LinearLayout>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">LocalBox</string>
+	<string name="lock">Vergrendelen</string>
+	<string name="about">Over de app</string>
+
+	<string name="share">Delen</string>
+	<string name="edit">Wijzigen</string>
+	<string name="delete">Verwijderen</string>
+	<string name="export">Exporteren</string>
+	<string name="favorite">Voeg to aan favorieten</string>
+	<string name="open">Openen</string>
+
+	<string name="upload_photo">Afbeelding uploaden</string>
+	<string name="upload_file">Andere bestandstype uploaden</string>
+
+	<string name="add">Toevoegen</string>
+	<string name="cancel">Annuleren</string>
+	<string name="folder_name">Map naam</string>
+	<string name="folder_new">Nieuwe map</string>
+
+	<string name="pincode_kies">Kies een pincode</string>
+	<string name="pincode_instellen">Pincode instellen</string>
+	<string name="pincode_bevestig">Bevestig uw gekozen pincode</string>
+	<string name="pincode_invoer">Voer uw pincode in om verder te gaan</string>
+	<string name="pincode_opgeven">Pincode opgeven</string>
+	<string name="pincode_incorrect_titel">Pincode fout</string>
+	<string name="pincode_incorrect">De pincode die u heeft opgevoerd, is incorrect</string>
+	<string name="pincode_incorrect_vijfmaal">U heeft de pincode 5x foutief ingevoerd. De app is reset en al uw geregistreerde local boxen zijn verwijderd.</string>
+	<string name="pincode_niet_overeen">De opgegeven pincodes komen niet overeen</string>
+	<string name="pincode_lengte">De pincode die u hebt opgevoerd is te kort. De code moet {0} cijfers lang zijn.</string>
+</resources>

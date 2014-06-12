@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#EFEFEF</color>
+    <color name="lightblue">#8FCAE4</color>
+    <color name="blue">#BDC1C7</color>
+
+    <color name="graytext">#646464</color>
+
+
+
+   <color name="focused">#36C170</color>
+   <color name="selected">#D9D9D9</color>
+
+
+
+
+
+    <color name="keypad_tekst">#3a3a3a</color>
+
+    <color name="menuachtergrond">#f0efeb</color>
+    <color name="menu_item_geselecteerd">#80bcb9b0</color>
+  
+
+</resources>
+

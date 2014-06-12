@@ -1,0 +1,909 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net;
+using System.IO;
+using System.Threading;
+
+using Android.Support.V4.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Android.Graphics.Drawables;
+using Android.Graphics;
+using Android.App;
+using Android.Webkit;
+using Android.Util;
+using Android.Database;
+using Android.Preferences;
+
+using LocalBox_Common;
+using LocalBox_Common.Remote;
+
+
+namespace localbox.android
+{
+	[Activity (Label = "LocalBox", WindowSoftInputMode = SoftInput.AdjustPan, ScreenOrientation = Android.Content.PM.ScreenOrientation.Landscape)]
+	public class HomeActivity : FragmentActivity
+	{
+		public static List<ExplorerFragment> openedExplorerFragments;
+		public static string colorOfSelectedLocalBox;
+		public static bool shouldLockApp = false;
+		public  ImageButton buttonFullscreenDocument;
+		private ImageButton buttonBackExplorer;
+		private ImageButton buttonAddFolderExplorer;
+		private ImageButton buttonUploadFileExplorer;
+		private ImageButton buttonRefreshExplorer;
+		private ImageButton buttonCloseDocument;
+		private TextView textviewFilename;
+		private RelativeLayout fragmentContainerExplorerBottom;
+		private View shadowContainerExplorer;
+		private MenuFragment menuFragment;
+		private Android.App.DialogFragment dialogFragmentShare;
+		private Android.App.DialogFragment dialogFragmentMoveFile;
+		private CustomProgressDialog progressDialog =  new CustomProgressDialog();
+
+		protected override async void OnCreate (Bundle bundle)
+		{
+			base.OnCreate (bundle);
+			SetContentView (Resource.Layout.activity_home);
+
+			openedExplorerFragments = new List<ExplorerFragment>();
+
+			//Hide action bar
+			this.ActionBar.Hide ();
+
+			//////////////////////////////////////////////////////
+			//Menu part of layout
+			//////////////////////////////////////////////////////
+
+			//Initialize menu fragment
+			menuFragment = new MenuFragment ();
+			SupportFragmentManager.BeginTransaction ().Add (Resource.Id.fragment_container_menu, menuFragment).Commit ();
+
+			//Initialize bottom menu fragment
+			BottomMenuFragment bottomMenuFragment = new BottomMenuFragment ();
+			SupportFragmentManager.BeginTransaction ().Add (Resource.Id.fragment_container_menu_bottom, bottomMenuFragment).Commit ();
+
+
+			//Controleer of introduction dialog getoond moet worden (alleen wanneer geen local boxen geregistreerd zijn)
+			List<LocalBox> registeredLocalBoxes = await DataLayer.Instance.GetLocalBoxes ();
+			if (registeredLocalBoxes.Count == 0) {
+				if (SplashActivity.intentData == null) {
+					ShowIntroductionDialog ();
+				}
+			}
+
+		
+
+			//////////////////////////////////////////////////////
+			//Explorer part of layout
+			//////////////////////////////////////////////////////
+
+			buttonBackExplorer = FindViewById<ImageButton> (Resource.Id.button_back_explorer);
+			buttonAddFolderExplorer = FindViewById<ImageButton> (Resource.Id.button_add_folder_explorer);
+			buttonUploadFileExplorer = FindViewById<ImageButton> (Resource.Id.button_upload_file_explorer);
+			buttonRefreshExplorer = FindViewById<ImageButton> (Resource.Id.button_refresh_explorer);
+
+			fragmentContainerExplorerBottom = FindViewById<RelativeLayout> (Resource.Id.fragment_container_explorer_blank);
+			fragmentContainerExplorerBottom.Visibility = ViewStates.Invisible;
+
+			shadowContainerExplorer = FindViewById<View> (Resource.Id.shadow_container_explorer);
+			shadowContainerExplorer.Visibility = ViewStates.Invisible;
+
+			buttonBackExplorer.Visibility = ViewStates.Invisible;
+			buttonBackExplorer.Click += delegate {
+
+				//Verwijder fragment van stack
+				SupportFragmentManager.PopBackStack ();
+
+				//Remove last opened directory from opened directory list
+				int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
+				if (numberOfDirectoriesOpened > 0) {
+					ExplorerFragment.openedDirectories.RemoveAt (numberOfDirectoriesOpened - 1);
+					RemoveLastOpenedExplorerFragment();
+					ShowBottomExplorerMenuItems ();
+				}
+				CheckToHideButtons ();
+			};
+
+
+			buttonAddFolderExplorer.Click += delegate {
+				ShowNewFolderDialog ();
+			};
+
+			//Hide upload file button on root level
+			buttonUploadFileExplorer.Visibility = ViewStates.Invisible;
+			buttonUploadFileExplorer.Click += delegate {
+			
+				//Show menu to make a choice between new folder or upload file
+				PopupMenu popupMenu = new PopupMenu (this, buttonUploadFileExplorer);
+				popupMenu.Inflate (Resource.Menu.menu_add);
+				popupMenu.MenuItemClick += (s1, arg1) => {
+
+					if (arg1.Item.ItemId.Equals (Resource.Id.menu_explorer_upload_photo)) {//Upload foto of video geselecteerd
+						var imageIntent = new Intent ();
+						imageIntent.SetType ("image/*");
+						imageIntent.SetAction (Intent.ActionGetContent);
+						StartActivityForResult (Intent.CreateChooser (imageIntent, "Select photo"), 0);
+					} else if (arg1.Item.ItemId.Equals (Resource.Id.menu_explorer_upload_file)) {//Upload ander bestandstype geselecteerd
+						var filePickerIntent = new Intent (this, typeof(FilePickerActivity));
+						StartActivity (filePickerIntent);  
+					}
+
+				};
+				popupMenu.Show ();
+			};
+
+
+			buttonRefreshExplorer.Click += delegate {
+				ExplorerFragment fragment = GetLastOpenedExplorerFragment();
+				fragment.RefreshData();
+			};
+
+
+
+
+
+
+
+			//////////////////////////////////////////////////////
+			//Document part of layout
+			//////////////////////////////////////////////////////
+			buttonFullscreenDocument = FindViewById<ImageButton> (Resource.Id.button_fullscreen_document);
+			textviewFilename = FindViewById<TextView> (Resource.Id.textview_filename);
+			buttonCloseDocument = FindViewById<ImageButton> (Resource.Id.button_close_document);
+
+			buttonFullscreenDocument.Visibility = ViewStates.Invisible;
+			textviewFilename.Visibility = ViewStates.Invisible;
+			buttonCloseDocument.Visibility = ViewStates.Invisible;
+
+
+			//Open file fullscreen in new activity
+			buttonFullscreenDocument.Click += delegate {
+				var documentFullscreenIntent = new Intent (this, typeof(DocumentFullscreenActivity));
+				StartActivity (documentFullscreenIntent);  
+			};
+
+
+			//Determine to register localbox or save PDF annotations
+			if (SplashActivity.intentData != null) { 
+			
+				Android.Net.Uri data = SplashActivity.intentData; 
+				String scheme = data.Scheme; // "http" 
+
+				if (scheme.Equals ("lbox")) //Register new LocalBox
+				{ 
+					String host = data.Host; 
+					IList<String> queryStrings = data.PathSegments; 
+					String first = queryStrings [0]; // "status" 
+
+					ShowProgressDialog ("Nieuwe LocalBox verifiëren. Een ogenblik geduld a.u.b.");
+					LocalBox box = await BusinessLayer.Instance.RegisterLocalBox ("http:" + data.EncodedSchemeSpecificPart, null, true);
+
+					if (box != null) {
+						RegisterLocalBox (box);
+					}
+					HideProgressDialog ();
+				} 
+				else if (scheme.Equals ("file")) //Save annotations
+				{ 
+					UpdatePdfFile (data.Path);
+				}
+			}
+			else if (SplashActivity.clipData != null) 
+			{
+				Android.Net.Uri uri = SplashActivity.clipData.GetItemAt (0).Uri;
+				UpdatePdfFile (uri.ToString ());
+			}
+
+			HideProgressDialog ();
+		}
+
+
+		private async void UpdatePdfFile (string pathToTempPdf)
+		{
+			try {
+				HideProgressDialog();
+
+				//Get location and name of last opened file
+				ISharedPreferences prefs 	= PreferenceManager.GetDefaultSharedPreferences(this);         
+				var fileNameLastOpenedPdf 	= prefs.GetString("fileNameLastOpenedPdf", null);
+				var pathLastOpenedPdf 		= prefs.GetString("pathLastOpenedPdf", null);
+				var temporaryFilePath		= prefs.GetString("temporaryFilePath", null);
+				var isFavorite 				= prefs.GetBoolean("isFavorite", false);
+
+				//Controleer of pdf path overeenkomt met path van laatst geopende pdf file
+				if (pathToTempPdf.Contains (fileNameLastOpenedPdf)) {
+					
+					ShowProgressDialog("Eventuele aanpassingen aan het bestand opslaan. \nEen ogenblik geduld a.u.b.");
+					bool updateSucceeded = await DataLayer.Instance.SavePdfAnnotations (pathLastOpenedPdf, pathToTempPdf, true, isFavorite);
+						
+					if (updateSucceeded) {
+
+						if(File.Exists(temporaryFilePath)){
+							File.Delete(temporaryFilePath);
+						}
+
+						HideProgressDialog ();
+						Toast.MakeText (this, "PDF bestand succesvol bijgewerkt", ToastLength.Long).Show ();
+					} else {
+						HideProgressDialog ();
+						Toast.MakeText (this, "Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
+						"Probeer het a.u.b. later nogmaals", ToastLength.Long).Show ();
+					}
+						
+				} else {
+					HideProgressDialog ();
+					Toast.MakeText (this, "PDF bestand niet gevonden.\n" +
+									"Nieuwe bestanden kunnen alleen binnen de app ge-upload worden.", ToastLength.Long).Show ();
+				}
+				SplashActivity.clipData = null;
+					
+			} catch(Exception ex) {
+				Console.WriteLine (ex.Message);
+				SplashActivity.clipData = null;
+				HideProgressDialog ();
+				Toast.MakeText (this, "Er is een fout opgetreden. Probeer het a.u.b. later nogmaals", ToastLength.Long).Show ();
+			}
+		}
+
+
+		public void RegisterLocalBox (LocalBox localBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+
+			View viewRegisterLocalBox = factory.Inflate (Resource.Layout.dialog_register_localbox, null);
+
+			EditText editTextUsername = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_username);          
+			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
+
+			editTextUsername.Text = localBox.User;
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Registreren");
+			dialogBuilder.SetView (viewRegisterLocalBox);
+
+			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons.
+			var buttonRegister = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonRegister.Click += async (sender, args) => {
+				if (String.IsNullOrEmpty (editTextUsername.Text)) {
+					Toast.MakeText (this, "Gebruikersnaam is niet ingevuld", ToastLength.Short).Show ();
+				} else if (String.IsNullOrEmpty (editTextPassword.Text)) {
+					Toast.MakeText (this, "Wachtwoord is niet ingevuld", ToastLength.Short).Show ();
+				} else {
+					try {
+						ShowProgressDialog ("Uw inloggegevens controleren. Een ogenblik geduld a.u.b.");
+
+						localBox.User = editTextUsername.Text;
+						bool authenticateSucceeded = await BusinessLayer.Instance.Authenticate (localBox, editTextPassword.Text);
+
+						HideProgressDialog ();
+						if (!authenticateSucceeded) {
+							Toast.MakeText (this, "Inloggegevens zijn foutief", ToastLength.Long).Show ();
+						} else {
+						
+							dialog.Dismiss ();
+							Toast.MakeText (this, "Inloggegevens geaccepteerd", ToastLength.Short).Show ();
+
+							
+                            if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
+								EnterPassphrase (localBox);
+							} else {
+								SetUpPassphrase (localBox);
+							}
+						}
+					} catch (Exception ex) {
+						HideProgressDialog ();
+						Toast.MakeText (this, "LocalBox registratie mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+						Log.Info ("STACKTRACE", ex.StackTrace);
+						Log.Info ("MESSAGE", ex.Message);
+					}
+				}
+			};
+
+			buttonCancelRegistration.Click += (sender, args) => {
+				DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+
+
+		private void SetUpPassphrase (LocalBox localBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+
+			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_new_passphrase, null);
+
+			EditText editNewPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_new_passphrase);          
+			EditText editNewPassphraseVerify = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_new_passphrase_verify);
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Passphrase");
+			dialogBuilder.SetView (viewNewPhrase);
+
+			dialogBuilder.SetPositiveButton ("OK", (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons.
+			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonAddPassphrase.Click += async (sender, args) => {
+				string passphraseOne = editNewPassphrase.Text;
+				string passphraseTwo = editNewPassphraseVerify.Text;
+
+				if (String.IsNullOrEmpty (passphraseOne)) {
+					Toast.MakeText (this, "Passphrase is niet ingevuld", ToastLength.Long).Show ();
+				} else if (String.IsNullOrEmpty (passphraseTwo)) {
+					Toast.MakeText (this, "U dient uw ingevoerde passphrase te verifieren", ToastLength.Long).Show ();
+				} else {
+					if (!passphraseOne.Equals (passphraseTwo)) {
+						Toast.MakeText (this, "De ingevoerde passphrases komen niet overeen. Corrigeer dit a.u.b.", ToastLength.Long).Show ();
+					} else {
+
+						try {
+							ShowProgressDialog ("Passphrase aanmaken. Dit kan enige tijd in beslag nemen. Een ogenblik geduld a.u.b.");
+
+                            bool newPassphraseSucceeded = await BusinessLayer.Instance.SetPublicAndPrivateKey (localBox, passphraseOne);
+
+							HideProgressDialog();
+							if (!newPassphraseSucceeded) {
+								Toast.MakeText (this, "Passphrase instellen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+							} else {
+
+								dialog.Dismiss ();
+
+								Toast.MakeText (this, "LocalBox succesvol geregistreerd", ToastLength.Long).Show ();
+
+								menuFragment.UpdateLocalBoxes ();
+
+								SplashActivity.intentData = null;
+							}
+						} catch {
+							HideProgressDialog ();
+							Toast.MakeText (this, "Passphrase instellen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+						}
+
+					}
+				}
+			};
+
+			buttonCancel.Click += (sender, args) => {
+				DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+			
+		private void EnterPassphrase (LocalBox localBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+
+			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_enter_passphrase, null);
+
+			EditText editEnterPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_enter_passphrase);          
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Passphrase");
+			dialogBuilder.SetView (viewNewPhrase);
+
+			dialogBuilder.SetPositiveButton ("OK", (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons.
+			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonAddPassphrase.Click += async (sender, args) => {
+				string passphrase = editEnterPassphrase.Text;
+
+				if (String.IsNullOrEmpty (passphrase)) {
+					Toast.MakeText (this, "Passphrase is niet ingevuld", ToastLength.Long).Show ();
+				} 
+				else {
+	
+					try {
+						ShowProgressDialog ("Uw passphrase controleren. Een ogenblik geduld a.u.b.");
+
+                        bool correctPassphraseEntered = await BusinessLayer.Instance.ValidatePassPhrase (localBox, passphrase);
+
+						HideProgressDialog();
+						if (!correctPassphraseEntered) {
+							Toast.MakeText (this, "Passphrase onjuist. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+						} else {
+
+							dialog.Dismiss ();
+
+							Toast.MakeText (this, "Passphrase geaccepteerd en LocalBox succesvol geregistreerd", ToastLength.Long).Show ();
+
+							menuFragment.UpdateLocalBoxes ();
+
+							SplashActivity.intentData = null;
+						}
+					} catch {
+						HideProgressDialog ();
+						Toast.MakeText (this, "Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+					}
+
+				}
+
+			};
+
+			buttonCancel.Click += (sender, args) => {
+				DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+
+		protected override void OnStop ()
+		{
+			HideProgressDialog ();
+			base.OnStop ();
+		}
+
+		protected override void OnPause ()
+		{
+			base.OnPause ();
+			LockHelper.SetLastActivityOpenedTime ("HomeActivity");
+		}
+
+
+		protected override void OnResume ()
+		{
+			base.OnResume ();
+
+			bool shouldShowLockScreen = LockHelper.ShouldLockApp ("HomeActivity");
+
+			if (shouldShowLockScreen || shouldLockApp) {
+				//Lock scherm
+				HomeActivity.shouldLockApp = true;
+				StartActivity(typeof(PinActivity));
+			} else {
+				ExplorerFragment explorerFragment = GetLastOpenedExplorerFragment ();
+				if (explorerFragment != null && !explorerFragment.favoriteFolderOpened && SplashActivity.intentData == null) {
+					explorerFragment.RefreshData ();
+				}
+			}
+			if (SplashActivity.clipData != null) {
+				ShowProgressDialog (null);
+			}
+		}
+
+		public override void OnBackPressed ()
+		{
+			base.OnBackPressed ();
+
+			CheckToHideButtons ();
+
+			//Remove last opened directory from opened directory list
+			if (ExplorerFragment.openedDirectories != null) {
+				int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
+				if (numberOfDirectoriesOpened > 0) {
+					ExplorerFragment.openedDirectories.RemoveAt (numberOfDirectoriesOpened - 1);
+					RemoveLastOpenedExplorerFragment ();
+					ShowBottomExplorerMenuItems ();
+				}
+			}
+				
+			if (ExplorerFragment.openedDirectories.Count > 1) {
+				buttonUploadFileExplorer.Visibility = ViewStates.Visible;
+			} else {
+				buttonUploadFileExplorer.Visibility = ViewStates.Invisible;
+			}
+		}
+
+
+		private ExplorerFragment GetLastOpenedExplorerFragment()
+		{
+			if (openedExplorerFragments.Count > 0) {
+				return openedExplorerFragments [openedExplorerFragments.Count - 1];
+			} else {
+				return null;
+			}
+		}
+
+
+		private void RemoveLastOpenedExplorerFragment()
+		{
+			if (openedExplorerFragments.Count > 0) {
+				openedExplorerFragments.RemoveAt (openedExplorerFragments.Count - 1);
+			}
+		}
+
+		private void RefreshExplorerFragmentData()
+		{
+			ExplorerFragment explorerFragment = GetLastOpenedExplorerFragment();
+			if(explorerFragment != null){
+				explorerFragment.RefreshData ();
+			}
+		}
+
+		//Resultaat van image picker
+		protected override async void OnActivityResult (int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult (requestCode, resultCode, data);
+
+			if (resultCode == Result.Ok) {
+
+				Android.Net.Uri uriResult = data.Data;
+		
+				try {
+					int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
+					string directoryNameToUploadFileTo = ExplorerFragment.openedDirectories [numberOfDirectoriesOpened - 1];
+
+					string pathToFile = GetPathToImage (uriResult);
+
+					string fileName = System.IO.Path.GetFileName (pathToFile);
+
+					string fullDestinationPath = System.IO.Path.Combine (directoryNameToUploadFileTo, fileName);
+					bool uploadedSucceeded = await DataLayer.Instance.UploadFile (fullDestinationPath, pathToFile);
+
+					HideProgressDialog ();
+					if (!uploadedSucceeded) {
+						Toast.MakeText (this, "Het uploaden is mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+					} else {
+						Toast.MakeText (this, "Bestand succesvol geupload", ToastLength.Short).Show ();
+						RefreshExplorerFragmentData();
+					}
+
+				} catch {
+					HideProgressDialog ();
+					Toast.MakeText (this, "Het uploaden is mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+
+				}
+			}
+		}
+
+		private string GetPathToImage (Android.Net.Uri uri)
+		{
+			string path = null;
+
+			string[] projection = new[] { Android.Provider.MediaStore.Images.Media.InterfaceConsts.Data };
+			using (ICursor cursor = ManagedQuery (uri, projection, null, null, null)) {
+				if (cursor != null) {
+					int columnIndex = cursor.GetColumnIndexOrThrow (Android.Provider.MediaStore.Images.Media.InterfaceConsts.Data);
+					cursor.MoveToFirst ();
+					path = cursor.GetString (columnIndex);
+				}
+			}
+			return path;
+		}
+
+		public void CheckToHideButtons ()
+		{
+			//Als maar 1 fragment in stack dan verberg back button
+			if (SupportFragmentManager.BackStackEntryCount < 3) {
+				buttonBackExplorer.Visibility = ViewStates.Invisible;
+
+				if (SupportFragmentManager.BackStackEntryCount == 0) {
+					fragmentContainerExplorerBottom.Visibility = ViewStates.Invisible;
+					shadowContainerExplorer.Visibility = ViewStates.Invisible;
+
+					ClearContentInDocumentFragment ();
+				}
+			}
+		}
+
+		public void ClearContentInDocumentFragment ()
+		{
+			textviewFilename.Visibility = ViewStates.Invisible;
+			buttonFullscreenDocument.Visibility = ViewStates.Invisible;
+
+			//Clear webview
+			WebView webViewDocument = FindViewById<WebView> (Resource.Id.webview_document);
+			webViewDocument.ClearView ();
+		}
+
+		private void ShowNewFolderDialog ()
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+
+			View viewNewFolder = factory.Inflate (Resource.Layout.dialog_new_folder, null);
+
+			EditText editTextFolderName = (EditText)viewNewFolder.FindViewById<EditText> (Resource.Id.editText_dialog_folder_name);          
+
+			// Build the dialog
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle (Resource.String.folder_new);
+			dialogBuilder.SetView (viewNewFolder);
+
+			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons.
+			var buttonAddFolder = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonAddFolder.Click += async(sender, args) => {
+				if (String.IsNullOrEmpty (editTextFolderName.Text)) {
+					Toast.MakeText (this, "Naam is niet ingevuld", ToastLength.Short).Show ();
+				} else {
+					ShowProgressDialog("Map wordt aangemaakt. Een ogenblik geduld a.u.b.");
+
+					try{
+						int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
+						string directoryNameToUploadFileTo = ExplorerFragment.openedDirectories [numberOfDirectoriesOpened - 1];
+					
+						bool addedSuccesfully = (await DataLayer.Instance.CreateFolder (System.IO.Path.Combine (directoryNameToUploadFileTo, (editTextFolderName.Text))));
+					
+						dialog.Dismiss ();
+					
+						if (!addedSuccesfully) {
+							HideProgressDialog();
+							Toast.MakeText (this, "Toevoegen map mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+						} else {
+							HideProgressDialog();
+							Toast.MakeText (this, "Map succesvol toegevoegd", ToastLength.Short).Show ();
+						
+							//Refresh data
+							RefreshExplorerFragmentData();
+						}
+					}catch{
+						HideProgressDialog();
+						Toast.MakeText (this, "Toevoegen map mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+					}
+				}
+			};
+
+			buttonCancel.Click += (sender, args) => {
+				dialog.Dismiss ();
+			};
+		}
+
+		public void ShowIntroductionDialog ()
+		{
+			var alertDialogIntro = new AlertDialog.Builder (this);
+			alertDialogIntro.SetView (LayoutInflater.Inflate (Resource.Layout.fragment_introduction, null));
+			
+			alertDialogIntro.SetPositiveButton ("Start de registratie van een nieuwe LocalBox", delegate { 
+				ShowOpenUrlDialog();
+				alertDialogIntro.Dispose();
+			});
+			alertDialogIntro.Create ().Show ();
+		}
+
+
+		public void ShowAboutAppDialog ()
+		{
+			Android.App.FragmentTransaction fragmentTransaction;
+			fragmentTransaction = FragmentManager.BeginTransaction ();
+
+			Android.App.DialogFragment dialogFragmentAboutApp;
+			AboutAppFragment aboutFragment = new AboutAppFragment ();
+
+			dialogFragmentAboutApp = aboutFragment;
+			dialogFragmentAboutApp.Show (fragmentTransaction, "aboutdialog");
+		}
+
+
+
+		private void ShowOpenUrlDialog ()
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+
+			View viewNewFolder = factory.Inflate (Resource.Layout.dialog_open_url, null);
+
+			EditText editTextUrl = (EditText)viewNewFolder.FindViewById<EditText> (Resource.Id.editText_dialog_open_url);          
+
+			//Build the dialog
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Nieuwe LocalBox");
+			dialogBuilder.SetView (viewNewFolder);
+
+			dialogBuilder.SetPositiveButton ("Open URL", (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			editTextUrl.Text = "https://";
+
+			buttonOpenUrl.Click +=(sender, args) => {
+				if (String.IsNullOrEmpty (editTextUrl.Text)) {
+					Toast.MakeText (this, "URL is niet ingevuld", ToastLength.Short).Show ();
+				} else {
+					ShowProgressDialog("Laden...");
+
+					try{
+						HideProgressDialog();
+						ShowRegisterLocalBoxDialog(editTextUrl.Text);
+						dialog.Dismiss();
+					}
+					catch{
+						HideProgressDialog();
+						Toast.MakeText (this, "Openen van opgegeven URL is mislukt.", ToastLength.Short).Show ();
+					}
+			
+				}
+			};
+
+			buttonCancel.Click += (sender, args) => {
+				dialog.Dismiss ();
+			};
+		}
+
+
+		private void ShowRegisterLocalBoxDialog (string urlToOpen)
+		{
+			if (urlToOpen.IndexOf("register_app", StringComparison.OrdinalIgnoreCase) < 0) //url misses '/register_app' at the end
+			{
+				if (urlToOpen.EndsWith ("/")) {	//input url is like "www.mylocalbox.nl/"
+					urlToOpen = urlToOpen + "register_app";
+				} 
+				else {	//input url is like "www.mylocalbox.nl"
+					urlToOpen = urlToOpen + "/register_app";
+				}
+			}
+
+			Android.App.FragmentTransaction fragmentTransaction;
+			fragmentTransaction = FragmentManager.BeginTransaction ();
+
+			Android.App.DialogFragment dialogFragmentRegisterLocalBox;
+			RegisterLocalBoxFragment registerLocalBoxFragment = new RegisterLocalBoxFragment (urlToOpen);
+
+			dialogFragmentRegisterLocalBox = registerLocalBoxFragment;
+			dialogFragmentRegisterLocalBox.Show (fragmentTransaction, "registerlocalboxdialog");
+		}
+
+
+			
+		public async void ShowShareDialog (string pathOfFolderToShare, bool alreadyShared)
+		{
+			ShowProgressDialog (null);
+
+			try {
+				Android.App.FragmentTransaction fragmentTransaction;
+				fragmentTransaction = FragmentManager.BeginTransaction ();
+
+				List<Identity> localBoxUsers = await DataLayer.Instance.GetLocalboxUsers();
+				Share shareSettings = null;
+
+				if (alreadyShared) {//Existing share
+					//Get share settings
+					shareSettings = await BusinessLayer.Instance.GetShareSettings (pathOfFolderToShare);
+				}
+
+				ShareFragment shareFragment = new ShareFragment (pathOfFolderToShare, localBoxUsers, shareSettings);
+
+				dialogFragmentShare = shareFragment;
+			
+				HideProgressDialog ();
+
+				if (localBoxUsers.Count > 0) {
+					dialogFragmentShare.Show (fragmentTransaction, "sharedialog");
+				} else {
+					Toast.MakeText (this, "Geen gebruikers gevonden om mee te kunnen delen", ToastLength.Short).Show ();
+				}
+
+			} catch {
+				HideProgressDialog ();
+			}
+		}
+
+
+		public void HideShareDialog (bool isNewShare)
+		{
+			dialogFragmentShare.Dismiss ();
+			
+			if (isNewShare) {
+				Toast.MakeText (this, "Map succesvol gedeeld", ToastLength.Short).Show ();
+			} else {
+				Toast.MakeText (this, "Deel instellingen succesvol gewijzigd", ToastLength.Short).Show ();
+			}
+
+			RefreshExplorerFragmentData ();
+		}
+
+
+		public async void ShowMoveFileDialog(TreeNode treeNodeToMove)
+		{
+			Console.WriteLine ("Bestand om te verplaatsen: " + treeNodeToMove.Name);
+
+			ShowProgressDialog (null);
+
+			try {
+				Android.App.FragmentTransaction fragmentTransaction;
+				fragmentTransaction = FragmentManager.BeginTransaction ();
+
+				List<TreeNode>foundDirectoryTreeNodes 	= new List<TreeNode>();
+				TreeNode rootTreeNode 			= await DataLayer.Instance.GetFolder ("/");
+
+				foreach(TreeNode foundTreeNode in rootTreeNode.Children)
+				{
+					if(foundTreeNode.IsDirectory)
+					{
+						foundDirectoryTreeNodes.Add(foundTreeNode);
+					}
+				}
+
+				MoveFileFragment moveFileFragment = new MoveFileFragment(foundDirectoryTreeNodes, treeNodeToMove, this);
+				dialogFragmentMoveFile = moveFileFragment;
+
+				HideProgressDialog ();
+
+				if (foundDirectoryTreeNodes.Count > 0) {
+					dialogFragmentMoveFile.Show (fragmentTransaction, "movefiledialog");
+				} else {
+					Toast.MakeText (this, "Geen mappen gevonden om bestand naar te verplaatsen", ToastLength.Short).Show ();
+				}
+
+			} catch {
+				HideProgressDialog ();
+				Toast.MakeText (this, "Er is iets fout gegaan bij het ophalen van mappen. \nProbeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+			}
+		}
+
+
+		public void HideMoveFileDialog ()
+		{
+			dialogFragmentMoveFile.Dismiss ();
+			Toast.MakeText (this, "Bestand succesvol verplaatst", ToastLength.Short).Show ();
+			RefreshExplorerFragmentData ();
+		}
+
+
+
+		public void HideBottomExplorerMenuItems ()
+		{
+			buttonAddFolderExplorer.Visibility 	= ViewStates.Invisible;
+			buttonUploadFileExplorer.Visibility = ViewStates.Invisible;
+			buttonRefreshExplorer.Visibility 	= ViewStates.Invisible;
+		}
+
+		public void ShowBottomExplorerMenuItems ()
+		{
+			buttonAddFolderExplorer.Visibility 	= ViewStates.Visible;
+			buttonUploadFileExplorer.Visibility = ViewStates.Visible;
+			buttonRefreshExplorer.Visibility 	= ViewStates.Visible;
+		}
+			
+
+		public void ShowProgressDialog (string textToShow)
+		{
+			this.RunOnUiThread (new Action (() => { 
+				progressDialog.Show (this, textToShow);
+			}));
+		}
+
+		public void HideProgressDialog ()
+		{
+			try{
+				if (progressDialog != null) {
+					this.RunOnUiThread (new Action (() => { 
+						progressDialog.Hide ();
+					}));
+				}
+			}catch{
+			}
+		}
+	}
+}

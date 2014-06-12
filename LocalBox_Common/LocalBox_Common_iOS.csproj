@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A1F82138-A39E-45DA-AC90-56C177556092}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LocalBox_Common</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>LocalBox_Common_iOS</AssemblyName>
+    <newfilesearch>OnLoadAutoInsert</newfilesearch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="monotouch" />
+    <Reference Include="System.Json" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Dll\json.net-4.5.11\lib\ios\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Mono.Data.Sqlcipher">
+      <HintPath>Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Data\" />
+    <Folder Include="Model\" />
+    <Folder Include="Dll\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="PGP\CryptoHelper.cs" />
+    <Compile Include="PGP\IoHelper.cs" />
+    <Compile Include="Data\DataLayer.cs" />
+    <Compile Include="Model\TreeNode.cs" />
+    <Compile Include="Data\Database.cs" />
+    <Compile Include="AES256\AESEncrypter.cs" />
+    <Compile Include="Helpers\FileEncryptHelper.cs" />
+    <Compile Include="Utils\ByteArrayConverter.cs" />
+    <Compile Include="AES256\AESKeyAndIVGenerator.cs" />
+    <Compile Include="Remote\Constants.cs" />
+    <Compile Include="Remote\RemoteExplorer.cs" />
+    <Compile Include="Remote\Authorization\LocalBoxAuthorization.cs" />
+    <Compile Include="Remote\Model\DataItem.cs" />
+    <Compile Include="Data\Waardes.cs" />
+    <Compile Include="Model\Waarde.cs" />
+    <Compile Include="Remote\Model\LinkItem.cs" />
+    <Compile Include="Model\LocalBox.cs" />
+    <Compile Include="BusinessLayer.cs" />
+    <Compile Include="Remote\Model\Identity.cs" />
+    <Compile Include="Remote\Model\Share.cs" />
+    <Compile Include="Remote\Model\ShareInventation.cs" />
+    <Compile Include="Remote\Model\UserResponse.cs" />
+    <Compile Include="Remote\Model\UserPost.cs" />
+    <Compile Include="Remote\Model\AesKeyPost.cs" />
+    <Compile Include="Remote\Model\AesKeyResponse.cs" />
+    <Compile Include="Helpers\MimeTypeHelper.cs" />
+    <Compile Include="Remote\Model\AesKeyRevoke.cs" />
+    <Compile Include="Remote\Model\PublicUrl.cs" />
+    <Compile Include="Model\APIKeys.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\AboutResources.txt" />
+    <BundleResource Include="Resources\Resource.designer.cs" />
+    <BundleResource Include="Resources\values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BouncyCastle\BouncyCastleAPI_iOS.csproj">
+      <Project>{7A94F49C-F81C-4F5D-B407-071E0C7F33E4}</Project>
+      <Name>BouncyCastleAPI_iOS</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dll\json.net-4.5.11\lib\android\Newtonsoft.Json.dll" />
+    <None Include="Dll\json.net-4.5.11\lib\ios\Newtonsoft.Json.dll" />
+    <None Include="Dll\sqlcipher\lib\android\Mono.Data.Sqlcipher.dll" />
+    <None Include="Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll" />
+  </ItemGroup>
+</Project>

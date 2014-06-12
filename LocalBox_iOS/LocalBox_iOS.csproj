@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3DA647B0-D8DE-46F6-A778-2F8534EFF304}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>LocalBox_iOS</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>LocalBox_iOS</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;__MOBILE__;__IOS__;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7, ARMv7s</MtouchArch>
+    <MtouchUseThumb>true</MtouchUseThumb>
+    <MtouchLink>Full</MtouchLink>
+    <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
+    <MtouchUseLlvm>true</MtouchUseLlvm>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <DefineConstants>__MOBILE__;__IOS__;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchLink>None</MtouchLink>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;__MOBILE__;__IOS__;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7, ARMv7s</MtouchArch>
+    <IpaPackageName>
+    </IpaPackageName>
+    <DebugSymbols>true</DebugSymbols>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
+    <MtouchUseThumb>true</MtouchUseThumb>
+    <MtouchLink>Full</MtouchLink>
+    <CodesignProvision>5355A0E1-6A0B-4A72-8D6D-81BE74B7B90C</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <DefineConstants>__MOBILE__;__IOS__;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Ad-Hoc</OutputPath>
+    <DefineConstants>__MOBILE__;__IOS__;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <BuildIpa>true</BuildIpa>
+    <CodesignProvision>1AED1F0E-43C6-483A-A63F-2796FCDCB83E</CodesignProvision>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\AppStore</OutputPath>
+    <DefineConstants>__MOBILE__;__IOS__;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7, ARMv7s</MtouchArch>
+    <BuildIpa>true</BuildIpa>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
+    <MtouchUseLlvm>true</MtouchUseLlvm>
+    <MtouchUseThumb>true</MtouchUseThumb>
+    <MtouchLink>Full</MtouchLink>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="monotouch" />
+    <Reference Include="Mono.Data.Sqlcipher">
+      <HintPath>..\LocalBox_Common\Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Views\" />
+    <Folder Include="Resources\buttons\" />
+    <Folder Include="Resources\icons\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Resources\fonts\" />
+    <Folder Include="Views\Pincode\" />
+    <Folder Include="Views\Table\" />
+    <Folder Include="Views\ItemView\" />
+    <Folder Include="Views\Introduction\" />
+    <Folder Include="Resources\tour\" />
+    <Folder Include="Resources\background\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="Views\HomeController.cs" />
+    <Compile Include="Views\HomeController.designer.cs">
+      <DependentUpon>HomeController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MenuViewController.cs" />
+    <Compile Include="Views\MenuViewController.designer.cs">
+      <DependentUpon>MenuViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InstellingenViewController.cs" />
+    <Compile Include="Views\InstellingenViewController.designer.cs">
+      <DependentUpon>InstellingenViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NodeViewController.cs" />
+    <Compile Include="Views\NodeViewController.designer.cs">
+      <DependentUpon>NodeViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IHome.cs" />
+    <Compile Include="Views\NodeView.cs" />
+    <Compile Include="Views\NodeView.designer.cs">
+      <DependentUpon>NodeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MenuViewCell.cs" />
+    <Compile Include="Views\NodeViewCell.cs" />
+    <Compile Include="Views\BaseNode.cs" />
+    <Compile Include="Views\MenuViewCell.designer.cs">
+      <DependentUpon>MenuViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MenuFooterViewCell.cs" />
+    <Compile Include="Views\MenuFooterViewCell.designer.cs">
+      <DependentUpon>MenuFooterViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NodeViewCell.designer.cs">
+      <DependentUpon>NodeViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\TypeHelper.cs" />
+    <Compile Include="Helpers\FontHelper.cs" />
+    <Compile Include="Helpers\DialogHelper.cs" />
+    <Compile Include="Views\NodeViewCellDefault.cs" />
+    <Compile Include="Views\NodeViewCellDetail.cs" />
+    <Compile Include="Views\NodeViewCellDefault.designer.cs">
+      <DependentUpon>NodeViewCellDefault.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NodeViewCellDetail.designer.cs">
+      <DependentUpon>NodeViewCellDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WachtwoordView.cs" />
+    <Compile Include="Views\WachtwoordView.designer.cs">
+      <DependentUpon>WachtwoordView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pincode\KeyPad.cs" />
+    <Compile Include="Views\Pincode\PincodeInstellenView.cs" />
+    <Compile Include="Views\Pincode\PinInput.cs" />
+    <Compile Include="Views\Pincode\PincodeInvoerenView.cs" />
+    <Compile Include="Views\LocationChooserView.cs" />
+    <Compile Include="Views\LocationChooserView.designer.cs">
+      <DependentUpon>LocationChooserView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LocationChooserViewCell.cs" />
+    <Compile Include="Views\LocationChooserViewCell.designer.cs">
+      <DependentUpon>LocationChooserViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IListNode.cs" />
+    <Compile Include="Views\FavoriteNodeView.cs" />
+    <Compile Include="Views\FavoriteNodeView.designer.cs">
+      <DependentUpon>FavoriteNodeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Table\SlideViewTableCell.cs" />
+    <Compile Include="Views\Table\MenuViewCell.cs" />
+    <Compile Include="Views\Table\MenuViewCellTop.cs" />
+    <Compile Include="Views\Table\MenuViewCellDetail.cs" />
+    <Compile Include="Views\Table\MenuViewCellTop.designer.cs">
+      <DependentUpon>MenuViewCellTop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Table\MenuViewCellDetail.designer.cs">
+      <DependentUpon>MenuViewCellDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DelenView.cs" />
+    <Compile Include="Views\DelenView.designer.cs">
+      <DependentUpon>DelenView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemView\BaseItemView.cs" />
+    <Compile Include="Views\ItemView\BaseItemView.designer.cs">
+      <DependentUpon>BaseItemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemView\WebItemView.cs" />
+    <Compile Include="Views\ItemView\PdfItemView.cs" />
+    <Compile Include="Helpers\CryptoHelper.cs" />
+    <Compile Include="Views\AboutViewController.cs" />
+    <Compile Include="Views\AboutViewController.designer.cs">
+      <DependentUpon>AboutViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ViewHelper.cs" />
+    <Compile Include="Views\IntroductionViewController.cs" />
+    <Compile Include="Views\IntroductionViewController.designer.cs">
+      <DependentUpon>IntroductionViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Introduction\IntroductionPageDatasource.cs" />
+    <Compile Include="Views\RegisterLocalBoxViewController.cs" />
+    <Compile Include="Views\RegisterLocalBoxViewController.designer.cs">
+      <DependentUpon>RegisterLocalBoxViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\Reachability.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="Views\HomeController.xib">
+      <DependentUpon>HomeController.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\MenuViewController.xib">
+      <DependentUpon>MenuViewController.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\InstellingenViewController.xib">
+      <DependentUpon>InstellingenViewController.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\NodeViewController.xib">
+      <DependentUpon>NodeViewController.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\NodeView.xib">
+      <DependentUpon>NodeView.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\MenuViewCell.xib">
+      <DependentUpon>MenuViewCell.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\MenuFooterViewCell.xib">
+      <DependentUpon>MenuFooterViewCell.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\NodeViewCell.xib">
+      <DependentUpon>NodeViewCell.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\NodeViewCellDetail.xib">
+      <DependentUpon>NodeViewCellDetail.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\NodeViewCellDefault.xib">
+      <DependentUpon>NodeViewCellDefault.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\WachtwoordView.xib">
+      <DependentUpon>WachtwoordView.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\LocationChooserView.xib">
+      <DependentUpon>LocationChooserView.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\LocationChooserViewCell.xib">
+      <DependentUpon>LocationChooserViewCell.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\FavoriteNodeView.xib">
+      <DependentUpon>FavoriteNodeView.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\Table\MenuViewCellTop.xib">
+      <DependentUpon>MenuViewCellTop.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\Table\MenuViewCellDetail.xib">
+      <DependentUpon>MenuViewCellDetail.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\DelenView.xib">
+      <DependentUpon>DelenView.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\ItemView\BaseItemView.xib">
+      <DependentUpon>BaseItemView.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\AboutViewController.xib">
+      <DependentUpon>AboutViewController.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\IntroductionViewController.xib" />
+    <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_iOS.csproj">
+      <Project>{A1F82138-A39E-45DA-AC90-56C177556092}</Project>
+      <Name>LocalBox_Common_iOS</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\buttons\IcBottom-Instellingen.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Instellingen%402x.png" />
+    <BundleResource Include="Resources\RijkslogoArtboard-1.png" />
+    <BundleResource Include="Resources\RijkslogoArtboard-1%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Berekeningen.png" />
+    <BundleResource Include="Resources\icons\IcType-Berekeningen%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Film.png" />
+    <BundleResource Include="Resources\icons\IcType-Film%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Foto.png" />
+    <BundleResource Include="Resources\icons\IcType-Foto%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-gecompileerd.png" />
+    <BundleResource Include="Resources\icons\IcType-gecompileerd%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Muziek.png" />
+    <BundleResource Include="Resources\icons\IcType-Muziek%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-onbekend.png" />
+    <BundleResource Include="Resources\icons\IcType-onbekend%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-PDF.png" />
+    <BundleResource Include="Resources\icons\IcType-PDF%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Presentatie.png" />
+    <BundleResource Include="Resources\icons\IcType-Presentatie%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Tekstdocumenten.png" />
+    <BundleResource Include="Resources\icons\IcType-Tekstdocumenten%402x.png" />
+    <BundleResource Include="Resources\fonts\RijksoverheidSansTextTT-Bold_2_0.ttf" />
+    <BundleResource Include="Resources\fonts\RijksoverheidSansTextTT-Italic_2_0.ttf" />
+    <BundleResource Include="Resources\fonts\RijksoverheidSansTextTT-Regular_2_0.ttf" />
+    <BundleResource Include="Resources\buttons\IcDelen.png" />
+    <BundleResource Include="Resources\buttons\IcDelen%402x.png" />
+    <BundleResource Include="Resources\buttons\IcMaak-favoriet.png" />
+    <BundleResource Include="Resources\buttons\IcMaak-favoriet%402x.png" />
+    <BundleResource Include="Resources\buttons\IcVerwijderen.png" />
+    <BundleResource Include="Resources\buttons\IcVerwijderen%402x.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Sluiten.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Sluiten%402x.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Terug.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Terug%402x.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Maximaliseren.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Maximaliseren%402x.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Minimaliseren.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Minimaliseren%402x.png" />
+    <BundleResource Include="Resources\icons\IcLijst-favorieten.png" />
+    <BundleResource Include="Resources\icons\IcLijst-favorieten%402x.png" />
+    <BundleResource Include="Resources\icons\IcInd_Zelf-gedeeld.png" />
+    <BundleResource Include="Resources\icons\IcInd_Zelf-gedeeld%402x.png" />
+    <BundleResource Include="Resources\icons\IcInd-favorieten.png" />
+    <BundleResource Include="Resources\icons\IcInd-favorieten%402x.png" />
+    <BundleResource Include="Resources\icons\IcInd-Met-mij-gedeeld.png" />
+    <BundleResource Include="Resources\icons\IcInd-Met-mij-gedeeld%402x.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Opslaan.png" />
+    <BundleResource Include="Resources\buttons\IcTop_Opslaan%402x.png" />
+    <BundleResource Include="over\img\gototop.png" />
+    <BundleResource Include="over\img\ic_bellen.png" />
+    <BundleResource Include="over\img\ic_email.png" />
+    <BundleResource Include="over\img\IcInd_Zelf-gedeeld.png" />
+    <BundleResource Include="over\img\IcInd-favorieten.png" />
+    <BundleResource Include="over\img\IcInd-Met-mij-gedeeld.png" />
+    <BundleResource Include="over\img\IcInd-Nieuw.png" />
+    <BundleResource Include="over\img\IcLijst-favorieten.png" />
+    <BundleResource Include="over\img\logoMCC.png" />
+    <BundleResource Include="over\LocalBoxInfo.html" />
+    <BundleResource Include="Resources\buttons\IcBottom-ToevoegenLB.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-ToevoegenLB%402x.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Over-de-app.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Over-de-app%402x.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Vergrendel.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Vergrendel%402x.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Opslaan.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Opslaan%402x.png" />
+    <BundleResource Include="Resources\splash%402x.png" />
+    <BundleResource Include="Resources\background\splash.png" />
+    <BundleResource Include="Resources\icons\IcType-Map-versleuteld.png" />
+    <BundleResource Include="Resources\icons\IcType-Map-versleuteld%402x.png" />
+    <BundleResource Include="Resources\icons\IcType-Map.png" />
+    <BundleResource Include="Resources\icons\IcType-Map%402x.png" />
+    <BundleResource Include="Resources\buttons\IcVerplaatsen.png" />
+    <BundleResource Include="Resources\buttons\IcVerplaatsen%402x.png" />
+    <BundleResource Include="Resources\buttons\IcOpenen-in.png" />
+    <BundleResource Include="Resources\buttons\IcOpenen-in%402x.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Sync.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Sync%402x.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Toevoegen.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Toevoegen%402x.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Upload.png" />
+    <BundleResource Include="Resources\buttons\IcBottom-Upload%402x.png" />
+    <BundleResource Include="Resources\tour\tour_01.png" />
+    <BundleResource Include="Resources\tour\tour_03.png" />
+    <BundleResource Include="Resources\tour\tour_04.png" />
+    <BundleResource Include="Resources\tour\tour_05.png" />
+    <BundleResource Include="Resources\tour\tour_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ITunesArtwork Include="iTunesArtwork" />
+    <ITunesArtwork Include="iTunesArtwork%402x" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon50x50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon50x50%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon72x72.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon72x72%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash%402x.png" />
+  </ItemGroup>
+</Project>
