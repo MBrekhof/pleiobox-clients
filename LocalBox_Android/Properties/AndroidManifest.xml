@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.belastingdienst.localbox">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2" android:versionName="1.0.1" package="com.belastingdienst.localbox">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -8,6 +8,3 @@
 	<application android:label="LocalBox" android:largeHeap="true" android:icon="@drawable/localbox_appicon">
 	</application>
 </manifest>
-<!-- activity settings
-		android:screenOrientation="landscape"
-	 -->

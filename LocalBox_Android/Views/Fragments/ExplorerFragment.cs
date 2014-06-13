@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
 
 using Android.Support.V4.App;
 using Android.Content;
@@ -14,11 +15,10 @@ using Android.Widget;
 using Android.Graphics.Drawables;
 using Android.Webkit;
 using Android.Preferences;
+using Android.Net;
 
 using LocalBox_Common;
 using LocalBox_Common.Remote;
-using Android.Net;
-using System.Threading;
 
 namespace localbox.android
 {
@@ -264,8 +264,9 @@ namespace localbox.android
 					popupView = inflater.Inflate (Resource.Layout.custom_popup_folder_subfolder, null);
 					ClickHandlersFolderSubFolderPopupMenu (popupView, selectedItem);
 				}
-
-			} else {  //File clicked - so open file popup layout
+			} 
+			else 
+			{  	//File clicked - so open file popup layout
 				if (openedFolderIsShare || favoriteFolderOpened) {
 					popupView = inflater.Inflate (Resource.Layout.custom_popup_file_share, null);
 				} 
@@ -410,98 +411,98 @@ namespace localbox.android
 			}
 		}
 
-		private void OpenFileIn (TreeNode clickedItem)
+		private async void OpenFileIn (TreeNode clickedItem)
 		{
 			try {
-
-				new Thread(new ThreadStart(async delegate
-					{
-
+	
 				if (popupWindow != null) {
 					popupWindow.Dismiss ();
 				}
 
 				Intent intent = new Intent (Intent.ActionView);
 
-				//Show progress dialog while loading
-				parentActivity.HideProgressDialog();
-				parentActivity.ShowProgressDialog (null);
-
-
-				string fullFilePath = await DataLayer.Instance.GetFilePath (clickedItem.Path);
-
-				string mimeTypeOfClickedItem = MimeTypeHelper.GetMimeType(fullFilePath);
+				string mimeTypeOfClickedItem = MimeTypeHelper.GetMimeType (clickedItem.Path);
 				clickedItem.Type = mimeTypeOfClickedItem;
 
-				if(clickedItem.Type.Equals("application/pdf")){
+				if (clickedItem.Type.Equals ("application/pdf")) {
 
-					//Controleer internet verbinding
-					var connectivityManager = (ConnectivityManager)Android.App.Application.Context.GetSystemService 
-											  (Context.ConnectivityService);
-					var activeConnection = connectivityManager.ActiveNetworkInfo;
+					new Thread (new ThreadStart (async delegate {
 
-					if ((activeConnection != null)  && activeConnection.IsConnected)
-					{  	//Internet verbinding gedetecteerd
-
-						//Create temp file
-						string temporaryFilePath = System.IO.Path.Combine ("/storage/emulated/0/Download", clickedItem.Name);
-
-						if (File.Exists (temporaryFilePath)) {
-							File.Delete (temporaryFilePath);
-						}
-							
-						//Save settings of last opened file
-						ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(Activity);
-						ISharedPreferencesEditor editor = prefs.Edit();
-						editor.PutString("fileNameLastOpenedPdf", clickedItem.Name);
-						editor.PutString("pathLastOpenedPdf", clickedItem.Path);
-						editor.PutString("temporaryFilePath", temporaryFilePath);
-						editor.PutBoolean("isFavorite", clickedItem.IsFavorite);
-						editor.Apply();
-
-						//Save temporary file in filesystem
-						RemoteExplorer remoteExplorer = new RemoteExplorer ();
-						Byte[] fileBytes = remoteExplorer.GetFile (clickedItem.Path);
-
-						File.WriteAllBytes (temporaryFilePath, fileBytes);
-
-						Android.Net.Uri uri = Android.Net.Uri.Parse ("file://" + temporaryFilePath);
-						intent.SetDataAndType (uri, clickedItem.Type);
-
+						//Show progress dialog while loading
 						parentActivity.HideProgressDialog ();
-						Activity.StartActivity (intent);
-					}
-					else
-					{	
-						//Geen internet verbinding
-						var alertDialogConfirmDelete = new Android.App.AlertDialog.Builder (Activity);
-						alertDialogConfirmDelete.SetTitle("Geen verbinding");
-						alertDialogConfirmDelete.SetMessage("U heeft momenteel geen internet verbinding. Het maken van PDF annotaties is daarom niet mogelijk.");
+						parentActivity.ShowProgressDialog (null);
+						string fullFilePath = await DataLayer.Instance.GetFilePath (clickedItem.Path);
 
-						alertDialogConfirmDelete.SetPositiveButton ("OK", async delegate { 
+						//Controleer internet verbinding
+						var connectivityManager = (ConnectivityManager)Android.App.Application.Context.GetSystemService 
+											  (Context.ConnectivityService);
+						var activeConnection = connectivityManager.ActiveNetworkInfo;
 
-							Android.Net.Uri uri = Android.Net.Uri.Parse ("file://" + fullFilePath);
+						if ((activeConnection != null) && activeConnection.IsConnected) {  	//Internet verbinding gedetecteerd
+
+							//Create temp file
+							string temporaryFilePath = System.IO.Path.Combine ("/storage/emulated/0/Download", clickedItem.Name);
+
+							if (File.Exists (temporaryFilePath)) {
+								File.Delete (temporaryFilePath);
+							}
+							
+							//Save settings of last opened file
+							ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences (Activity);
+							ISharedPreferencesEditor editor = prefs.Edit ();
+							editor.PutString ("fileNameLastOpenedPdf", clickedItem.Name);
+							editor.PutString ("pathLastOpenedPdf", clickedItem.Path);
+							editor.PutString ("temporaryFilePath", temporaryFilePath);
+							editor.PutBoolean ("isFavorite", clickedItem.IsFavorite);
+							editor.Apply ();
+
+							//Save temporary file in filesystem
+							RemoteExplorer remoteExplorer = new RemoteExplorer ();
+							Byte[] fileBytes = remoteExplorer.GetFile (clickedItem.Path);
+
+							File.WriteAllBytes (temporaryFilePath, fileBytes);
+
+							Android.Net.Uri uri = Android.Net.Uri.Parse ("file://" + temporaryFilePath);
 							intent.SetDataAndType (uri, clickedItem.Type);
 
 							parentActivity.HideProgressDialog ();
 							Activity.StartActivity (intent);
-						});
-						alertDialogConfirmDelete.Create ().Show ();
-					}
-				}
-				else
-				{//Ander bestandstype dan PDF openen
-					Android.Net.Uri uriContent = Android.Net.Uri.Parse("content://" + "com.belastingdienst.localbox");
-					Android.Net.Uri uri = Android.Net.Uri.Parse (uriContent + fullFilePath);
+						} else {	
+							//Geen internet verbinding
+							
+							var alertDialogConfirmDelete = new Android.App.AlertDialog.Builder (Activity);
+							alertDialogConfirmDelete.SetTitle ("Geen verbinding");
+							alertDialogConfirmDelete.SetMessage ("U heeft momenteel geen internet verbinding. Het maken van PDF annotaties is daarom niet mogelijk.");
+
+							alertDialogConfirmDelete.SetPositiveButton ("OK", async delegate { 
+
+								Android.Net.Uri uri = Android.Net.Uri.Parse ("file://" + fullFilePath);
+								intent.SetDataAndType (uri, clickedItem.Type);
+
+								parentActivity.HideProgressDialog ();
+								Activity.StartActivity (intent);
+							});
+							alertDialogConfirmDelete.Create ().Show ();
+						}
+					})).Start ();
+				} else {//Ander bestandstype dan PDF openen
+
+					//Show progress dialog while loading
+					parentActivity.HideProgressDialog ();
+					parentActivity.ShowProgressDialog (null);
+					string fullFilePath = await DataLayer.Instance.GetFilePath (clickedItem.Path);
+
+					Android.Net.Uri uri = Android.Net.Uri.Parse (CustomContentProvider.CONTENT_URI + fullFilePath);
+
 					intent.SetDataAndType (uri, clickedItem.Type);
 
-					parentActivity.HideProgressDialog ();
+					intent.SetFlags (ActivityFlags.GrantReadUriPermission);
+					intent.SetFlags (ActivityFlags.NewTask);
+					intent.SetFlags (ActivityFlags.ClearWhenTaskReset);
+
 					Activity.StartActivity (intent);
 				}
-
-					})).Start();
-			} 
-			catch (Exception exception) {
+			} catch (Exception exception) {
 				Console.WriteLine (exception.Message);
 
 				parentActivity.HideProgressDialog ();

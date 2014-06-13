@@ -87,6 +87,7 @@
     <Compile Include="Views\Fragments\AboutAppFragment.cs" />
     <Compile Include="Views\Fragments\RegisterLocalBoxFragment.cs" />
     <Compile Include="Views\Fragments\MoveFileFragment.cs" />
+    <Compile Include="Providers\CustomContentProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -209,6 +210,7 @@
     <Folder Include="Resources\menu\" />
     <Folder Include="Views\Activities\" />
     <Folder Include="Assets\img\" />
+    <Folder Include="Providers\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Roboto-Regular.ttf" />

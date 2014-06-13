@@ -23,7 +23,6 @@ using Android.Preferences;
 using LocalBox_Common;
 using LocalBox_Common.Remote;
 
-
 namespace localbox.android
 {
 	[Activity (Label = "LocalBox", WindowSoftInputMode = SoftInput.AdjustPan, ScreenOrientation = Android.Content.PM.ScreenOrientation.Landscape)]
@@ -207,7 +206,7 @@ namespace localbox.android
 		private async void UpdatePdfFile (string pathToTempPdf)
 		{
 			try {
-				HideProgressDialog();
+				new Thread (new ThreadStart (async delegate {
 
 				//Get location and name of last opened file
 				ISharedPreferences prefs 	= PreferenceManager.GetDefaultSharedPreferences(this);         
@@ -218,7 +217,7 @@ namespace localbox.android
 
 				//Controleer of pdf path overeenkomt met path van laatst geopende pdf file
 				if (pathToTempPdf.Contains (fileNameLastOpenedPdf)) {
-					
+
 					ShowProgressDialog("Eventuele aanpassingen aan het bestand opslaan. \nEen ogenblik geduld a.u.b.");
 					bool updateSucceeded = await DataLayer.Instance.SavePdfAnnotations (pathLastOpenedPdf, pathToTempPdf, true, isFavorite);
 						
@@ -229,25 +228,27 @@ namespace localbox.android
 						}
 
 						HideProgressDialog ();
-						Toast.MakeText (this, "PDF bestand succesvol bijgewerkt", ToastLength.Long).Show ();
+						ShowToast("PDF bestand succesvol bijgewerkt");
 					} else {
 						HideProgressDialog ();
-						Toast.MakeText (this, "Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
-						"Probeer het a.u.b. later nogmaals", ToastLength.Long).Show ();
+						ShowToast("Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
+								  "Probeer het a.u.b. later nogmaals");
 					}
-						
 				} else {
 					HideProgressDialog ();
-					Toast.MakeText (this, "PDF bestand niet gevonden.\n" +
-									"Nieuwe bestanden kunnen alleen binnen de app ge-upload worden.", ToastLength.Long).Show ();
+					ShowToast("PDF bestand niet gevonden.\n" + 
+							  "Nieuwe bestanden kunnen alleen binnen de app ge-upload worden.");
 				}
+
+
 				SplashActivity.clipData = null;
-					
+
+				})).Start ();
 			} catch(Exception ex) {
 				Console.WriteLine (ex.Message);
 				SplashActivity.clipData = null;
 				HideProgressDialog ();
-				Toast.MakeText (this, "Er is een fout opgetreden. Probeer het a.u.b. later nogmaals", ToastLength.Long).Show ();
+				ShowToast ("Er is een fout opgetreden. Probeer het a.u.b. later nogmaals");
 			}
 		}
 
@@ -280,9 +281,9 @@ namespace localbox.android
 
 			buttonRegister.Click += async (sender, args) => {
 				if (String.IsNullOrEmpty (editTextUsername.Text)) {
-					Toast.MakeText (this, "Gebruikersnaam is niet ingevuld", ToastLength.Short).Show ();
+					ShowToast("Gebruikersnaam is niet ingevuld");
 				} else if (String.IsNullOrEmpty (editTextPassword.Text)) {
-					Toast.MakeText (this, "Wachtwoord is niet ingevuld", ToastLength.Short).Show ();
+					ShowToast("Wachtwoord is niet ingevuld");
 				} else {
 					try {
 						ShowProgressDialog ("Uw inloggegevens controleren. Een ogenblik geduld a.u.b.");
@@ -292,11 +293,11 @@ namespace localbox.android
 
 						HideProgressDialog ();
 						if (!authenticateSucceeded) {
-							Toast.MakeText (this, "Inloggegevens zijn foutief", ToastLength.Long).Show ();
+							ShowToast("Inloggegevens zijn foutief");
 						} else {
 						
 							dialog.Dismiss ();
-							Toast.MakeText (this, "Inloggegevens geaccepteerd", ToastLength.Short).Show ();
+							ShowToast("Inloggegevens geaccepteerd");
 
 							
                             if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
@@ -307,7 +308,7 @@ namespace localbox.android
 						}
 					} catch (Exception ex) {
 						HideProgressDialog ();
-						Toast.MakeText (this, "LocalBox registratie mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+						ShowToast("LocalBox registratie mislukt. Probeer het a.u.b. opnieuw");
 						Log.Info ("STACKTRACE", ex.StackTrace);
 						Log.Info ("MESSAGE", ex.Message);
 					}
@@ -351,37 +352,36 @@ namespace localbox.android
 				string passphraseTwo = editNewPassphraseVerify.Text;
 
 				if (String.IsNullOrEmpty (passphraseOne)) {
-					Toast.MakeText (this, "Passphrase is niet ingevuld", ToastLength.Long).Show ();
+					ShowToast("Passphrase is niet ingevuld");
 				} else if (String.IsNullOrEmpty (passphraseTwo)) {
-					Toast.MakeText (this, "U dient uw ingevoerde passphrase te verifieren", ToastLength.Long).Show ();
+					ShowToast("U dient uw ingevoerde passphrase te verifieren");
 				} else {
 					if (!passphraseOne.Equals (passphraseTwo)) {
-						Toast.MakeText (this, "De ingevoerde passphrases komen niet overeen. Corrigeer dit a.u.b.", ToastLength.Long).Show ();
+						ShowToast("De ingevoerde passphrases komen niet overeen. Corrigeer dit a.u.b.");
 					} else {
-
-						try {
+						try 
+						{
 							ShowProgressDialog ("Passphrase aanmaken. Dit kan enige tijd in beslag nemen. Een ogenblik geduld a.u.b.");
 
                             bool newPassphraseSucceeded = await BusinessLayer.Instance.SetPublicAndPrivateKey (localBox, passphraseOne);
 
 							HideProgressDialog();
+
 							if (!newPassphraseSucceeded) {
-								Toast.MakeText (this, "Passphrase instellen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
-							} else {
-
+								ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
+							} 
+							else {
 								dialog.Dismiss ();
-
-								Toast.MakeText (this, "LocalBox succesvol geregistreerd", ToastLength.Long).Show ();
+								ShowToast("LocalBox succesvol geregistreerd");
 
 								menuFragment.UpdateLocalBoxes ();
-
 								SplashActivity.intentData = null;
 							}
-						} catch {
+						} 
+						catch {
 							HideProgressDialog ();
-							Toast.MakeText (this, "Passphrase instellen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+							ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
 						}
-
 					}
 				}
 			};
@@ -420,7 +420,7 @@ namespace localbox.android
 				string passphrase = editEnterPassphrase.Text;
 
 				if (String.IsNullOrEmpty (passphrase)) {
-					Toast.MakeText (this, "Passphrase is niet ingevuld", ToastLength.Long).Show ();
+					ShowToast("Passphrase is niet ingevuld");
 				} 
 				else {
 	
@@ -431,12 +431,12 @@ namespace localbox.android
 
 						HideProgressDialog();
 						if (!correctPassphraseEntered) {
-							Toast.MakeText (this, "Passphrase onjuist. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+							ShowToast("Passphrase onjuist. Probeer het a.u.b. opnieuw");
 						} else {
 
 							dialog.Dismiss ();
 
-							Toast.MakeText (this, "Passphrase geaccepteerd en LocalBox succesvol geregistreerd", ToastLength.Long).Show ();
+							ShowToast("Passphrase geaccepteerd en LocalBox succesvol geregistreerd");
 
 							menuFragment.UpdateLocalBoxes ();
 
@@ -444,7 +444,7 @@ namespace localbox.android
 						}
 					} catch {
 						HideProgressDialog ();
-						Toast.MakeText (this, "Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+						ShowToast("Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw");
 					}
 
 				}
@@ -486,9 +486,6 @@ namespace localbox.android
 				if (explorerFragment != null && !explorerFragment.favoriteFolderOpened && SplashActivity.intentData == null) {
 					explorerFragment.RefreshData ();
 				}
-			}
-			if (SplashActivity.clipData != null) {
-				ShowProgressDialog (null);
 			}
 		}
 
@@ -563,15 +560,15 @@ namespace localbox.android
 
 					HideProgressDialog ();
 					if (!uploadedSucceeded) {
-						Toast.MakeText (this, "Het uploaden is mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+						ShowToast("Het uploaden is mislukt. Probeer het a.u.b. opnieuw");
 					} else {
-						Toast.MakeText (this, "Bestand succesvol geupload", ToastLength.Short).Show ();
+						ShowToast("Bestand succesvol geupload");
 						RefreshExplorerFragmentData();
 					}
 
 				} catch {
 					HideProgressDialog ();
-					Toast.MakeText (this, "Het uploaden is mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+					ShowToast ("Het uploaden is mislukt. Probeer het a.u.b. opnieuw");
 
 				}
 			}
@@ -642,7 +639,7 @@ namespace localbox.android
 
 			buttonAddFolder.Click += async(sender, args) => {
 				if (String.IsNullOrEmpty (editTextFolderName.Text)) {
-					Toast.MakeText (this, "Naam is niet ingevuld", ToastLength.Short).Show ();
+					ShowToast("Naam is niet ingevuld");
 				} else {
 					ShowProgressDialog("Map wordt aangemaakt. Een ogenblik geduld a.u.b.");
 
@@ -656,17 +653,17 @@ namespace localbox.android
 					
 						if (!addedSuccesfully) {
 							HideProgressDialog();
-							Toast.MakeText (this, "Toevoegen map mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+							ShowToast("Toevoegen map mislukt. Probeer het a.u.b. opnieuw");
 						} else {
 							HideProgressDialog();
-							Toast.MakeText (this, "Map succesvol toegevoegd", ToastLength.Short).Show ();
+							ShowToast("Map succesvol toegevoegd");
 						
 							//Refresh data
 							RefreshExplorerFragmentData();
 						}
 					}catch{
 						HideProgressDialog();
-						Toast.MakeText (this, "Toevoegen map mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+						ShowToast("Toevoegen map mislukt. Probeer het a.u.b. opnieuw");
 					}
 				}
 			};
@@ -729,7 +726,7 @@ namespace localbox.android
 
 			buttonOpenUrl.Click +=(sender, args) => {
 				if (String.IsNullOrEmpty (editTextUrl.Text)) {
-					Toast.MakeText (this, "URL is niet ingevuld", ToastLength.Short).Show ();
+					ShowToast("URL is niet ingevuld");
 				} else {
 					ShowProgressDialog("Laden...");
 
@@ -740,7 +737,7 @@ namespace localbox.android
 					}
 					catch{
 						HideProgressDialog();
-						Toast.MakeText (this, "Openen van opgegeven URL is mislukt.", ToastLength.Short).Show ();
+						ShowToast("Openen van opgegeven URL is mislukt.");
 					}
 			
 				}
@@ -801,7 +798,7 @@ namespace localbox.android
 				if (localBoxUsers.Count > 0) {
 					dialogFragmentShare.Show (fragmentTransaction, "sharedialog");
 				} else {
-					Toast.MakeText (this, "Geen gebruikers gevonden om mee te kunnen delen", ToastLength.Short).Show ();
+					ShowToast("Geen gebruikers gevonden om mee te kunnen delen");
 				}
 
 			} catch {
@@ -815,9 +812,9 @@ namespace localbox.android
 			dialogFragmentShare.Dismiss ();
 			
 			if (isNewShare) {
-				Toast.MakeText (this, "Map succesvol gedeeld", ToastLength.Short).Show ();
+				ShowToast ("Map succesvol gedeeld");
 			} else {
-				Toast.MakeText (this, "Deel instellingen succesvol gewijzigd", ToastLength.Short).Show ();
+				ShowToast ("Deel instellingen succesvol gewijzigd");
 			}
 
 			RefreshExplorerFragmentData ();
@@ -853,12 +850,12 @@ namespace localbox.android
 				if (foundDirectoryTreeNodes.Count > 0) {
 					dialogFragmentMoveFile.Show (fragmentTransaction, "movefiledialog");
 				} else {
-					Toast.MakeText (this, "Geen mappen gevonden om bestand naar te verplaatsen", ToastLength.Short).Show ();
+					ShowToast("Geen mappen gevonden om bestand naar te verplaatsen");
 				}
 
 			} catch {
 				HideProgressDialog ();
-				Toast.MakeText (this, "Er is iets fout gegaan bij het ophalen van mappen. \nProbeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+				ShowToast ("Er is iets fout gegaan bij het ophalen van mappen. \nProbeer het a.u.b. opnieuw");
 			}
 		}
 
@@ -866,7 +863,7 @@ namespace localbox.android
 		public void HideMoveFileDialog ()
 		{
 			dialogFragmentMoveFile.Dismiss ();
-			Toast.MakeText (this, "Bestand succesvol verplaatst", ToastLength.Short).Show ();
+			ShowToast("Bestand succesvol verplaatst");
 			RefreshExplorerFragmentData ();
 		}
 
@@ -905,5 +902,16 @@ namespace localbox.android
 			}catch{
 			}
 		}
+
+		private void ShowToast(string message)
+		{
+			try{
+				this.RunOnUiThread (new Action (() => { 
+					Toast.MakeText (this, message, ToastLength.Long).Show ();
+				}));
+			}catch{
+			}
+		}
+
 	}
 }
