@@ -102,7 +102,7 @@ namespace LocalBox_iOS.Views
 						};
 						DialogHelper.HideBlockingProgressDialog();
 
-						_nodeViewController.View.Add (view);
+						HomeController.homeController.View.Add(view);
 					});
 				}else{
 					DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het ophalen van gebruikers. \nProbeer het a.u.b. nogmaals.");

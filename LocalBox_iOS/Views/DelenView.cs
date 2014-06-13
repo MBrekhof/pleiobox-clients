@@ -25,7 +25,6 @@ namespace LocalBox_iOS
         public static DelenView Create(List<Identity> users, Share share, string path)
         {
             var view = (DelenView)Nib.Instantiate(null, null)[0];
-            view.Frame = new RectangleF(view.Frame.X - 280f, view.Frame.Y, view.Frame.Width, view.Frame.Height);
             view.Layer.ShadowColor = UIColor.FromRGBA(0f, 0f, 0f, .8f).CGColor;
             view.Layer.ShadowOpacity = 0.7f;
 
@@ -35,11 +34,7 @@ namespace LocalBox_iOS
             view.TitelTekst.Text = string.Format("Delen: {0}",path);
 
             view.SluitenButton.TouchUpInside += (object sender, EventArgs e) => {
-				//Force to refresh
-				view.OnUsersSelected(view, EventArgs.Empty);
-
                 view.RemoveFromSuperview();
-				view = null;
             };
 
             view.OkButton.TouchUpInside += async (object sender, EventArgs e) => {
