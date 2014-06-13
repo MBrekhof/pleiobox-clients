@@ -393,7 +393,16 @@ namespace LocalBox_Common.Remote
 					if (response.IsSuccessStatusCode) {
 						var jsonString = response.Content.ReadAsStringAsync ().Result;
 
-						foundUsers = JsonConvert.DeserializeObject<List<Identity>> (jsonString);
+						var allUsers = JsonConvert.DeserializeObject<List<Identity>> (jsonString);
+
+						//Return only users with keys
+						foreach(Identity identity in allUsers)
+						{
+							if(identity.Username != null && identity.HasKeys == true)
+							{
+								foundUsers.Add(identity);
+							}
+						}
 					}
 				}
 				return foundUsers;

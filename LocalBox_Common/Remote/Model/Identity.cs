@@ -16,7 +16,9 @@ namespace LocalBox_Common
 
         [DataMember(Name = "type")]
         public string Type { get; set; }
-
+		
+		[DataMember(Name = "has_keys")]
+		public bool HasKeys { get; set; }
 	}
 }
 

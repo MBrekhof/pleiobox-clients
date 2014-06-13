@@ -178,14 +178,6 @@ namespace LocalBox_Common
 			});
 		}
 
-		public Task<List<Identity>> GetLocalBoxUsers ()
-		{
-			LocalBox box = DataLayer.Instance.GetSelectedOrDefaultBox ();
-			var explorer = new RemoteExplorer (box);
-
-			return explorer.GetLocalBoxUsers ();
-		}
-
 		public Task<bool> ShareFolder (string path, List<Identity> users)
 		{
 			return Task.Run (() => {
