@@ -403,10 +403,10 @@
     <BundleResource Include="Resources\buttons\IcBottom-Toevoegen%402x.png" />
     <BundleResource Include="Resources\buttons\IcBottom-Upload.png" />
     <BundleResource Include="Resources\buttons\IcBottom-Upload%402x.png" />
-    <BundleResource Include="Resources\tour\tour_01.png" />
     <BundleResource Include="Resources\tour\tour_03.png" />
     <BundleResource Include="Resources\tour\tour_04.png" />
     <BundleResource Include="Resources\tour\tour_05.png" />
+    <BundleResource Include="Resources\tour\tour_01.png" />
     <BundleResource Include="Resources\tour\tour_02.png" />
   </ItemGroup>
   <ItemGroup>
