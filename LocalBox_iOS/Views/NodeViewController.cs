@@ -80,112 +80,29 @@ namespace LocalBox_iOS.Views
             }
             else
             {
-                if (MimeTypeHelper.GetMimeType(treeNode.Name).Equals("application/pdf"))
-                {
-                    string filePath = string.Empty;
+                string filePath = string.Empty;
 
-                    InvokeOnMainThread(() =>
-                        DialogHelper.ShowProgressDialog("Bestand downloaden", "Bezig met het downloaden van een bestand", 
-                        () => filePath = DataLayer.Instance.GetFilePathSync(treeNode.Path),
-                        ()=> {
-							try{
+                InvokeOnMainThread(() =>
+                    DialogHelper.ShowProgressDialog("Bestand downloaden", "Bezig met het downloaden van een bestand", 
+                    () => filePath = DataLayer.Instance.GetFilePathSync(treeNode.Path),
+                    ()=> {
+						try{
 
-								if(Reachability.CheckConnection() == true){
-								
-									//Create temp file
-									var documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal);
-									string temporaryFilePath = System.IO.Path.Combine (documentsPath, treeNode.Name);
+                        	var item = 
+                            WebItemView.Create(new RectangleF(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
 
-									if (File.Exists (temporaryFilePath)) {
-										File.Delete (temporaryFilePath);
-									}
-								
-									//Save settings of last opened file
-									NSUserDefaults.StandardUserDefaults.SetString(treeNode.Name.Substring(0, treeNode.Name.Length - 4), "fileNameLastOpenedPdf"); 
-									NSUserDefaults.StandardUserDefaults.SetString(treeNode.Path, "pathLastOpenedPdf"); 
-									NSUserDefaults.StandardUserDefaults.SetString(temporaryFilePath, "temporaryFilePath");
-									NSUserDefaults.StandardUserDefaults.SetBool(treeNode.IsFavorite, "isFavorite");
-									NSUserDefaults.StandardUserDefaults.Synchronize ();
+                        	item.Layer.ZPosition = 10;
+                        	_nodes.Add(item);
+                        	Add(item);
+                        	AnimateViews();
+						}
+						catch{
+							DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van het bestand." +
+														 "\nVervers a.u.b. de map en probeer het opnieuw.");
+						}
 
-									//Save temporary file in filesystem
-									RemoteExplorer remoteExplorer = new RemoteExplorer ();
-									Byte[] fileBytes = remoteExplorer.GetFile (treeNode.Path);
-
-									File.WriteAllBytes (temporaryFilePath, fileBytes);
-
-									//Open temporary file in external app
-									var documentInteractionController = UIDocumentInteractionController.FromUrl(NSUrl.FromFilename(temporaryFilePath));
-									documentInteractionController.PresentOpenInMenu(new RectangleF(0,-260,320,320),this.View, true);
-								}
-								else{
-									//GEEN internet verbinding
-									UIAlertView alertView = new UIAlertView("Geen verbinding", 
-											"U heeft momenteel geen internet verbinding. Het maken van PDF annotaties is daarom niet mogelijk.", null, 
-											"OK");
-									alertView.Clicked += delegate(object a, UIButtonEventArgs eventArgs) {
-										if(eventArgs.ButtonIndex == 0){
-											//Open temporary file in external app
-											var documentInteractionController = UIDocumentInteractionController.FromUrl(NSUrl.FromFilename(filePath));
-											documentInteractionController.PresentOpenInMenu(new RectangleF(0,-260,320,320),this.View, true);
-										}
-									};
-									alertView.Show();
-								}
-								/*UIAlertView alertView = new UIAlertView("Keuze", 
-									"Wilt u het document bekijken of wilt u annotaties toevoegen middels een externe app?", null, 
-									"Bekijken",
-									"Annoteren");
-								alertView.Clicked += delegate(object a, UIButtonEventArgs eventArgs) {
-									if(eventArgs.ButtonIndex == 1){//Annotaties toevoegen
-									}else{//Bekijken
-											var item = 
-												WebItemView.Create(new RectangleF(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
-
-											item.Layer.ZPosition = 10;
-											_nodes.Add(item);
-											Add(item);
-											AnimateViews();
-
-									};
-									alertView.Show();
-								}*/
-								
-									//var pdfViewer = new PdfItemView (NSUrl.FromFilename (filePath), treeNode.Path, filePath);
-									//_home.OpenPDFViewer(pdfViewer);
-							}
-							catch{
-								DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van het bestand." +
-															 "\nVervers a.u.b. de map en probeer het opnieuw.");
-							}
-                        })
-                    );
-                }
-                else
-                {
-                    string filePath = string.Empty;
-
-                    InvokeOnMainThread(() =>
-                        DialogHelper.ShowProgressDialog("Bestand downloaden", "Bezig met het downloaden van een bestand", 
-                        () => filePath = DataLayer.Instance.GetFilePathSync(treeNode.Path),
-                        ()=> {
-							try{
-
-                            	var item = 
-                                WebItemView.Create(new RectangleF(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
-
-                            	item.Layer.ZPosition = 10;
-                            	_nodes.Add(item);
-                            	Add(item);
-                            	AnimateViews();
-							}
-							catch{
-								DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van het bestand." +
-															 "\nVervers a.u.b. de map en probeer het opnieuw.");
-							}
-
-                        })
-                    );
-                }
+                    })
+                );
             }
         }
 

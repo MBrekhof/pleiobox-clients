@@ -379,7 +379,7 @@ namespace LocalBox_iOS.Views
 				//Controleer of pdf path overeenkomt met path van laatst geopende pdf file
 				if (pathToFile.Contains (fileNameLastOpenedPdf)) {
 
-					DialogHelper.ShowBlockingProgressDialog ("Bijwerken", "Eventuele aanpassingen aan het bestand opslaan. Een ogenblik geduld a.u.b.");
+					DialogHelper.ShowBlockingProgressDialog ("Bijwerken", "Eventuele annotaties aan het bestand opslaan. Een ogenblik geduld a.u.b.");
 
 					try {
 						bool updateSucceeded = await DataLayer.Instance.SavePdfAnnotations (pathLastOpenedPdf, pathToFile, false, isFavorite);
@@ -389,12 +389,6 @@ namespace LocalBox_iOS.Views
 								File.Delete(temporaryFilePath);
 							}
 
-							//Clear settings last opened file
-							NSUserDefaults.StandardUserDefaults.SetString("", "fileNameLastOpenedPdf"); 
-							NSUserDefaults.StandardUserDefaults.SetString("", "pathLastOpenedPdf"); 
-							NSUserDefaults.StandardUserDefaults.SetString("", "temporaryFilePath"); 
-							NSUserDefaults.StandardUserDefaults.SetBool(false, "IsFavorite");
-							NSUserDefaults.StandardUserDefaults.Synchronize ();
 
 							DialogHelper.HideBlockingProgressDialog ();
 
@@ -403,17 +397,23 @@ namespace LocalBox_iOS.Views
 						else {
 							DialogHelper.HideBlockingProgressDialog ();
 							new UIAlertView ("Fout", "Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
-							"Probeer het a.u.b. later nogmaals", null, "OK").Show ();
+							"Eventuele annotaties zijn niet verwerkt.", null, "OK").Show ();
 						}
 					} catch {
 						DialogHelper.HideBlockingProgressDialog ();
 						new UIAlertView ("Fout", "Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
-						"Probeer het a.u.b. later nogmaals", null, "OK").Show ();
+							"Eventuele annotaties zijn niet verwerkt.", null, "OK").Show ();
 					}
 				}
 				else {//New file
 					UploadNewFile (pathToFile);
 				}
+				//Clear settings last opened file
+				NSUserDefaults.StandardUserDefaults.SetString("", "fileNameLastOpenedPdf"); 
+				NSUserDefaults.StandardUserDefaults.SetString("", "pathLastOpenedPdf"); 
+				NSUserDefaults.StandardUserDefaults.SetString("", "temporaryFilePath"); 
+				NSUserDefaults.StandardUserDefaults.SetBool(false, "IsFavorite");
+				NSUserDefaults.StandardUserDefaults.Synchronize ();
 			} 
 			else {//New File
 				UploadNewFile (pathToFile);

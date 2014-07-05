@@ -207,6 +207,28 @@ namespace LocalBox_iOS.Views
                 DialogHelper.ShowProgressDialog("Bestand ophalen", "Bestand aan het ophalen", async () => {
 					try{
 						string path = await DataLayer.Instance.GetFilePath(_treeNode.Path);
+
+						if (MimeTypeHelper.GetMimeType(_treeNode.Name).Equals("application/pdf"))
+						{
+							string filePath = string.Empty;
+
+							//Create temp file
+							var documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal);
+							string temporaryFilePath = System.IO.Path.Combine (documentsPath, _treeNode.Name);
+
+							if (File.Exists (temporaryFilePath)) {
+								File.Delete (temporaryFilePath);
+							}
+
+							//Save settings of last opened file
+							NSUserDefaults.StandardUserDefaults.SetString(_treeNode.Name.Substring(0, _treeNode.Name.Length - 4), "fileNameLastOpenedPdf"); 
+							NSUserDefaults.StandardUserDefaults.SetString(_treeNode.Path, "pathLastOpenedPdf"); 
+							NSUserDefaults.StandardUserDefaults.SetString(temporaryFilePath, "temporaryFilePath");
+							NSUserDefaults.StandardUserDefaults.SetBool(_treeNode.IsFavorite, "isFavorite");
+							NSUserDefaults.StandardUserDefaults.Synchronize ();
+
+							File.Copy( path, temporaryFilePath );
+						}
                     	var iac = UIDocumentInteractionController.FromUrl(NSUrl.FromFilename(path));
                     	iac.PresentOptionsMenu(ConvertRectFromView(button.Frame, this), _buttonContainer, true);
 
