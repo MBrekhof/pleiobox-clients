@@ -92,16 +92,20 @@ namespace LocalBox_Common.Remote.Authorization
                     var jsonObject = JsonValue.Parse(jsonString);
 
                     _accessToken = jsonObject["access_token"];
-                    _refreshToken = jsonObject["refresh_token"];
 
-                    int expiry = 0;
-                    if (jsonObject["expires_in"].JsonType == JsonType.Number)
-                    {
-                        expiry = (int)jsonObject["expires_in"];
-                        // We laten de key al vervallen als al 90% van de tijd is verstreken
-                        _expiry = DateTime.UtcNow.AddSeconds(expiry * 0.9);
-                    }
-					result = true;
+					if (!string.IsNullOrEmpty (jsonObject ["refresh_token"])) {
+
+						_refreshToken = jsonObject ["refresh_token"];
+
+						int expiry = 0;
+						if (jsonObject ["expires_in"].JsonType == JsonType.Number) {
+							expiry = (int)jsonObject ["expires_in"];
+							// We laten de key al vervallen als al 90% van de tijd is verstreken
+							_expiry = DateTime.UtcNow.AddSeconds (expiry * 0.9);
+
+							result = true;
+						}
+					}
                 }
                 else
                 {
