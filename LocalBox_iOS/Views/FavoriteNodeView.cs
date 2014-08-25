@@ -80,6 +80,11 @@ namespace LocalBox_iOS.Views
             throw new NotImplementedException();
         }
 
+		public void ShareFile(string forLocation)
+		{
+			throw new NotImplementedException();
+		}
+
         public void ResetCells(params UITableViewCell[] except)
         {
             var cells = NodeItemTable.VisibleCells.Except(except);

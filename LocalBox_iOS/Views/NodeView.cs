@@ -9,6 +9,7 @@ using System.Linq;
 using MonoTouch.AssetsLibrary;
 using System.IO;
 using System.Diagnostics;
+using MonoTouch.MessageUI;
 
 namespace LocalBox_iOS.Views
 {
@@ -114,6 +115,66 @@ namespace LocalBox_iOS.Views
 				"Probeer het a.u.b. nogmaals.");
 			}
 		}
+
+
+		public async void ShareFile (string forLocation)
+		{
+			DateTime selectedExpirationDate = DateTime.Now.AddDays(7);//Selectie standaard op 7 dagen na vandaag
+
+			ActionSheetDatePickerCustom actionSheetDatePicker;
+			actionSheetDatePicker = new ActionSheetDatePickerCustom (HomeController.homeController.View);
+			actionSheetDatePicker.Title = "Kies een einddatum:";
+			actionSheetDatePicker.Picker.Mode = UIDatePickerMode.Date;
+			actionSheetDatePicker.Picker.MinimumDate = DateTime.Today.AddDays (1);
+
+			//Zet selectie standaard op 7 dagen na vandaag
+			actionSheetDatePicker.Picker.SetDate(DateTime.Today.AddDays (7), true);
+
+			actionSheetDatePicker.Picker.ValueChanged += (sender, e) => 
+			{
+				DateTime selectedDate = (sender as UIDatePicker).Date;
+				selectedExpirationDate = selectedDate.AddDays(1);
+
+				Console.WriteLine (selectedExpirationDate.ToString ());
+			};
+				
+			actionSheetDatePicker.DoneButton.Clicked += (object sender, EventArgs e) => {
+
+				//Dismiss actionsheet
+				actionSheetDatePicker.ActionSheet.DismissWithClickedButtonIndex (0, true); 
+
+				//Show progress dialog
+				DialogHelper.ShowProgressDialog ("Delen", "Publieke url aan het ophalen", async () => {
+					try {
+						PublicUrl publicUrl = await DataLayer.Instance.CreatePublicFileShare (forLocation, selectedExpirationDate.Date);
+
+						MFMailComposeViewController mvc = new MFMailComposeViewController ();
+						mvc.SetSubject ("Publieke URL naar gedeeld LocalBox bestand");
+
+						string bodyText = 	"Mijn gedeelde bestand: \n" +
+										  	publicUrl.publicUri + "\n \n" +
+											"Deze link is geldig tot: " + selectedExpirationDate.ToString("dd-MM-yyyy");
+
+						mvc.SetMessageBody (bodyText, false);
+						mvc.Finished += (object s, MFComposeResultEventArgs args) => {
+							args.Controller.DismissViewController (true, null);
+						};
+						_nodeViewController.PresentViewController (mvc, true, null);
+
+						DialogHelper.HideProgressDialog ();
+
+					} catch {
+						DialogHelper.HideProgressDialog ();
+						DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het delen van het bestand." +
+						"\nVervers a.u.b. de map en probeer het opnieuw.");
+					}
+				});
+			};
+				
+			actionSheetDatePicker.Show ();
+		}
+
+
 
         private async void LoadData() {
             NodeItemTable.ContentOffset = new PointF(0, -NodeItemTableController.RefreshControl.Frame.Height);

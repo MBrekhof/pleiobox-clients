@@ -33,7 +33,10 @@ namespace LocalBox_iOS
 				NSHttpCookieStorage.SharedStorage.AcceptPolicy = NSHttpCookieAcceptPolicy.Always;
 
 				webViewRegisterLocalBox.ScalesPageToFit = true;
-				webViewRegisterLocalBox.LoadRequest(new NSUrlRequest(NSUrl.FromString(urlToOpen)));
+
+				var request = new NSUrlRequest(NSUrl.FromString(urlToOpen));
+
+				webViewRegisterLocalBox.LoadRequest(request);
 				webViewRegisterLocalBox.LoadStarted += delegate
 				{
 					viewActivityIndicator.Hidden = false;

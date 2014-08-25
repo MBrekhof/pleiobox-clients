@@ -16,6 +16,8 @@ namespace LocalBox_iOS.Views
         void ResetCells(params UITableViewCell[] except);
 
         void ShareFolder(string forLocation);
+
+		void ShareFile(string forLocation);
     }
 }
 

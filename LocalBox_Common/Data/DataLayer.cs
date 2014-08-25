@@ -493,12 +493,12 @@ namespace LocalBox_Common
             database.Update(box);
         }
 
-		public Task<PublicUrl> CreatePublicFileShare(string filePath)
+		public Task<PublicUrl> CreatePublicFileShare(string filePath, DateTime expirationDateOfShare)
 		{
 			return Task.Run (() => {
 				var remoteExplorer = new RemoteExplorer();
 
-				return remoteExplorer.CreatePublicFileShare(filePath);
+				return remoteExplorer.CreatePublicFileShare(filePath, expirationDateOfShare);
 			});
 		}
 

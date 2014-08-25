@@ -150,32 +150,10 @@ namespace LocalBox_iOS.Views
 
         private UIButton DelenButton() {
             var button = Button("buttons/IcDelen", null);
-            button.TouchUpInside += (object sender, EventArgs e) =>
+            
+			button.TouchUpInside += (object sender, EventArgs e) =>
             {
-                var vc = UIApplication.SharedApplication.KeyWindow.RootViewController;
-
-                DialogHelper.ShowProgressDialog("Delen", "Publieke url aan het ophalen", async () =>
-                {
-					try{
-						PublicUrl publicUrl = await DataLayer.Instance.CreatePublicFileShare(_treeNode.Path);
-                   
-						MFMailComposeViewController mvc = new MFMailComposeViewController();
-                    	mvc.SetSubject("Publieke URL naar gedeeld LocalBox bestand");
-                    	mvc.SetMessageBody("Mijn gedeelde bestand: \n" + publicUrl.publicUri, false);
-                    	mvc.Finished += (object s, MFComposeResultEventArgs args) => {
-                        args.Controller.DismissViewController (true, null);
-                    	};
-                    	vc.PresentViewController(mvc, true, null);
-						
-						DialogHelper.HideProgressDialog();
-						
-					}catch{
-						DialogHelper.HideProgressDialog();
-						DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het delen van het bestand." +
-													 "\nVervers a.u.b. de map en probeer het opnieuw.");
-					}
-                });
-				
+				_nodeView.ShareFile(_treeNode.Path);
             };
 
             return button;

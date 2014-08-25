@@ -70,7 +70,7 @@ namespace LocalBox_iOS
 															"Annuleer", "Open URL");
 				alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
 
-				alertOpenUrl.GetTextField(0).Text = "http://lox-development.rednose.nl"; //TODO for release build: restore to "https://"
+				alertOpenUrl.GetTextField(0).Text = "http://localbox.bigwobber.nl";//"http://lox-development.rednose.nl"; //TODO for release build: restore to "https://"
 
 				alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => 
 				{

@@ -568,7 +568,7 @@ namespace LocalBox_Common.Remote
 		}
 
 
-		public Task<PublicUrl> CreatePublicFileShare (string pathOfFileToShare)
+		public Task<PublicUrl> CreatePublicFileShare (string pathOfFileToShare, DateTime expirationDateOfShare)
 		{
 			return Task.Run (() => {
 				if (!IsAuthorized ()) {
@@ -576,8 +576,10 @@ namespace LocalBox_Common.Remote
 					ReAuthorise ();
 				}
 				try {
+					string iso8601FormattedDate = expirationDateOfShare.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
 					StringBuilder localBoxUrl = new StringBuilder ();
-					localBoxUrl.Append (_localBox.BaseUrl + "lox_api/links/");
+					localBoxUrl.Append (_localBox.BaseUrl + "lox_api/links");
 					localBoxUrl.Append (pathOfFileToShare);
 
 					string AccessToken = _localBox.AccessToken;
@@ -588,13 +590,11 @@ namespace LocalBox_Common.Remote
 						httpClient.DefaultRequestHeaders.ExpectContinue = false;
 						httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
 
-						var httpRequestMessage = new HttpRequestMessage {
-							Method = HttpMethod.Post,
-							RequestUri = new Uri (localBoxUrl.ToString ())
-						};
-
-
-						var response = httpClient.SendAsync (httpRequestMessage).Result;
+						var data = new List<KeyValuePair<string, string>> ();
+						data.Add (new KeyValuePair<string, string> ("expires", iso8601FormattedDate));
+						HttpContent content = new FormUrlEncodedContent (data);
+						
+						var response = httpClient.PostAsync (new Uri (localBoxUrl.ToString ()), content).Result;
 
 						if (response.IsSuccessStatusCode) {
 							var jsonString = response.Content.ReadAsStringAsync ().Result;

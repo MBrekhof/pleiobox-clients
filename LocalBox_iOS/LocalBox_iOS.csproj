@@ -139,6 +139,7 @@
     <Folder Include="Views\Introduction\" />
     <Folder Include="Resources\tour\" />
     <Folder Include="Resources\background\" />
+    <Folder Include="Views\Picker\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -249,6 +250,7 @@
       <DependentUpon>RegisterLocalBoxViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Reachability.cs" />
+    <Compile Include="Views\Picker\ActionSheetDatePickerCustom.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Views\HomeController.xib">
@@ -312,6 +314,7 @@
     <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_iOS.csproj">
       <Project>{A1F82138-A39E-45DA-AC90-56C177556092}</Project>
