@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
+
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+
 using LocalBox_Common;
 using LocalBox_iOS.Views;
 
@@ -11,7 +13,8 @@ namespace LocalBox_iOS
 	{
 		private string urlToOpen;
 		private string cookieString;
-
+		private string enteredUsername;
+		private string enteredPassword;
 		private HomeController homeController;
 
 		public RegisterLocalBoxViewController (string urlToOpen, HomeController homeController) : base ("RegisterLocalBoxViewController", null)
@@ -44,28 +47,8 @@ namespace LocalBox_iOS
 					string url = webViewRegisterLocalBox.Request.Url.AbsoluteString;
 					Console.WriteLine("CURRENT URL: " + url);
 				};
-
-				/*
-				webViewRegisterLocalBox.ShouldStartLoad = (webView, request, navType) => 
-				{
-					string url = request.ToString();
-
-					string headers = request.Headers.ToString();
-					Console.WriteLine(headers);
-
-					if (url.EndsWith (".json") && url.StartsWith("lbox://")) {
-						viewActivityIndicator.Hidden = false;
-
-						string newUrl = url.Replace("lbox://", "http://");
-						RegisterLocalBox(newUrl);
-						
-						return false;
-					}else
-					{
-						return true;
-					}
-				};*/
-
+					
+				webViewRegisterLocalBox.ShouldStartLoad += webViewShouldStartLoad;
 
 				webViewRegisterLocalBox.LoadFinished += async delegate
 				{
@@ -95,12 +78,13 @@ namespace LocalBox_iOS
 						}
 					}
 				};
-			}catch{
+			}catch (Exception ex){
 				this.View.RemoveFromSuperview();
 				var alertView = new UIAlertView("Error", "Openen van internet browser is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null);
 				alertView.Show();
 			}
 		}
+
 
 		private async void RegisterLocalBox(string newUrl)
 		{
@@ -109,7 +93,7 @@ namespace LocalBox_iOS
 			if (box != null) {
 				AppDelegate.localBoxToRegister = box;
 				this.View.RemoveFromSuperview ();
-				homeController.RequestWachtwoord (AppDelegate.localBoxToRegister);
+				homeController.RequestWachtwoord (AppDelegate.localBoxToRegister, enteredUsername, enteredPassword);
 			} else {
 				viewActivityIndicator.Hidden = true;
 				var alertView = new UIAlertView("Error", "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null);
@@ -117,9 +101,20 @@ namespace LocalBox_iOS
 			}
 		}
 
+
 		partial void CloseView (MonoTouch.Foundation.NSObject sender)
 		{
 			this.View.RemoveFromSuperview();
+		}
+
+
+		bool webViewShouldStartLoad (UIWebView webView, NSUrlRequest request, UIWebViewNavigationType navigationType)
+		{
+			//Get username and password from web form
+			enteredUsername = webView.EvaluateJavascript("document.getElementById('username').value");
+			enteredPassword = webView.EvaluateJavascript("document.getElementById('password').value");
+
+			return true;
 		}
 
 	}
