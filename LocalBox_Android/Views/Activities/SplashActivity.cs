@@ -21,8 +21,8 @@ namespace localbox.android
 						WindowSoftInputMode = SoftInput.AdjustPan)]
 
 	//Intent filter to register new LocalBox
-	[IntentFilter(new[] { Intent.ActionView }, 
-						Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "lbox")] 
+	//[IntentFilter(new[] { Intent.ActionView }, 
+	//					Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "lbox")] 
 
 	//Intent filters to save pdf annotations made in external app
 	[IntentFilter(new[] { Intent.ActionView }, 

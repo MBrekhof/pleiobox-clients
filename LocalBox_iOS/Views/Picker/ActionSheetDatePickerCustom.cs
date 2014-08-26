@@ -17,10 +17,8 @@ public class ActionSheetDatePickerCustom
 	UILabel titleLabel = new UILabel ();
         
 	UIView _owner;
-	//UILabel _titleLabel = new UILabel ();
 	UIToolbar _toolbar;
 	UIDatePicker picker;
-        
 
 	public string Title {
 		get { return titleLabel.Text; }
@@ -51,22 +49,18 @@ public class ActionSheetDatePickerCustom
 
 		// save our uiview owner
 		this._owner = owner;
-                
-		// configure the title label
-		titleLabel.BackgroundColor = UIColor.Clear;
-		titleLabel.TextColor = UIColor.Black;
-		titleLabel.Font = UIFont.BoldSystemFontOfSize (18);
-                
+              
 		// create + configure the action sheet
 		_actionSheet = new UIActionSheet () { Style = UIActionSheetStyle.BlackTranslucent };
 		_actionSheet.Clicked += (s, e) => {
 			Console.WriteLine ("Clicked on item {0}", e.ButtonIndex);
 		};
                 
-		// add our controls to the action sheet
-		_actionSheet.AddSubview (picker);
-		_actionSheet.AddSubview (titleLabel);
-		//actionSheet.AddSubview (doneButton);
+		// configure the title label
+		titleLabel = new UILabel (new RectangleF (0, 0, _actionSheet.Frame.Width, 10));
+		titleLabel.BackgroundColor = UIColor.Clear;
+		titleLabel.TextColor = UIColor.Black;
+		titleLabel.Font = UIFont.BoldSystemFontOfSize (18);
 
 		// Add the toolbar
 		_toolbar = new UIToolbar (new RectangleF (0, 0, _actionSheet.Frame.Width, 10));
@@ -75,9 +69,6 @@ public class ActionSheetDatePickerCustom
 
 		// Add the done button
 		_doneButton = new UIBarButtonItem (UIBarButtonSystemItem.Done, null, null);
-		//_doneButton.Clicked += (object sender, EventArgs e) => {
-			//_actionSheet.DismissWithClickedButtonIndex (0, true); 
-		//};
                 
 		_toolbar.Items = new UIBarButtonItem[] {
 			new UIBarButtonItem (UIBarButtonSystemItem.FlexibleSpace, null, null),
@@ -85,8 +76,10 @@ public class ActionSheetDatePickerCustom
 		};
                 
 		_toolbar.SizeToFit ();
-                
+               
+		_actionSheet.AddSubview (picker);
 		_actionSheet.Add (_toolbar);
+		_actionSheet.AddSubview (titleLabel);
 	}
 
        

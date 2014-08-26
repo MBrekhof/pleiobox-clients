@@ -26,13 +26,9 @@ namespace localbox.android
 	{
 		public static List<string> openedDirectories;
 		public static bool openedFolderIsUnencrypted = true;
-
 		private static bool openedFolderIsShare = false;
-
 		public string currentTreeNodePath;
 		public bool favoriteFolderOpened;
-
-		//private CustomProgressDialog progressDialog = new CustomProgressDialog ();
 		private List<TreeNode> foundTreeNodeChildren;
 		private int lastShownTreeNodeId;
 		private HomeActivity parentActivity;
@@ -516,6 +512,7 @@ namespace localbox.android
 		}
 
 
+
 		private async void CreatePublicFileShare (string filePath)
 		{
 			try {
@@ -523,29 +520,22 @@ namespace localbox.android
 
 				parentActivity.ShowProgressDialog (null);
 
-				PublicUrl createdPublicUrl = await DataLayer.Instance.CreatePublicFileShare(filePath);
+				parentActivity.pathToNewFileShare = filePath;
+				parentActivity.ShowDialog (0);
 
-				if (createdPublicUrl != null) {
-					//Open e-mail intent
-					var emailIntent = new Intent (Android.Content.Intent.ActionSend);
-
-					emailIntent.PutExtra (Android.Content.Intent.ExtraSubject, "Publieke URL naar gedeeld LocalBox bestand");
-					emailIntent.PutExtra (Android.Content.Intent.ExtraText, "Mijn gedeelde bestand: \n" + createdPublicUrl.publicUri);
-					emailIntent.SetType ("message/rfc822");
-
-					parentActivity.HideProgressDialog();
-
-					StartActivity (emailIntent);
-				} 
-				else {
-					parentActivity.HideProgressDialog();
-					Toast.MakeText (Android.App.Application.Context, "Bestand delen mislukt", ToastLength.Short).Show ();
-				}
 			} catch {
 				parentActivity.HideProgressDialog ();
 				Toast.MakeText (Android.App.Application.Context, "Bestand delen mislukt", ToastLength.Short).Show ();
 			}
 		}
+
+
+
+
+
+
+
+
 
 		private async void FavoriteFile (TreeNode selectedItem)
 		{

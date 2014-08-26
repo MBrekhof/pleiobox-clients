@@ -16,7 +16,6 @@ using LocalBox_Common;
 
 namespace localbox.android
 {
-
 	public class RegisterLocalBoxFragment : DialogFragment
 	{
 		public HomeActivity parentActivity;

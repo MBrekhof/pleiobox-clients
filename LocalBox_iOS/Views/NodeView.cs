@@ -123,7 +123,7 @@ namespace LocalBox_iOS.Views
 
 			ActionSheetDatePickerCustom actionSheetDatePicker;
 			actionSheetDatePicker = new ActionSheetDatePickerCustom (HomeController.homeController.View);
-			actionSheetDatePicker.Title = "Kies een einddatum:";
+			actionSheetDatePicker.Title = "Kies een vervaldatum:";
 			actionSheetDatePicker.Picker.Mode = UIDatePickerMode.Date;
 			actionSheetDatePicker.Picker.MinimumDate = DateTime.Today.AddDays (1);
 

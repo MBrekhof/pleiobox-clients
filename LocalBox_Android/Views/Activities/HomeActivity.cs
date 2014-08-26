@@ -31,6 +31,8 @@ namespace localbox.android
 		public static List<ExplorerFragment> openedExplorerFragments;
 		public static string colorOfSelectedLocalBox;
 		public static bool shouldLockApp = false;
+		public string pathToNewFileShare;
+		private DateTime selectedExpirationDate;
 		public  ImageButton buttonFullscreenDocument;
 		private ImageButton buttonBackExplorer;
 		private ImageButton buttonAddFolderExplorer;
@@ -423,7 +425,6 @@ namespace localbox.android
 					ShowToast("Passphrase is niet ingevuld");
 				} 
 				else {
-	
 					try {
 						ShowProgressDialog ("Uw passphrase controleren. Een ogenblik geduld a.u.b.");
 
@@ -433,7 +434,6 @@ namespace localbox.android
 						if (!correctPassphraseEntered) {
 							ShowToast("Passphrase onjuist. Probeer het a.u.b. opnieuw");
 						} else {
-
 							dialog.Dismiss ();
 
 							ShowToast("Passphrase geaccepteerd en LocalBox succesvol geregistreerd");
@@ -446,11 +446,8 @@ namespace localbox.android
 						HideProgressDialog ();
 						ShowToast("Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw");
 					}
-
 				}
-
 			};
-
 			buttonCancel.Click += (sender, args) => {
 				DataLayer.Instance.DeleteLocalBox (localBox.Id);
 				menuFragment.UpdateLocalBoxes ();
@@ -476,7 +473,6 @@ namespace localbox.android
 			base.OnResume ();
 
 			bool shouldShowLockScreen = LockHelper.ShouldLockApp ("HomeActivity");
-
 			if (shouldShowLockScreen || shouldLockApp) {
 				//Lock scherm
 				HomeActivity.shouldLockApp = true;
@@ -504,7 +500,6 @@ namespace localbox.android
 					ShowBottomExplorerMenuItems ();
 				}
 			}
-				
 			if (ExplorerFragment.openedDirectories.Count > 1) {
 				buttonUploadFileExplorer.Visibility = ViewStates.Visible;
 			} else {
@@ -544,9 +539,7 @@ namespace localbox.android
 			base.OnActivityResult (requestCode, resultCode, data);
 
 			if (resultCode == Result.Ok) {
-
 				Android.Net.Uri uriResult = data.Data;
-		
 				try {
 					int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
 					string directoryNameToUploadFileTo = ExplorerFragment.openedDirectories [numberOfDirectoriesOpened - 1];
@@ -565,11 +558,9 @@ namespace localbox.android
 						ShowToast("Bestand succesvol geupload");
 						RefreshExplorerFragmentData();
 					}
-
 				} catch {
 					HideProgressDialog ();
 					ShowToast ("Het uploaden is mislukt. Probeer het a.u.b. opnieuw");
-
 				}
 			}
 		}
@@ -667,7 +658,6 @@ namespace localbox.android
 					}
 				}
 			};
-
 			buttonCancel.Click += (sender, args) => {
 				dialog.Dismiss ();
 			};
@@ -697,9 +687,7 @@ namespace localbox.android
 			dialogFragmentAboutApp = aboutFragment;
 			dialogFragmentAboutApp.Show (fragmentTransaction, "aboutdialog");
 		}
-
-
-
+			
 		private void ShowOpenUrlDialog ()
 		{
 			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
@@ -739,10 +727,8 @@ namespace localbox.android
 						HideProgressDialog();
 						ShowToast("Openen van opgegeven URL is mislukt.");
 					}
-			
 				}
 			};
-
 			buttonCancel.Click += (sender, args) => {
 				dialog.Dismiss ();
 			};
@@ -824,9 +810,7 @@ namespace localbox.android
 		public async void ShowMoveFileDialog(TreeNode treeNodeToMove)
 		{
 			Console.WriteLine ("Bestand om te verplaatsen: " + treeNodeToMove.Name);
-
 			ShowProgressDialog (null);
-
 			try {
 				Android.App.FragmentTransaction fragmentTransaction;
 				fragmentTransaction = FragmentManager.BeginTransaction ();
@@ -841,7 +825,6 @@ namespace localbox.android
 						foundDirectoryTreeNodes.Add(foundTreeNode);
 					}
 				}
-
 				MoveFileFragment moveFileFragment = new MoveFileFragment(foundDirectoryTreeNodes, treeNodeToMove, this);
 				dialogFragmentMoveFile = moveFileFragment;
 
@@ -852,12 +835,57 @@ namespace localbox.android
 				} else {
 					ShowToast("Geen mappen gevonden om bestand naar te verplaatsen");
 				}
-
 			} catch {
 				HideProgressDialog ();
 				ShowToast ("Er is iets fout gegaan bij het ophalen van mappen. \nProbeer het a.u.b. opnieuw");
 			}
 		}
+
+
+		//Used for file share datepicker
+		protected override Dialog OnCreateDialog (int id)
+		{
+			HideProgressDialog ();
+
+			selectedExpirationDate = DateTime.Now.AddDays(7);//Selectie standaard op 7 dagen na vandaag
+			var picker = new DatePickerDialog (this, HandleDateSet, selectedExpirationDate.Year, selectedExpirationDate.Month - 1, selectedExpirationDate.Day);
+			picker.SetTitle ("Selecteer vervaldatum:");
+			return picker;
+		}
+
+		//Used for file share datepicker
+		async void HandleDateSet (object sender, DatePickerDialog.DateSetEventArgs e)
+		{
+			selectedExpirationDate = e.Date;
+
+			if (selectedExpirationDate.Date <= DateTime.Now.Date) {
+				HideProgressDialog ();
+				Toast.MakeText (Android.App.Application.Context, "Gekozen vervaldatum moet na vandaag zijn. Probeer het a.u.b. opnieuw.", ToastLength.Long).Show ();
+			} else {
+				PublicUrl createdPublicUrl = await DataLayer.Instance.CreatePublicFileShare (pathToNewFileShare, selectedExpirationDate);
+
+				if (createdPublicUrl != null) {
+					//Open e-mail intent
+					var emailIntent = new Intent (Android.Content.Intent.ActionSend);
+
+					string bodyText = "Mijn gedeelde bestand: \n" +
+					                 createdPublicUrl.publicUri + "\n \n" +
+					                 "Deze link is geldig tot: " + selectedExpirationDate.ToString ("dd-MM-yyyy");
+
+					emailIntent.PutExtra (Android.Content.Intent.ExtraSubject, "Publieke URL naar gedeeld LocalBox bestand");
+					emailIntent.PutExtra (Android.Content.Intent.ExtraText, bodyText);
+					emailIntent.SetType ("message/rfc822");
+
+					HideProgressDialog ();
+
+					StartActivity (emailIntent);
+				} else {
+					HideProgressDialog ();
+					Toast.MakeText (Android.App.Application.Context, "Bestand delen mislukt", ToastLength.Short).Show ();
+				}
+			}
+		}
+
 
 
 		public void HideMoveFileDialog ()
