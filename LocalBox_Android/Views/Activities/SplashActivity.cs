@@ -47,7 +47,7 @@ namespace localbox.android
 		{
 			base.OnResume ();
 
-			//Used in HomeActivity to register new local box or save pdf annotations
+			//Used in HomeActivity to save pdf annotations
 			if (Intent.Data != null) { 
 				intentData = Intent.Data;
 			} else if (Intent.ClipData != null) {
