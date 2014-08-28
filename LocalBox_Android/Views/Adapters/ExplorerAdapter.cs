@@ -70,15 +70,13 @@ namespace localbox.android
 					//Unencrypted?? Check if folder is subfolder of encrypted folder - then it is also encrypted..
 					imageViewLeft.SetImageResource (Resource.Drawable.ic_type_map);
 
-					if (adapterUsedToMoveFile) //Used in MoveFileFragment
-					{ 
+					if (adapterUsedToMoveFile) { //Used in MoveFileFragment
 						if (!MoveFileFragment.openedFolderIsUnencrypted) {
 							if (MoveFileFragment.openedDirectories.Count > 1) {
 								imageViewLeft.SetImageResource (Resource.Drawable.ic_type_map_versleuteld);
 							}
 						}
-					} 
-					else { //Used in ExplorerFragment
+					} else { //Used in ExplorerFragment
 						if (!ExplorerFragment.openedFolderIsUnencrypted) {
 							if (ExplorerFragment.openedDirectories.Count > 1) {
 								imageViewLeft.SetImageResource (Resource.Drawable.ic_type_map_versleuteld);
@@ -90,8 +88,10 @@ namespace localbox.android
 			} else if (treeNodeToShow.Type.Equals ("favorite")) {
 				imageViewLeft.SetImageResource (Resource.Drawable.ic_lijst_favorieten);
 			} else if (mimeType.Equals ("image/jpeg") ||
-					   mimeType.Equals ("image/png")) {
+			           mimeType.Equals ("image/png")) {
 				imageViewLeft.SetImageResource (Resource.Drawable.ic_type_foto);
+			} else if (mimeType.Equals ("video/mp4")) {
+				imageViewLeft.SetImageResource (Resource.Drawable.ic_type_film); 
 			} else if (mimeType.Equals ("application/pdf")) {
 				imageViewLeft.SetImageResource (Resource.Drawable.ic_type_p_d_f);
 			} else if (mimeType.Equals ("application/zip")) {

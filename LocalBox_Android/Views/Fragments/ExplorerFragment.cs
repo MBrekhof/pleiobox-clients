@@ -207,7 +207,16 @@ namespace localbox.android
 
 						// Start the animated transition.
 						fragmentTransaction.Commit ();
-					} 
+					}
+					else if(mimeTypeOfClickedItem.Equals("video/mp4"))
+					{
+						var videoPlayerActivity = new Intent (Activity, typeof(VideoPlayerActivity));
+						string pathToVideo = await DataLayer.Instance.GetFilePath (clickedItem.Path);
+						videoPlayerActivity.PutExtra ("PathToVideo", pathToVideo);
+
+						StartActivity (videoPlayerActivity);
+					}
+
 					//Disabled - reason: no license for PDFTron
 					/*else if(mimeTypeOfClickedItem.Equals("application/pdf")){
 

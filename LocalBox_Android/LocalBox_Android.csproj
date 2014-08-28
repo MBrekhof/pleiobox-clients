@@ -89,6 +89,7 @@
     <Compile Include="Views\Fragments\MoveFileFragment.cs" />
     <Compile Include="Providers\CustomContentProvider.cs" />
     <Compile Include="Views\Activities\TemporarilyUnused\PdfActivity.cs" />
+    <Compile Include="Views\Activities\VideoPlayerActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -194,6 +195,7 @@
     <AndroidResource Include="Resources\drawable\ic_bottom_toevoegen.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_upload.png" />
     <AndroidResource Include="Resources\drawable\tour_android.png" />
+    <AndroidResource Include="Resources\layout\activity_videoplayer.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
