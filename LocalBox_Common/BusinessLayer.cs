@@ -157,8 +157,7 @@ namespace LocalBox_Common
 				bool result = false;
 
 				try {
-					
-					ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+					//ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
 
 					var explorer = new RemoteExplorer (localBox);
 					result = explorer.Authorize (password);

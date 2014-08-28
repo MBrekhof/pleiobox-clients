@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>iPhone Developer: Leendert Versluijs (GC7C5EA3AB)</CodesignKey>
+    <CodesignKey>iPhone Distribution: Ministerie van Financien</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7, ARMv7s</MtouchArch>
@@ -64,6 +64,7 @@
     <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
     <MtouchUseThumb>true</MtouchUseThumb>
     <MtouchLink>Full</MtouchLink>
+    <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>

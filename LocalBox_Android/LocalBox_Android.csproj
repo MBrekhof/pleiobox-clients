@@ -54,6 +54,7 @@
     <Reference Include="Mono.Data.Sqlcipher">
       <HintPath>..\LocalBox_Common\Dll\sqlcipher\lib\android\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Android.Export" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
@@ -78,7 +79,6 @@
     <Compile Include="Helper\LockHelper.cs" />
     <Compile Include="Helper\Constants.cs" />
     <Compile Include="Views\Activities\SplashActivity.cs" />
-    <Compile Include="Views\Activities\PdfActivity.cs" />
     <Compile Include="Views\Fragments\ShareFragment.cs" />
     <Compile Include="Views\Adapters\ShareAdapter.cs" />
     <Compile Include="Views\Fragments\ExplorerFragment.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Views\Fragments\RegisterLocalBoxFragment.cs" />
     <Compile Include="Views\Fragments\MoveFileFragment.cs" />
     <Compile Include="Providers\CustomContentProvider.cs" />
+    <Compile Include="Views\Activities\TemporarilyUnused\PdfActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -211,6 +212,7 @@
     <Folder Include="Views\Activities\" />
     <Folder Include="Assets\img\" />
     <Folder Include="Providers\" />
+    <Folder Include="Views\Activities\TemporarilyUnused\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Roboto-Regular.ttf" />

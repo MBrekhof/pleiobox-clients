@@ -85,7 +85,6 @@ public class ActionSheetDatePickerCustom
        
 	public void Show ()
 	{
-		// declare vars
 		float titleBarHeight = 40;
 		SizeF actionSheetSize = new SizeF (_owner.Frame.Width, picker.Frame.Height + titleBarHeight);
 		RectangleF actionSheetFrame = new RectangleF (0, (UIScreen.MainScreen.ApplicationFrame.Width - actionSheetSize.Height), actionSheetSize.Width, actionSheetSize.Height);
@@ -109,34 +108,14 @@ public class ActionSheetDatePickerCustom
 
 				MARGIN = 50;
 
-				//var x = _actionSheet.Frame.X + MARGIN;
-				//var y = (UIScreen.MainScreen.ApplicationFrame.Width - _actionSheet.Frame.Height) / 2;
-				//var width = _actionSheet.Frame.Width - (MARGIN * 2);
-				//var height = _actionSheet.Frame.Height;
-
-				//popover.Frame = new RectangleF (x, y, width, height);
-
-				//var centerWidth = UIScreen.MainScreen.ApplicationFrame.Height / 2;
-				/*
-				var centerHeight = UIScreen.MainScreen.ApplicationFrame.Width / 2;
-
-				var width = UIScreen.MainScreen.ApplicationFrame.Height - (100);
-				var height = picker.Frame.Height + 35;
-
-				_actionSheet.Frame = new RectangleF (50, centerHeight, width , height);
-
-				picker.Frame = new RectangleF (picker.Frame.X, picker.Frame.Y, _actionSheet.Frame.Width, picker.Frame.Height);
-
-				_toolbar.SizeToFit ();
-				*/
-
-				var x = _actionSheet.Frame.X + MARGIN;
 				var y = (UIScreen.MainScreen.ApplicationFrame.Width - _actionSheet.Frame.Height) / 2;
 				var width = _actionSheet.Frame.Width - (MARGIN * 2);
 				var height = _actionSheet.Frame.Height;
 
-				popover.Frame = new RectangleF (x, y, width, height);
-				_actionSheet.Frame = new RectangleF (x + 200, y, width - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT), height - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT));
+				popover.Frame = new RectangleF (175, y, width, height);
+
+				//_actionSheet.Frame = new RectangleF (x + 200, y, width - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT), height - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT));
+				_actionSheet.Frame = new RectangleF (400, y, 651, 239);
 
 				picker.Frame = new RectangleF (picker.Frame.X, picker.Frame.Y, _actionSheet.Frame.Width, picker.Frame.Height);
 

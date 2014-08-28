@@ -20,12 +20,16 @@ namespace localbox.android
 	{
 		public HomeActivity parentActivity;
 		public string uriOfUrlToOpen;
-		private string urlToOpen;
 		public bool registrationStarted;
+		public string enteredUsername;
+		public string enteredPassword;
+		private string urlToOpen;
 
-		public RegisterLocalBoxFragment(string urlToOpen)
+		public RegisterLocalBoxFragment(string urlToOpen, string enteredUsername, string enteredPassword)
 		{
 			this.urlToOpen = urlToOpen;
+			this.enteredUsername = enteredUsername;
+			this.enteredPassword = enteredPassword;
 
 			//Determine http or https - uri used to download json
 			if (urlToOpen.StartsWith ("http://", StringComparison.OrdinalIgnoreCase)) {
@@ -77,7 +81,7 @@ namespace localbox.android
 
 			if (box != null) {
 				parentActivity.HideProgressDialog ();
-				parentActivity.RegisterLocalBox (box);
+				parentActivity.RegisterLocalBox (box, enteredUsername, enteredPassword);
 				this.Dismiss ();
 			} else {
 				parentActivity.HideProgressDialog ();
@@ -90,8 +94,9 @@ namespace localbox.android
 
 		private class MyWebViewClient : WebViewClient
 		{
-			RegisterLocalBoxFragment registerLocalBoxFragment;
-			string cookieString;
+			private RegisterLocalBoxFragment registerLocalBoxFragment;
+			private string cookieString;
+			private int pageLoaded;
 
 			public MyWebViewClient(RegisterLocalBoxFragment registerLocalBoxFragment)
 			{
@@ -135,12 +140,20 @@ namespace localbox.android
 							registerLocalBoxFragment.Dismiss ();
 						}
 					}
-
 				}
 
+				//Insert credential in webview
+				if (pageLoaded < 3) {
+					view.LoadUrl (
+						"javascript:document.getElementById('username').value = '" + registerLocalBoxFragment.enteredUsername + "';" +
+						"javascript:document.getElementById('password').value = '" + registerLocalBoxFragment.enteredPassword + "';" +
+						"javascript:document.getElementById('_submit').click();"
+					);
+				}
+				pageLoaded++;
 			}
 		}
-			
+
 	}
 }
 

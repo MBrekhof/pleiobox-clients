@@ -32,8 +32,8 @@ namespace localbox.android
 		public static string colorOfSelectedLocalBox;
 		public static bool shouldLockApp = false;
 		public string pathToNewFileShare;
-		private DateTime selectedExpirationDate;
 		public  ImageButton buttonFullscreenDocument;
+		private DateTime selectedExpirationDate;
 		private ImageButton buttonBackExplorer;
 		private ImageButton buttonAddFolderExplorer;
 		private ImageButton buttonUploadFileExplorer;
@@ -83,7 +83,6 @@ namespace localbox.android
 			//////////////////////////////////////////////////////
 			//Explorer part of layout
 			//////////////////////////////////////////////////////
-
 			buttonBackExplorer = FindViewById<ImageButton> (Resource.Id.button_back_explorer);
 			buttonAddFolderExplorer = FindViewById<ImageButton> (Resource.Id.button_add_folder_explorer);
 			buttonUploadFileExplorer = FindViewById<ImageButton> (Resource.Id.button_upload_file_explorer);
@@ -110,7 +109,6 @@ namespace localbox.android
 				}
 				CheckToHideButtons ();
 			};
-
 
 			buttonAddFolderExplorer.Click += delegate {
 				ShowNewFolderDialog ();
@@ -139,15 +137,10 @@ namespace localbox.android
 				popupMenu.Show ();
 			};
 
-
 			buttonRefreshExplorer.Click += delegate {
 				ExplorerFragment fragment = GetLastOpenedExplorerFragment();
 				fragment.RefreshData();
 			};
-
-
-
-
 
 
 
@@ -162,35 +155,18 @@ namespace localbox.android
 			textviewFilename.Visibility = ViewStates.Invisible;
 			buttonCloseDocument.Visibility = ViewStates.Invisible;
 
-
 			//Open file fullscreen in new activity
 			buttonFullscreenDocument.Click += delegate {
 				var documentFullscreenIntent = new Intent (this, typeof(DocumentFullscreenActivity));
 				StartActivity (documentFullscreenIntent);  
 			};
-
-
-			//Determine to register localbox or save PDF annotations
+				
+			//Determine to save PDF annotations
 			if (SplashActivity.intentData != null) { 
-			
 				Android.Net.Uri data = SplashActivity.intentData; 
 				String scheme = data.Scheme; // "http" 
 
-				if (scheme.Equals ("lbox")) //Register new LocalBox
-				{ 
-					String host = data.Host; 
-					IList<String> queryStrings = data.PathSegments; 
-					String first = queryStrings [0]; // "status" 
-
-					ShowProgressDialog ("Nieuwe LocalBox verifiëren. Een ogenblik geduld a.u.b.");
-					LocalBox box = await BusinessLayer.Instance.RegisterLocalBox ("http:" + data.EncodedSchemeSpecificPart, null, true);
-
-					if (box != null) {
-						RegisterLocalBox (box);
-					}
-					HideProgressDialog ();
-				} 
-				else if (scheme.Equals ("file")) //Save annotations
+				if (scheme.Equals ("file")) //Save annotations
 				{ 
 					UpdatePdfFile (data.Path);
 				}
@@ -200,7 +176,6 @@ namespace localbox.android
 				Android.Net.Uri uri = SplashActivity.clipData.GetItemAt (0).Uri;
 				UpdatePdfFile (uri.ToString ());
 			}
-
 			HideProgressDialog ();
 		}
 
@@ -209,251 +184,43 @@ namespace localbox.android
 		{
 			try {
 				new Thread (new ThreadStart (async delegate {
+					//Get location and name of last opened file
+					ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences (this);         
+					var fileNameLastOpenedPdf = prefs.GetString ("fileNameLastOpenedPdf", null);
+					var pathLastOpenedPdf = prefs.GetString ("pathLastOpenedPdf", null);
+					var temporaryFilePath = prefs.GetString ("temporaryFilePath", null);
+					var isFavorite = prefs.GetBoolean ("isFavorite", false);
 
-				//Get location and name of last opened file
-				ISharedPreferences prefs 	= PreferenceManager.GetDefaultSharedPreferences(this);         
-				var fileNameLastOpenedPdf 	= prefs.GetString("fileNameLastOpenedPdf", null);
-				var pathLastOpenedPdf 		= prefs.GetString("pathLastOpenedPdf", null);
-				var temporaryFilePath		= prefs.GetString("temporaryFilePath", null);
-				var isFavorite 				= prefs.GetBoolean("isFavorite", false);
-
-				//Controleer of pdf path overeenkomt met path van laatst geopende pdf file
-				if (pathToTempPdf.Contains (fileNameLastOpenedPdf)) {
-
-					ShowProgressDialog("Eventuele aanpassingen aan het bestand opslaan. \nEen ogenblik geduld a.u.b.");
-					bool updateSucceeded = await DataLayer.Instance.SavePdfAnnotations (pathLastOpenedPdf, pathToTempPdf, true, isFavorite);
+					//Controleer of pdf path overeenkomt met path van laatst geopende pdf file
+					if (pathToTempPdf.Contains (fileNameLastOpenedPdf)) {
+						ShowProgressDialog ("Eventuele aanpassingen aan het bestand opslaan. \nEen ogenblik geduld a.u.b.");
+						bool updateSucceeded = await DataLayer.Instance.SavePdfAnnotations (pathLastOpenedPdf, pathToTempPdf, true, isFavorite);
 						
-					if (updateSucceeded) {
-
-						if(File.Exists(temporaryFilePath)){
-							File.Delete(temporaryFilePath);
+						if (updateSucceeded) {
+							if (File.Exists (temporaryFilePath)) {
+								File.Delete (temporaryFilePath);
+							}
+							HideProgressDialog ();
+							ShowToast ("PDF bestand succesvol bijgewerkt");
+						} else {
+							HideProgressDialog ();
+							ShowToast ("Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
+							"Probeer het a.u.b. later nogmaals");
 						}
-
-						HideProgressDialog ();
-						ShowToast("PDF bestand succesvol bijgewerkt");
 					} else {
 						HideProgressDialog ();
-						ShowToast("Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
-								  "Probeer het a.u.b. later nogmaals");
+						ShowToast ("PDF bestand niet gevonden.\n" +
+						"Nieuwe bestanden kunnen alleen binnen de app ge-upload worden.");
 					}
-				} else {
-					HideProgressDialog ();
-					ShowToast("PDF bestand niet gevonden.\n" + 
-							  "Nieuwe bestanden kunnen alleen binnen de app ge-upload worden.");
-				}
-
-
-				SplashActivity.clipData = null;
-
+					SplashActivity.clipData = null;
 				})).Start ();
-			} catch(Exception ex) {
-				Console.WriteLine (ex.Message);
+			} catch {
 				SplashActivity.clipData = null;
 				HideProgressDialog ();
 				ShowToast ("Er is een fout opgetreden. Probeer het a.u.b. later nogmaals");
 			}
 		}
 
-
-		public void RegisterLocalBox (LocalBox localBox)
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
-
-			View viewRegisterLocalBox = factory.Inflate (Resource.Layout.dialog_register_localbox, null);
-
-			EditText editTextUsername = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_username);          
-			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
-
-			editTextUsername.Text = localBox.User;
-
-			// Build the dialog.
-			var dialogBuilder = new AlertDialog.Builder (this);
-			dialogBuilder.SetTitle ("Registreren");
-			dialogBuilder.SetView (viewRegisterLocalBox);
-
-			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			// Get the buttons.
-			var buttonRegister = dialog.GetButton ((int)DialogButtonType.Positive);
-			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
-
-			buttonRegister.Click += async (sender, args) => {
-				if (String.IsNullOrEmpty (editTextUsername.Text)) {
-					ShowToast("Gebruikersnaam is niet ingevuld");
-				} else if (String.IsNullOrEmpty (editTextPassword.Text)) {
-					ShowToast("Wachtwoord is niet ingevuld");
-				} else {
-					try {
-						ShowProgressDialog ("Uw inloggegevens controleren. Een ogenblik geduld a.u.b.");
-
-						localBox.User = editTextUsername.Text;
-						bool authenticateSucceeded = await BusinessLayer.Instance.Authenticate (localBox, editTextPassword.Text);
-
-						HideProgressDialog ();
-						if (!authenticateSucceeded) {
-							ShowToast("Inloggegevens zijn foutief");
-						} else {
-						
-							dialog.Dismiss ();
-							ShowToast("Inloggegevens geaccepteerd");
-
-							
-                            if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
-								EnterPassphrase (localBox);
-							} else {
-								SetUpPassphrase (localBox);
-							}
-						}
-					} catch (Exception ex) {
-						HideProgressDialog ();
-						ShowToast("LocalBox registratie mislukt. Probeer het a.u.b. opnieuw");
-						Log.Info ("STACKTRACE", ex.StackTrace);
-						Log.Info ("MESSAGE", ex.Message);
-					}
-				}
-			};
-
-			buttonCancelRegistration.Click += (sender, args) => {
-				DataLayer.Instance.DeleteLocalBox (localBox.Id);
-				menuFragment.UpdateLocalBoxes ();
-				dialog.Dismiss ();
-			};
-		}
-
-
-		private void SetUpPassphrase (LocalBox localBox)
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
-
-			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_new_passphrase, null);
-
-			EditText editNewPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_new_passphrase);          
-			EditText editNewPassphraseVerify = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_new_passphrase_verify);
-
-			// Build the dialog.
-			var dialogBuilder = new AlertDialog.Builder (this);
-			dialogBuilder.SetTitle ("Passphrase");
-			dialogBuilder.SetView (viewNewPhrase);
-
-			dialogBuilder.SetPositiveButton ("OK", (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			// Get the buttons.
-			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
-			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
-
-			buttonAddPassphrase.Click += async (sender, args) => {
-				string passphraseOne = editNewPassphrase.Text;
-				string passphraseTwo = editNewPassphraseVerify.Text;
-
-				if (String.IsNullOrEmpty (passphraseOne)) {
-					ShowToast("Passphrase is niet ingevuld");
-				} else if (String.IsNullOrEmpty (passphraseTwo)) {
-					ShowToast("U dient uw ingevoerde passphrase te verifieren");
-				} else {
-					if (!passphraseOne.Equals (passphraseTwo)) {
-						ShowToast("De ingevoerde passphrases komen niet overeen. Corrigeer dit a.u.b.");
-					} else {
-						try 
-						{
-							ShowProgressDialog ("Passphrase aanmaken. Dit kan enige tijd in beslag nemen. Een ogenblik geduld a.u.b.");
-
-                            bool newPassphraseSucceeded = await BusinessLayer.Instance.SetPublicAndPrivateKey (localBox, passphraseOne);
-
-							HideProgressDialog();
-
-							if (!newPassphraseSucceeded) {
-								ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
-							} 
-							else {
-								dialog.Dismiss ();
-								ShowToast("LocalBox succesvol geregistreerd");
-
-								menuFragment.UpdateLocalBoxes ();
-								SplashActivity.intentData = null;
-							}
-						} 
-						catch {
-							HideProgressDialog ();
-							ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
-						}
-					}
-				}
-			};
-
-			buttonCancel.Click += (sender, args) => {
-				DataLayer.Instance.DeleteLocalBox (localBox.Id);
-				menuFragment.UpdateLocalBoxes ();
-				dialog.Dismiss ();
-			};
-		}
-			
-		private void EnterPassphrase (LocalBox localBox)
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
-
-			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_enter_passphrase, null);
-
-			EditText editEnterPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_enter_passphrase);          
-
-			// Build the dialog.
-			var dialogBuilder = new AlertDialog.Builder (this);
-			dialogBuilder.SetTitle ("Passphrase");
-			dialogBuilder.SetView (viewNewPhrase);
-
-			dialogBuilder.SetPositiveButton ("OK", (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			// Get the buttons.
-			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
-			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
-
-			buttonAddPassphrase.Click += async (sender, args) => {
-				string passphrase = editEnterPassphrase.Text;
-
-				if (String.IsNullOrEmpty (passphrase)) {
-					ShowToast("Passphrase is niet ingevuld");
-				} 
-				else {
-					try {
-						ShowProgressDialog ("Uw passphrase controleren. Een ogenblik geduld a.u.b.");
-
-                        bool correctPassphraseEntered = await BusinessLayer.Instance.ValidatePassPhrase (localBox, passphrase);
-
-						HideProgressDialog();
-						if (!correctPassphraseEntered) {
-							ShowToast("Passphrase onjuist. Probeer het a.u.b. opnieuw");
-						} else {
-							dialog.Dismiss ();
-
-							ShowToast("Passphrase geaccepteerd en LocalBox succesvol geregistreerd");
-
-							menuFragment.UpdateLocalBoxes ();
-
-							SplashActivity.intentData = null;
-						}
-					} catch {
-						HideProgressDialog ();
-						ShowToast("Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw");
-					}
-				}
-			};
-			buttonCancel.Click += (sender, args) => {
-				DataLayer.Instance.DeleteLocalBox (localBox.Id);
-				menuFragment.UpdateLocalBoxes ();
-				dialog.Dismiss ();
-			};
-		}
 
 		protected override void OnStop ()
 		{
@@ -490,7 +257,6 @@ namespace localbox.android
 			base.OnBackPressed ();
 
 			CheckToHideButtons ();
-
 			//Remove last opened directory from opened directory list
 			if (ExplorerFragment.openedDirectories != null) {
 				int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
@@ -633,7 +399,6 @@ namespace localbox.android
 					ShowToast("Naam is niet ingevuld");
 				} else {
 					ShowProgressDialog("Map wordt aangemaakt. Een ogenblik geduld a.u.b.");
-
 					try{
 						int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
 						string directoryNameToUploadFileTo = ExplorerFragment.openedDirectories [numberOfDirectoriesOpened - 1];
@@ -688,77 +453,8 @@ namespace localbox.android
 			dialogFragmentAboutApp.Show (fragmentTransaction, "aboutdialog");
 		}
 			
-		private void ShowOpenUrlDialog ()
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
-
-			View viewNewFolder = factory.Inflate (Resource.Layout.dialog_open_url, null);
-
-			EditText editTextUrl = (EditText)viewNewFolder.FindViewById<EditText> (Resource.Id.editText_dialog_open_url);          
-
-			//Build the dialog
-			var dialogBuilder = new AlertDialog.Builder (this);
-			dialogBuilder.SetTitle ("Nieuwe LocalBox");
-			dialogBuilder.SetView (viewNewFolder);
-
-			dialogBuilder.SetPositiveButton ("Open URL", (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
-			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
-
-			editTextUrl.Text = "http://lox-development.rednose.nl"; //TODO for release build: restore to "https://"
-
-			buttonOpenUrl.Click +=(sender, args) => {
-				if (String.IsNullOrEmpty (editTextUrl.Text)) {
-					ShowToast("URL is niet ingevuld");
-				} else {
-					ShowProgressDialog("Laden...");
-
-					try{
-						HideProgressDialog();
-						ShowRegisterLocalBoxDialog(editTextUrl.Text);
-						dialog.Dismiss();
-					}
-					catch{
-						HideProgressDialog();
-						ShowToast("Openen van opgegeven URL is mislukt.");
-					}
-				}
-			};
-			buttonCancel.Click += (sender, args) => {
-				dialog.Dismiss ();
-			};
-		}
 
 
-		private void ShowRegisterLocalBoxDialog (string urlToOpen)
-		{
-			if (urlToOpen.IndexOf("register_app", StringComparison.OrdinalIgnoreCase) < 0) //url misses '/register_app' at the end
-			{
-				if (urlToOpen.EndsWith ("/")) {	//input url is like "www.mylocalbox.nl/"
-					urlToOpen = urlToOpen + "register_app";
-				} 
-				else {	//input url is like "www.mylocalbox.nl"
-					urlToOpen = urlToOpen + "/register_app";
-				}
-			}
-
-			Android.App.FragmentTransaction fragmentTransaction;
-			fragmentTransaction = FragmentManager.BeginTransaction ();
-
-			Android.App.DialogFragment dialogFragmentRegisterLocalBox;
-			RegisterLocalBoxFragment registerLocalBoxFragment = new RegisterLocalBoxFragment (urlToOpen);
-
-			dialogFragmentRegisterLocalBox = registerLocalBoxFragment;
-			dialogFragmentRegisterLocalBox.Show (fragmentTransaction, "registerlocalboxdialog");
-		}
-
-
-			
 		public async void ShowShareDialog (string pathOfFolderToShare, bool alreadyShared)
 		{
 			ShowProgressDialog (null);
@@ -776,9 +472,8 @@ namespace localbox.android
 				}
 
 				ShareFragment shareFragment = new ShareFragment (pathOfFolderToShare, localBoxUsers, shareSettings);
-
 				dialogFragmentShare = shareFragment;
-			
+
 				HideProgressDialog ();
 
 				if (localBoxUsers.Count > 0) {
@@ -786,7 +481,6 @@ namespace localbox.android
 				} else {
 					ShowToast("Geen gebruikers gevonden om mee te kunnen delen");
 				}
-
 			} catch {
 				HideProgressDialog ();
 			}
@@ -796,13 +490,12 @@ namespace localbox.android
 		public void HideShareDialog (bool isNewShare)
 		{
 			dialogFragmentShare.Dismiss ();
-			
+
 			if (isNewShare) {
 				ShowToast ("Map succesvol gedeeld");
 			} else {
 				ShowToast ("Deel instellingen succesvol gewijzigd");
 			}
-
 			RefreshExplorerFragmentData ();
 		}
 
@@ -840,6 +533,13 @@ namespace localbox.android
 				ShowToast ("Er is iets fout gegaan bij het ophalen van mappen. \nProbeer het a.u.b. opnieuw");
 			}
 		}
+			
+		public void HideMoveFileDialog ()
+		{
+			dialogFragmentMoveFile.Dismiss ();
+			ShowToast("Bestand succesvol verplaatst");
+			RefreshExplorerFragmentData ();
+		}
 
 
 		//Used for file share datepicker
@@ -869,8 +569,8 @@ namespace localbox.android
 					var emailIntent = new Intent (Android.Content.Intent.ActionSend);
 
 					string bodyText = "Mijn gedeelde bestand: \n" +
-					                 createdPublicUrl.publicUri + "\n \n" +
-					                 "Deze link is geldig tot: " + selectedExpirationDate.ToString ("dd-MM-yyyy");
+						createdPublicUrl.publicUri + "\n \n" +
+						"Deze link is geldig tot: " + selectedExpirationDate.ToString ("dd-MM-yyyy");
 
 					emailIntent.PutExtra (Android.Content.Intent.ExtraSubject, "Publieke URL naar gedeeld LocalBox bestand");
 					emailIntent.PutExtra (Android.Content.Intent.ExtraText, bodyText);
@@ -888,13 +588,334 @@ namespace localbox.android
 
 
 
-		public void HideMoveFileDialog ()
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////Below you can find methods to register a new LocalBox 
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//Register new LocalBox part 1
+		private void ShowOpenUrlDialog ()
 		{
-			dialogFragmentMoveFile.Dismiss ();
-			ShowToast("Bestand succesvol verplaatst");
-			RefreshExplorerFragmentData ();
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+			View viewNewFolder = factory.Inflate (Resource.Layout.dialog_open_url, null);
+
+			EditText editTextUrl = (EditText)viewNewFolder.FindViewById<EditText> (Resource.Id.editText_dialog_open_url);          
+
+			//Build the dialog
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Nieuwe LocalBox");
+			dialogBuilder.SetView (viewNewFolder);
+
+			dialogBuilder.SetPositiveButton ("Open URL", (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			editTextUrl.Text = "https://localbox.bigwobber.nl";
+
+			buttonOpenUrl.Click +=(sender, args) => {
+				if (String.IsNullOrEmpty (editTextUrl.Text)) {
+					ShowToast("URL is niet ingevuld");
+				} else {
+					EnterCredential(editTextUrl.Text);
+					dialog.Dismiss();
+				}
+			};
+			buttonCancel.Click += (sender, args) => {
+				dialog.Dismiss ();
+			};
 		}
 
+		//Register new LocalBox part 2
+		public void EnterCredential (string urlToNewLocalBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+			View viewRegisterLocalBox = factory.Inflate (Resource.Layout.dialog_register_localbox, null);
+
+			EditText editTextUsername = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_username);          
+			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Inloggegevens voor betreffende LocalBox");
+			dialogBuilder.SetView (viewRegisterLocalBox);
+
+			dialogBuilder.SetPositiveButton (Resource.String.login, (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons
+			var buttonLogin = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonLogin.Click += (sender, args) => {
+				if (string.IsNullOrEmpty (editTextUsername.Text)) {
+					ShowToast("Gebruikersnaam is niet ingevuld");
+				} else if (string.IsNullOrEmpty (editTextPassword.Text)) {
+					ShowToast("Wachtwoord is niet ingevuld");
+				} else {
+					ShowProgressDialog("Laden...");
+
+					try{
+						HideProgressDialog();
+						ShowRegisterLocalBoxDialog(urlToNewLocalBox, editTextUsername.Text, editTextPassword.Text);
+						dialog.Dismiss();
+					}
+					catch{
+						HideProgressDialog();
+						ShowToast("Openen van opgegeven URL is mislukt.");
+					}
+				}
+			};
+			buttonCancelRegistration.Click += (sender, args) => {
+				//DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+			
+		//Register new LocalBox part 3
+		private void ShowRegisterLocalBoxDialog (string urlToOpen, string enteredUsername, string enteredPassword)
+		{
+			if (urlToOpen.IndexOf("register_app", StringComparison.OrdinalIgnoreCase) < 0) //url misses '/register_app' at the end
+			{
+				if (urlToOpen.EndsWith ("/")) {	//input url is like "www.mylocalbox.nl/"
+					urlToOpen = urlToOpen + "register_app";
+				} 
+				else {	//input url is like "www.mylocalbox.nl"
+					urlToOpen = urlToOpen + "/register_app";
+				}
+			}
+			Android.App.FragmentTransaction fragmentTransaction;
+			fragmentTransaction = FragmentManager.BeginTransaction ();
+
+			Android.App.DialogFragment dialogFragmentRegisterLocalBox;
+			RegisterLocalBoxFragment registerLocalBoxFragment = new RegisterLocalBoxFragment (urlToOpen, enteredUsername, enteredPassword);
+
+			dialogFragmentRegisterLocalBox = registerLocalBoxFragment;
+			dialogFragmentRegisterLocalBox.Show (fragmentTransaction, "registerlocalboxdialog");
+		}
+			
+		//Register new LocalBox part 4
+		public async void RegisterLocalBox (LocalBox localBox, string enteredUsername, string enteredPassword)
+		{
+			ShowProgressDialog ("LocalBox laden...");
+
+			localBox.User = enteredUsername;
+			bool authenticateSucceeded = await BusinessLayer.Instance.Authenticate (localBox, enteredPassword);
+
+			HideProgressDialog ();
+			if (!authenticateSucceeded) {
+				//ShowToast("Inloggegevens zijn foutief");
+				ReEnterCredential (localBox);
+			} 
+			else {
+				//ShowToast("Inloggegevens geaccepteerd");
+				if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
+					EnterPassphrase (localBox);
+				} else {
+					SetUpPassphrase (localBox);
+				}
+			}
+		}
+			
+		//Register new LocalBox part 4
+		public void ReEnterCredential(LocalBox localBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+			View viewRegisterLocalBox = factory.Inflate (Resource.Layout.dialog_register_localbox, null);
+
+			EditText editTextUsername = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_username);          
+			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
+			editTextUsername.Text = localBox.User;
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Registreren");
+			dialogBuilder.SetView (viewRegisterLocalBox);
+
+			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons.
+			var buttonRegister = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonRegister.Click += async (sender, args) => {
+				if (String.IsNullOrEmpty (editTextUsername.Text)) {
+					ShowToast("Gebruikersnaam is niet ingevuld");
+				} else if (String.IsNullOrEmpty (editTextPassword.Text)) {
+					ShowToast("Wachtwoord is niet ingevuld");
+				} else {
+					try {
+						ShowProgressDialog ("Uw inloggegevens controleren. Een ogenblik geduld a.u.b.");
+
+						localBox.User = editTextUsername.Text;
+						bool authenticateSucceeded = await BusinessLayer.Instance.Authenticate (localBox, editTextPassword.Text);
+
+						HideProgressDialog ();
+						if (!authenticateSucceeded) {
+							ShowToast("Inloggegevens zijn foutief");
+						} else {
+							dialog.Dismiss ();
+							ShowToast("Inloggegevens geaccepteerd");
+
+							if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
+								EnterPassphrase (localBox);
+							} else {
+								SetUpPassphrase (localBox);
+							}
+						}
+					} catch (Exception ex) {
+						HideProgressDialog ();
+						ShowToast("LocalBox registratie mislukt. Probeer het a.u.b. opnieuw");
+						Log.Info ("STACKTRACE", ex.StackTrace);
+						Log.Info ("MESSAGE", ex.Message);
+					}
+				}
+			};
+			buttonCancelRegistration.Click += (sender, args) => {
+				DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+
+
+		//Register new LocalBox part 5
+		private void SetUpPassphrase (LocalBox localBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_new_passphrase, null);
+
+			EditText editNewPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_new_passphrase);          
+			EditText editNewPassphraseVerify = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_new_passphrase_verify);
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Passphrase");
+			dialogBuilder.SetView (viewNewPhrase);
+
+			dialogBuilder.SetPositiveButton ("OK", (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons
+			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonAddPassphrase.Click += async (sender, args) => {
+				string passphraseOne = editNewPassphrase.Text;
+				string passphraseTwo = editNewPassphraseVerify.Text;
+
+				if (String.IsNullOrEmpty (passphraseOne)) {
+					ShowToast("Passphrase is niet ingevuld");
+				} else if (String.IsNullOrEmpty (passphraseTwo)) {
+					ShowToast("U dient uw ingevoerde passphrase te verifieren");
+				} else {
+					if (!passphraseOne.Equals (passphraseTwo)) {
+						ShowToast("De ingevoerde passphrases komen niet overeen. Corrigeer dit a.u.b.");
+					} else {
+						try 
+						{
+							ShowProgressDialog ("Passphrase aanmaken. Dit kan enige tijd in beslag nemen. Een ogenblik geduld a.u.b.");
+							bool newPassphraseSucceeded = await BusinessLayer.Instance.SetPublicAndPrivateKey (localBox, passphraseOne);
+							HideProgressDialog();
+
+							if (!newPassphraseSucceeded) {
+								ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
+							} 
+							else {
+								dialog.Dismiss ();
+								ShowToast("LocalBox succesvol geregistreerd");
+
+								menuFragment.UpdateLocalBoxes ();
+								SplashActivity.intentData = null;
+							}
+						} 
+						catch {
+							HideProgressDialog ();
+							ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
+						}
+					}
+				}
+			};
+			buttonCancel.Click += (sender, args) => {
+				DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+
+
+		//Register new LocalBox part 5
+		private void EnterPassphrase (LocalBox localBox)
+		{
+			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
+			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_enter_passphrase, null);
+			EditText editEnterPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_enter_passphrase);          
+
+			// Build the dialog.
+			var dialogBuilder = new AlertDialog.Builder (this);
+			dialogBuilder.SetTitle ("Passphrase");
+			dialogBuilder.SetView (viewNewPhrase);
+			dialogBuilder.SetPositiveButton ("OK", (EventHandler<DialogClickEventArgs>)null);
+			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
+
+			var dialog = dialogBuilder.Create ();
+			dialog.Show ();
+
+			// Get the buttons.
+			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
+			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
+
+			buttonAddPassphrase.Click += async (sender, args) => {
+				string passphrase = editEnterPassphrase.Text;
+
+				if (String.IsNullOrEmpty (passphrase)) {
+					ShowToast("Passphrase is niet ingevuld");
+				} 
+				else {
+					try {
+						ShowProgressDialog ("Uw passphrase controleren. Een ogenblik geduld a.u.b.");
+						bool correctPassphraseEntered = await BusinessLayer.Instance.ValidatePassPhrase (localBox, passphrase);
+						HideProgressDialog();
+
+						if (!correctPassphraseEntered) {
+							ShowToast("Passphrase onjuist. Probeer het a.u.b. opnieuw");
+						} else {
+							dialog.Dismiss ();
+
+							ShowToast("Passphrase geaccepteerd en LocalBox succesvol geregistreerd");
+
+							menuFragment.UpdateLocalBoxes ();
+
+							SplashActivity.intentData = null;
+						}
+					} catch {
+						HideProgressDialog ();
+						ShowToast("Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw");
+					}
+				}
+			};
+			buttonCancel.Click += (sender, args) => {
+				DataLayer.Instance.DeleteLocalBox (localBox.Id);
+				menuFragment.UpdateLocalBoxes ();
+				dialog.Dismiss ();
+			};
+		}
+			
 
 
 		public void HideBottomExplorerMenuItems ()
