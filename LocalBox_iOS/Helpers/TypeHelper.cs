@@ -16,6 +16,9 @@ namespace LocalBox_iOS.Helpers
 			else if (type.StartsWith ("image")) {
 				return "icons/IcType-Foto";
 			} 
+			else if (type.StartsWith ("video")) {
+				return "icons/IcType-Film";
+			} 
 			else if (type.Equals ("application/pdf")) {
 				return "icons/IcType-PDF";
 			} 

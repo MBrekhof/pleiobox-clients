@@ -96,17 +96,19 @@ namespace LocalBox_iOS
                 }
             }
 
-            if (url.Scheme.Equals("lbox"))
+            /*if (url.Scheme.Equals("lbox"))
             {
 				return OpenLbox(application, url, sourceApplication, annotation);
             }
-            else if (url.Scheme.Equals("file"))
+            else */
+			if (url.Scheme.Equals("file"))
             {
                 return OpenFile(application, url, sourceApplication, annotation);
             }
             return true;
         }
 
+		/*
 		private bool OpenLbox(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
 			RegisterLocalBox (url);            
 			Window = new UIWindow (UIScreen.MainScreen.Bounds);
@@ -122,7 +124,7 @@ namespace LocalBox_iOS
 		{
 			localBoxToRegister = await BusinessLayer.Instance.RegisterLocalBox(url.AbsoluteString.Replace("lbox://", "http://"), null, false);
 
-		}
+		}*/
 
         bool OpenFile(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
         {

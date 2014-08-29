@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
+using System.Diagnostics;
+using System.IO;
+
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
-using LocalBox_Common;
-using System.Diagnostics;
+
 using LocalBox_iOS.Helpers;
 using LocalBox_iOS.Views.ItemView;
-using System.IO;
+using LocalBox_Common;
 
 namespace LocalBox_iOS.Views
 {

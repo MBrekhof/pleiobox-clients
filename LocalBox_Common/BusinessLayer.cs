@@ -78,12 +78,14 @@ namespace LocalBox_Common
 											{
 												box.ApiKey = foundKeys.Key;
 												box.ApiSecret = foundKeys.Secret;
+												break;
 											}
 										}else{//iOS
 											if(foundKeys.Name.IndexOf("ios", StringComparison.OrdinalIgnoreCase) >= 0)
 											{
 												box.ApiKey = foundKeys.Key;
 												box.ApiSecret = foundKeys.Secret;
+												break;
 											}
 										}
 									}

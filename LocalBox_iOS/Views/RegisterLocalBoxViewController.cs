@@ -71,7 +71,11 @@ namespace LocalBox_iOS
 								cookieString = foundCookie.Name + "=" + foundCookie.Value; 
 
 								if(url.EndsWith("register_app")){
-									RegisterLocalBox(url);
+
+									if(webViewRegisterLocalBox.Request.Url.AbsoluteString.Contains(foundCookie.Domain)){ //Get the correct cookie
+										RegisterLocalBox(url);
+									}
+			
 									this.View.RemoveFromSuperview();
 								}
 							}
