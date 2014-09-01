@@ -40,16 +40,11 @@ namespace LocalBox_iOS
 				labelDescription.Text = "Voer de inloggegevens van uw LocalBox in.";
 				HideButtons ();
 			} else if (this.pageIndex == 2) {
-				imageViewInfoGraphic.Image = UIImage.FromFile ("tour/tour_03.png");
-				labelTitle.Text = "Stap 3";
-				labelDescription.Text = "Voer nogmaals de inloggegevens van uw LocalBox in.";
-				HideButtons ();
-			} else if (this.pageIndex == 3) {
 				imageViewInfoGraphic.Image = UIImage.FromFile ("tour/tour_04.png");
-				labelTitle.Text = "Stap 4";
+				labelTitle.Text = "Stap 3";
 				labelDescription.Text = "Stel een passphrase in of voer een bestaande passphrase in.";
 				HideButtons ();
-			} else if (this.pageIndex == 4) {
+			} else if (this.pageIndex == 3) {
 				imageViewInfoGraphic.Image = UIImage.FromFile ("tour/tour_05.png");
 				labelTitle.Text = "";
 				labelDescription.Text = "";

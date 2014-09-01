@@ -15,7 +15,7 @@ namespace LocalBox_iOS
 
 		public int TotalPages
 		{
-			get { return 5; }
+			get { return 4; }
 		}
 
 		public IntroductionPageDataSource(UIPageViewController parentController, HomeController homeController)
