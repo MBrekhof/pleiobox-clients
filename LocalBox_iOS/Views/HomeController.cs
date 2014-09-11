@@ -268,15 +268,17 @@ namespace LocalBox_iOS.Views
 				bool result = false;
 
 				box.User = enteredUsername;
-				result = await BusinessLayer.Instance.Authenticate(box, (enteredPassword));
+				DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
+					result = await BusinessLayer.Instance.Authenticate (box, (enteredPassword));
 
-				if (result) {
-					LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
-					AppDelegate.localBoxToRegister = null;
-				} else {
-					Debug.WriteLine ("Authenticatie mislukt..");
-					RequestWachtwoord (box, "", "");
-				}
+					if (result) {
+						LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
+						AppDelegate.localBoxToRegister = null;
+					} else {
+						Debug.WriteLine ("Authenticatie mislukt..");
+						RequestWachtwoord (box, "", "");
+					}
+				});
 			}
         }
 

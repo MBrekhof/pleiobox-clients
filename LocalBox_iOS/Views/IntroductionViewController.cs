@@ -64,9 +64,7 @@ namespace LocalBox_iOS
 															"Voer hieronder de url naar de te registeren LocalBox in", null, 
 															"Annuleer", "Open URL");
 				alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
-
-				alertOpenUrl.GetTextField(0).Text = "https://localbox.bigwobber.nl"; //TODO for release build: restore to "https://"
-
+				alertOpenUrl.GetTextField(0).Placeholder = "https://yourlocalbox.com";
 				alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => 
 				{
 					if (args.ButtonIndex == 1)
