@@ -244,6 +244,7 @@ namespace localbox.android
 				//Lock scherm
 				HomeActivity.shouldLockApp = true;
 				StartActivity(typeof(PinActivity));
+				DataLayer.Instance.LockDatabase ();
 			} else {
 				ExplorerFragment explorerFragment = GetLastOpenedExplorerFragment ();
 				if (explorerFragment != null && !explorerFragment.favoriteFolderOpened && SplashActivity.intentData == null) {
@@ -615,7 +616,7 @@ namespace localbox.android
 			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
 			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
 
-			editTextUrl.Text = "https://localbox.bigwobber.nl";
+			editTextUrl.SetHint (Resource.String.yourlocalboxplaceholder);
 
 			buttonOpenUrl.Click +=(sender, args) => {
 				if (String.IsNullOrEmpty (editTextUrl.Text)) {

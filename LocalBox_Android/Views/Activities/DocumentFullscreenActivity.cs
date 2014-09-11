@@ -13,6 +13,8 @@ using Android.Webkit;
 using Android.App;
 using Android.Graphics;
 
+using LocalBox_Common;
+
 namespace localbox.android
 {
 	[Activity(Label = "Document", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]	
@@ -78,6 +80,7 @@ namespace localbox.android
 				//Lock scherm
 				HomeActivity.shouldLockApp = true;
 				StartActivity(typeof(PinActivity));
+				DataLayer.Instance.LockDatabase ();
 			} 
 		}
 

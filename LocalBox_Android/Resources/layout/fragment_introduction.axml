@@ -38,16 +38,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:layout_marginRight="30dp"
-            android:text="Stap 3: \nVoer nogmaals de inloggegevens van uw LocalBox in."
-            android:textSize="16sp" />
-        <TextView
-            android:id="@+id/textview_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:layout_marginRight="30dp"
-            android:text="Stap 4: \nStel een passphrase in of voer een bestaande passphrase in."
+            android:text="Stap 3: \nStel een passphrase in of voer een bestaande passphrase in."
             android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

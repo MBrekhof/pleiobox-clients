@@ -11,6 +11,8 @@
 	<string name="favorite">Voeg to aan favorieten</string>
 	<string name="open">Openen</string>
 
+	<string name="yourlocalboxplaceholder">https://yourlocalbox.com</string>
+
 	<string name="upload_photo">Afbeelding uploaden</string>
 	<string name="upload_file">Andere bestandstype uploaden</string>
 

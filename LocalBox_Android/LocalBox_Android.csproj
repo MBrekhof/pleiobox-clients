@@ -194,8 +194,8 @@
     <AndroidResource Include="Resources\drawable\ic_bottom_sync.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_toevoegen.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_upload.png" />
-    <AndroidResource Include="Resources\drawable\tour_android.png" />
     <AndroidResource Include="Resources\layout\activity_videoplayer.axml" />
+    <AndroidResource Include="Resources\drawable\tour_android.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
