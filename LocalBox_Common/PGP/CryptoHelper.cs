@@ -15,10 +15,6 @@ namespace LocalBox_Common
 {
     public static class CryptoHelper
     {
-
-        public static readonly string PRIVATE_KEY_PATH = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), "private.asc");
-        public static readonly string PUBLIC_KEY_PATH = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), "public.asc");
-
         private static readonly int KEY_STRENGTH = 2048;
 
         private static PgpPrivateKey FindSecretKey(PgpSecretKeyRingBundle pgpSec, long keyId, char[] pass)

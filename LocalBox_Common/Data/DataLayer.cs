@@ -599,7 +599,6 @@ namespace LocalBox_Common
 
         public Task<List<Identity>> GetLocalboxUsers()
         {
-            // TODO: Users opslaan in de database? Dan een andere domein klasse maken!
             return Task.Run (() => {
                 var currentBox = GetSelectedOrDefaultBox();
                 var remoteExplorer = new RemoteExplorer();

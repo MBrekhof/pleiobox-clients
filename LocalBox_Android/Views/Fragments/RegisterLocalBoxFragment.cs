@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
-using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
+using Android.App;
 using Android.Views;
 using Android.Widget;
 using Android.Webkit;
+using Android.Content;
+using Android.Runtime;
+using Android.Net.Http;
 
 using LocalBox_Common;
 
@@ -24,6 +25,7 @@ namespace localbox.android
 		public string enteredUsername;
 		public string enteredPassword;
 		private string urlToOpen;
+		//public bool doesHaveInvalidCertificate;
 
 		public RegisterLocalBoxFragment(string urlToOpen, string enteredUsername, string enteredPassword)
 		{
@@ -45,6 +47,7 @@ namespace localbox.android
 
 			this.parentActivity = (HomeActivity)Activity;
 		}
+			
 
 		public override View OnCreateView (LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
 		{
@@ -80,6 +83,10 @@ namespace localbox.android
 			LocalBox box = await BusinessLayer.Instance.RegisterLocalBox (url, cookieString, true);
 
 			if (box != null) {
+
+				//Set certificate for localbox
+				//box.OriginalSslCertificate = CertificateHelper.BytesOfCertificate;
+
 				parentActivity.HideProgressDialog ();
 				parentActivity.RegisterLocalBox (box, enteredUsername, enteredPassword);
 				this.Dismiss ();
@@ -151,6 +158,24 @@ namespace localbox.android
 					);
 				}
 				pageLoaded++;
+			}
+
+			public override void OnReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
+			{
+				var dialogAlert = (new AlertDialog.Builder (registerLocalBoxFragment.parentActivity)).Create ();
+				dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
+				dialogAlert.SetTitle ("Waarschuwing");
+				dialogAlert.SetMessage ("U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Weet u zeker dat u wilt doorgaan?");
+				dialogAlert.SetButton2 ("Cancel", (s, ev) => {
+					registerLocalBoxFragment.Dismiss ();
+					registerLocalBoxFragment.parentActivity.ShowOpenUrlDialog ();
+				});
+				dialogAlert.SetButton ("Ga verder", (s, ev) => {
+					ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+					handler.Proceed (); //user accepted to proceed using invalid certificate
+					dialogAlert.Dismiss();
+				});
+				dialogAlert.Show ();
 			}
 		}
 

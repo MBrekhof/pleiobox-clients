@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.IO;
+using System.Net;
 
 using Android.Content;
 using Android.OS;
@@ -66,6 +67,16 @@ namespace localbox.android
 
 			//Set selected local box
 			Waardes.Instance.GeselecteerdeBox = foundLocalBoxes[e.Position].Id;
+
+			//Reset certificate validation check to default behavior
+			/*
+			ServicePointManager.ServerCertificateValidationCallback = null;
+
+			if (foundLocalBoxes[e.Position].OriginalSslCertificate != null) { //Selected localbox does have a ssl certificate
+				//Set ssl validator for selected LocalBox
+				SslValidator sslValidator = new SslValidator ();
+				ServicePointManager.ServerCertificateValidationCallback = sslValidator.ValidateServerCertficate;
+			}*/
 
 			//Change action bar color to color of selected localbox
 			if (DataLayer.Instance.GetSelectedOrDefaultBox ().BackColor != null && 

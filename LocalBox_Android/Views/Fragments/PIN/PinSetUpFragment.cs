@@ -141,6 +141,8 @@ namespace localbox.android
 
         void HandleClickOk(object sender, EventArgs e)
         {
+			string fullPin = PinHelper.GetPinWithDeviceId (pin.ToString());
+
             if (pin.Length + pinConfirm.Length != digits.Length)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity);
@@ -161,7 +163,7 @@ namespace localbox.android
 			{
                 if(pin.ToString().Equals(pinConfirm.ToString())) {
 
-					bool unlockSucceeded = DataLayer.Instance.UnlockDatabase(pin.ToString());
+					bool unlockSucceeded = DataLayer.Instance.UnlockDatabase(fullPin);
 
 					if (unlockSucceeded)
                     {

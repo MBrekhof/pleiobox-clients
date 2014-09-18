@@ -7,3 +7,5 @@ LocalBox_Common/obj
 BouncyCastle/obj
 LocalBox_iOS.userprefs
 LocalBox_Android.userprefs
+LocalBox_Android/Components/json.net-4.5.11/samples
+LocalBox_iOS/Components/json.net-4.5.11/samples

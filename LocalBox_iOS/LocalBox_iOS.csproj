@@ -252,6 +252,7 @@
     </Compile>
     <Compile Include="Helpers\Reachability.cs" />
     <Compile Include="Views\Picker\ActionSheetDatePickerCustom.cs" />
+    <Compile Include="Views\Pincode\PinHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Views\HomeController.xib">

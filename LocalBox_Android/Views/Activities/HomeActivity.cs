@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,7 @@ using Android.Webkit;
 using Android.Util;
 using Android.Database;
 using Android.Preferences;
+using Android.Views.InputMethods;
 
 using LocalBox_Common;
 using LocalBox_Common.Remote;
@@ -78,7 +80,6 @@ namespace localbox.android
 				}
 			}
 
-		
 
 			//////////////////////////////////////////////////////
 			//Explorer part of layout
@@ -143,7 +144,6 @@ namespace localbox.android
 			};
 
 
-
 			//////////////////////////////////////////////////////
 			//Document part of layout
 			//////////////////////////////////////////////////////
@@ -164,10 +164,8 @@ namespace localbox.android
 			//Determine to save PDF annotations
 			if (SplashActivity.intentData != null) { 
 				Android.Net.Uri data = SplashActivity.intentData; 
-				String scheme = data.Scheme; // "http" 
-
-				if (scheme.Equals ("file")) //Save annotations
-				{ 
+				String scheme = data.Scheme;
+				if (scheme.Equals ("file")) { //Save annotations
 					UpdatePdfFile (data.Path);
 				}
 			}
@@ -220,8 +218,7 @@ namespace localbox.android
 				ShowToast ("Er is een fout opgetreden. Probeer het a.u.b. later nogmaals");
 			}
 		}
-
-
+			
 		protected override void OnStop ()
 		{
 			HideProgressDialog ();
@@ -233,8 +230,7 @@ namespace localbox.android
 			base.OnPause ();
 			LockHelper.SetLastActivityOpenedTime ("HomeActivity");
 		}
-
-
+			
 		protected override void OnResume ()
 		{
 			base.OnResume ();
@@ -273,8 +269,7 @@ namespace localbox.android
 				buttonUploadFileExplorer.Visibility = ViewStates.Invisible;
 			}
 		}
-
-
+			
 		private ExplorerFragment GetLastOpenedExplorerFragment()
 		{
 			if (openedExplorerFragments.Count > 0) {
@@ -283,8 +278,7 @@ namespace localbox.android
 				return null;
 			}
 		}
-
-
+			
 		private void RemoveLastOpenedExplorerFragment()
 		{
 			if (openedExplorerFragments.Count > 0) {
@@ -310,11 +304,8 @@ namespace localbox.android
 				try {
 					int numberOfDirectoriesOpened = ExplorerFragment.openedDirectories.Count;
 					string directoryNameToUploadFileTo = ExplorerFragment.openedDirectories [numberOfDirectoriesOpened - 1];
-
 					string pathToFile = GetPathToImage (uriResult);
-
 					string fileName = System.IO.Path.GetFileName (pathToFile);
-
 					string fullDestinationPath = System.IO.Path.Combine (directoryNameToUploadFileTo, fileName);
 					bool uploadedSucceeded = await DataLayer.Instance.UploadFile (fullDestinationPath, pathToFile);
 
@@ -384,7 +375,6 @@ namespace localbox.android
 			var dialogBuilder = new AlertDialog.Builder (this);
 			dialogBuilder.SetTitle (Resource.String.folder_new);
 			dialogBuilder.SetView (viewNewFolder);
-
 			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
 			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
 
@@ -455,11 +445,9 @@ namespace localbox.android
 		}
 			
 
-
 		public async void ShowShareDialog (string pathOfFolderToShare, bool alreadyShared)
 		{
 			ShowProgressDialog (null);
-
 			try {
 				Android.App.FragmentTransaction fragmentTransaction;
 				fragmentTransaction = FragmentManager.BeginTransaction ();
@@ -476,7 +464,6 @@ namespace localbox.android
 				dialogFragmentShare = shareFragment;
 
 				HideProgressDialog ();
-
 				if (localBoxUsers.Count > 0) {
 					dialogFragmentShare.Show (fragmentTransaction, "sharedialog");
 				} else {
@@ -541,8 +528,7 @@ namespace localbox.android
 			ShowToast("Bestand succesvol verplaatst");
 			RefreshExplorerFragmentData ();
 		}
-
-
+			
 		//Used for file share datepicker
 		protected override Dialog OnCreateDialog (int id)
 		{
@@ -595,41 +581,72 @@ namespace localbox.android
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//Register new LocalBox part 1
-		private void ShowOpenUrlDialog ()
+		public void ShowOpenUrlDialog ()
 		{
 			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
 			View viewNewFolder = factory.Inflate (Resource.Layout.dialog_open_url, null);
 
 			EditText editTextUrl = (EditText)viewNewFolder.FindViewById<EditText> (Resource.Id.editText_dialog_open_url);          
+			editTextUrl.SetHint (Resource.String.yourlocalboxplaceholder);
+			editTextUrl.Text = "https://localbox.pleio.nl";
 
 			//Build the dialog
 			var dialogBuilder = new AlertDialog.Builder (this);
 			dialogBuilder.SetTitle ("Nieuwe LocalBox");
 			dialogBuilder.SetView (viewNewFolder);
-
 			dialogBuilder.SetPositiveButton ("Open URL", (EventHandler<DialogClickEventArgs>)null);
 			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
 
 			var dialog = dialogBuilder.Create ();
 			dialog.Show ();
-
-			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
+		
 			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
-
-			editTextUrl.SetHint (Resource.String.yourlocalboxplaceholder);
-
+			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
 			buttonOpenUrl.Click +=(sender, args) => {
 				if (String.IsNullOrEmpty (editTextUrl.Text)) {
 					ShowToast("URL is niet ingevuld");
 				} else {
-					EnterCredential(editTextUrl.Text);
-					dialog.Dismiss();
+					if(editTextUrl.Text.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase))
+					{
+						ShowHttpWarningDialog(editTextUrl.Text);
+
+						//Dismiss keyboard
+						InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
+						manager.HideSoftInputFromWindow(editTextUrl.WindowToken, 0);
+
+						//Dismiss dialog
+						dialog.Dismiss();
+					}
+					else if(editTextUrl.Text.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase)){
+						EnterCredential(editTextUrl.Text);
+						dialog.Dismiss();
+					}
+					else {
+						ShowToast("Het opgegeven webadres dient met https:// of http:// te beginnen.");
+					}
 				}
 			};
 			buttonCancel.Click += (sender, args) => {
 				dialog.Dismiss ();
 			};
 		}
+
+		private void ShowHttpWarningDialog(string urlToOpen)
+		{
+			var dialogAlert = (new AlertDialog.Builder (this)).Create ();
+			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
+			dialogAlert.SetTitle ("Waarschuwing");
+			dialogAlert.SetMessage ("U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?");
+			dialogAlert.SetButton2 ("Cancel", (s, ev) => {
+				ShowOpenUrlDialog ();
+			});
+			dialogAlert.SetButton ("Ga verder", (s, ev) => {
+				EnterCredential(urlToOpen);
+				dialogAlert.Dismiss();
+			});
+			dialogAlert.Show ();
+		}
+
 
 		//Register new LocalBox part 2
 		public void EnterCredential (string urlToNewLocalBox)
@@ -644,17 +661,14 @@ namespace localbox.android
 			var dialogBuilder = new AlertDialog.Builder (this);
 			dialogBuilder.SetTitle ("Inloggegevens voor betreffende LocalBox");
 			dialogBuilder.SetView (viewRegisterLocalBox);
-
 			dialogBuilder.SetPositiveButton (Resource.String.login, (EventHandler<DialogClickEventArgs>)null);
 			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
 
 			var dialog = dialogBuilder.Create ();
 			dialog.Show ();
 
-			// Get the buttons
-			var buttonLogin = dialog.GetButton ((int)DialogButtonType.Positive);
 			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
-
+			var buttonLogin = dialog.GetButton ((int)DialogButtonType.Positive);
 			buttonLogin.Click += (sender, args) => {
 				if (string.IsNullOrEmpty (editTextUsername.Text)) {
 					ShowToast("Gebruikersnaam is niet ingevuld");
@@ -713,11 +727,9 @@ namespace localbox.android
 
 			HideProgressDialog ();
 			if (!authenticateSucceeded) {
-				//ShowToast("Inloggegevens zijn foutief");
 				ReEnterCredential (localBox);
 			} 
 			else {
-				//ShowToast("Inloggegevens geaccepteerd");
 				if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
 					EnterPassphrase (localBox);
 				} else {
@@ -736,11 +748,10 @@ namespace localbox.android
 			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
 			editTextUsername.Text = localBox.User;
 
-			// Build the dialog.
+			// Build the dialog
 			var dialogBuilder = new AlertDialog.Builder (this);
 			dialogBuilder.SetTitle ("Registreren");
 			dialogBuilder.SetView (viewRegisterLocalBox);
-
 			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
 			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
 
@@ -867,7 +878,7 @@ namespace localbox.android
 			View viewNewPhrase = factory.Inflate (Resource.Layout.dialog_enter_passphrase, null);
 			EditText editEnterPassphrase = (EditText)viewNewPhrase.FindViewById<EditText> (Resource.Id.editText_dialog_enter_passphrase);          
 
-			// Build the dialog.
+			// Build the dialog
 			var dialogBuilder = new AlertDialog.Builder (this);
 			dialogBuilder.SetTitle ("Passphrase");
 			dialogBuilder.SetView (viewNewPhrase);
@@ -878,9 +889,8 @@ namespace localbox.android
 			dialog.Show ();
 
 			// Get the buttons.
-			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
 			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
-
+			var buttonAddPassphrase = dialog.GetButton ((int)DialogButtonType.Positive);
 			buttonAddPassphrase.Click += async (sender, args) => {
 				string passphrase = editEnterPassphrase.Text;
 
@@ -897,11 +907,8 @@ namespace localbox.android
 							ShowToast("Passphrase onjuist. Probeer het a.u.b. opnieuw");
 						} else {
 							dialog.Dismiss ();
-
 							ShowToast("Passphrase geaccepteerd en LocalBox succesvol geregistreerd");
-
 							menuFragment.UpdateLocalBoxes ();
-
 							SplashActivity.intentData = null;
 						}
 					} catch {
@@ -917,8 +924,6 @@ namespace localbox.android
 			};
 		}
 			
-
-
 		public void HideBottomExplorerMenuItems ()
 		{
 			buttonAddFolderExplorer.Visibility 	= ViewStates.Invisible;
@@ -933,7 +938,6 @@ namespace localbox.android
 			buttonRefreshExplorer.Visibility 	= ViewStates.Visible;
 		}
 			
-
 		public void ShowProgressDialog (string textToShow)
 		{
 			this.RunOnUiThread (new Action (() => { 

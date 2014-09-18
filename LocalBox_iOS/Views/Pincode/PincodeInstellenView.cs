@@ -85,10 +85,12 @@ namespace LocalBox_iOS.Views
         {
             if (_firstPinInput.Equals(_secondPinInput))
             {
-                bool valid = await DataLayer.Instance.ValidatePincode(_firstPinInput.Pin);
+				string fullPin = PinHelper.GetPinWithDeviceId (_firstPinInput.Pin);
+
+				bool valid = await DataLayer.Instance.ValidatePincode(fullPin);
                 if (valid)
                 {
-                    DataLayer.Instance.UnlockDatabase(_firstPinInput.Pin);
+					DataLayer.Instance.UnlockDatabase(fullPin);
                     RemoveFromSuperview();
                     if (OnPinFilled != null)
                     {

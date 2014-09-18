@@ -63,11 +63,15 @@ namespace LocalBox_iOS.Views
 
         async void ValidatePin(object sender, EventArgs e)
         {
-            bool valid = await DataLayer.Instance.ValidatePincode(_pinInput.Pin);
+
+			string fullPin = PinHelper.GetPinWithDeviceId (_pinInput.Pin);
+
+			bool valid = await DataLayer.Instance.ValidatePincode(fullPin);
             if (valid)
             {
                 _pinInput.Done = true;
-                DataLayer.Instance.UnlockDatabase(_pinInput.Pin);
+
+				DataLayer.Instance.UnlockDatabase(fullPin);
                 if (OnPinFilled != null)
                 {
                     OnPinFilled(this, EventArgs.Empty);

@@ -149,8 +149,6 @@ namespace LocalBox_Common
 
         public void UpdateNode(TreeNode treeNode)
         {
-			//TODO - if favorite dan cache de file lokaal op device
-
             Transaction(() =>
             {
                 this.Update(treeNode);
@@ -168,7 +166,6 @@ namespace LocalBox_Common
             }
 
             Delete(node);
-
         }
 
         public TreeNode GetTree()

@@ -90,6 +90,7 @@
     <Compile Include="Providers\CustomContentProvider.cs" />
     <Compile Include="Views\Activities\TemporarilyUnused\PdfActivity.cs" />
     <Compile Include="Views\Activities\VideoPlayerActivity.cs" />
+    <Compile Include="Views\Fragments\PIN\PinHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

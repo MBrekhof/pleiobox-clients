@@ -43,7 +43,7 @@
       <HintPath>Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\LocalBox_iOS\packages\Newtonsoft.Json.6.0.3\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\LocalBox_iOS\Components\json.net-4.5.11\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +51,7 @@
     <Folder Include="Data\" />
     <Folder Include="Model\" />
     <Folder Include="Dll\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,7 +62,6 @@
     <Compile Include="Data\Database.cs" />
     <Compile Include="AES256\AESEncrypter.cs" />
     <Compile Include="Helpers\FileEncryptHelper.cs" />
-    <Compile Include="Utils\ByteArrayConverter.cs" />
     <Compile Include="AES256\AESKeyAndIVGenerator.cs" />
     <Compile Include="Remote\Constants.cs" />
     <Compile Include="Remote\RemoteExplorer.cs" />
@@ -83,6 +83,8 @@
     <Compile Include="Remote\Model\AesKeyRevoke.cs" />
     <Compile Include="Remote\Model\PublicUrl.cs" />
     <Compile Include="Model\APIKeys.cs" />
+    <Compile Include="Utils\SslValidator.cs" />
+    <Compile Include="Utils\CertificateHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\AboutResources.txt" />
@@ -100,6 +102,11 @@
     <None Include="Dll\json.net-4.5.11\lib\ios\Newtonsoft.Json.dll" />
     <None Include="Dll\sqlcipher\lib\android\Mono.Data.Sqlcipher.dll" />
     <None Include="Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll" />
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="json.net">
+      <Version>4.5.11</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>

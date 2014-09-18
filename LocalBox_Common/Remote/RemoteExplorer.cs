@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 using LocalBox_Common.Remote.Authorization;
 using LocalBox_Common.Remote.Model;
+using System.Net.Http.Headers;
 
 namespace LocalBox_Common.Remote
 {
@@ -39,7 +40,6 @@ namespace LocalBox_Common.Remote
 
 			if (expi.Equals (new DateTime (1, 1, 1))) {
 				// Not nooit geautoriseerd:
-//                Authorize("m.vd.loo", "Welkom01");
 				return true;
 			}
 
@@ -84,7 +84,6 @@ namespace LocalBox_Common.Remote
 			_localBox.DatumTijdTokenExpiratie = lba.Expiry.ToString ();
 			_localBox.RefreshToken = lba.RefreshToken;
 
-			// Todo: store Box!
 			DataLayer.Instance.UpdateLocalBox (_localBox);
 		}
 
@@ -103,12 +102,12 @@ namespace LocalBox_Common.Remote
 			}
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.AppendFormat ("?access_token={0}", Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Get,
@@ -148,12 +147,12 @@ namespace LocalBox_Common.Remote
 				}
 
 				string AccessToken = _localBox.AccessToken;
-				localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 				using (var httpClient = new HttpClient ()) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 					var httpRequestMessage = new HttpRequestMessage {
 						Method = HttpMethod.Get,
@@ -184,13 +183,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/delete");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
-
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var data = new List<KeyValuePair<string, string>> ();
 				data.Add (new KeyValuePair<string, string> ("path", filePath));
@@ -225,12 +223,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/create_folder");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var data = new List<KeyValuePair<string, string>> ();
 				data.Add (new KeyValuePair<string, string> ("path", path));
@@ -263,12 +261,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/copy");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var data = new List<KeyValuePair<string, string>> () {
 					new KeyValuePair<string, string> ("from_path", from),
@@ -303,12 +301,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/move");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var data = new List<KeyValuePair<string, string>> () {
 					new KeyValuePair<string, string> ("from_path", from),
@@ -335,12 +333,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (destination);
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Post,
@@ -377,12 +375,12 @@ namespace LocalBox_Common.Remote
 				localBoxUrl.Append (_localBox.BaseUrl + "lox_api/identities");
 
 				string AccessToken = _localBox.AccessToken;
-				localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 				using (var httpClient = new HttpClient ()) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 					var httpRequestMessage = new HttpRequestMessage {
 						Method = HttpMethod.Get,
@@ -418,7 +416,6 @@ namespace LocalBox_Common.Remote
 				localBoxUrl.Append (pathOfFolder);
 
 				string AccessToken = _localBox.AccessToken;
-				localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 				string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
@@ -426,6 +423,7 @@ namespace LocalBox_Common.Remote
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 					var httpRequestMessage = new HttpRequestMessage {
 						Method = HttpMethod.Post,
@@ -462,12 +460,12 @@ namespace LocalBox_Common.Remote
 				localBoxUrl.Append (pathOfShare);
 
 				string AccessToken = _localBox.AccessToken;
-				localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 				using (var httpClient = new HttpClient ()) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 					var httpRequestMessage = new HttpRequestMessage {
 						Method = HttpMethod.Get,
@@ -503,7 +501,6 @@ namespace LocalBox_Common.Remote
 					localBoxUrl.Append (_localBox.BaseUrl + "lox_api/shares/" + shareId + "/edit");
 
 					string AccessToken = _localBox.AccessToken;
-					localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 					string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
@@ -511,6 +508,7 @@ namespace LocalBox_Common.Remote
 						httpClient.MaxResponseContentBufferSize = int.MaxValue;
 						httpClient.DefaultRequestHeaders.ExpectContinue = false;
 						httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+						httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 						var httpRequestMessage = new HttpRequestMessage {
 							Method = HttpMethod.Post,
@@ -541,12 +539,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/shares/" + shareId + "/remove");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Post,
@@ -583,12 +581,12 @@ namespace LocalBox_Common.Remote
 					localBoxUrl.Append (pathOfFileToShare);
 
 					string AccessToken = _localBox.AccessToken;
-					localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 					using (var httpClient = new HttpClient ()) {
 						httpClient.MaxResponseContentBufferSize = int.MaxValue;
 						httpClient.DefaultRequestHeaders.ExpectContinue = false;
 						httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+						httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 						var data = new List<KeyValuePair<string, string>> ();
 						data.Add (new KeyValuePair<string, string> ("expires", iso8601FormattedDate));
@@ -629,12 +627,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/invitations");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Get,
@@ -666,12 +664,12 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append ("/accept");
 
 			string AccessToken = _localBox.AccessToken;
-			localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
 			using (var httpClient = new HttpClient ()) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Post,
@@ -708,12 +706,12 @@ namespace LocalBox_Common.Remote
             }
 
             string AccessToken = _localBox.AccessToken;
-            localBoxUrl.Append ("?access_token=" + Uri.EscapeDataString (AccessToken));
 
             using (var httpClient = new HttpClient ()) {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
 
                 var httpRequestMessage = new HttpRequestMessage {
                     Method = HttpMethod.Get,
@@ -748,13 +746,14 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append(_localBox.BaseUrl + "lox_api/user");
 
             string AccessToken = _localBox.AccessToken;
-            localBoxUrl.Append("?access_token=" + Uri.EscapeDataString(AccessToken));
 
             using (var httpClient = new HttpClient())
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 httpClient.DefaultRequestHeaders.Add("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
+
                 var jsonString = JsonConvert.SerializeObject(post);
                 var httpRequestMessage = new HttpRequestMessage
                 {
@@ -789,13 +788,14 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append(path);
 
             string AccessToken = _localBox.AccessToken;
-            localBoxUrl.Append("?access_token=" + Uri.EscapeDataString(AccessToken));
 
             using (var httpClient = new HttpClient())
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 httpClient.DefaultRequestHeaders.Add("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
+
                 var jsonString = JsonConvert.SerializeObject(post, new JsonSerializerSettings() {
                     NullValueHandling = NullValueHandling.Ignore
                 });
@@ -832,13 +832,14 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append(path);
 
             string AccessToken = _localBox.AccessToken;
-            localBoxUrl.Append("?access_token=" + Uri.EscapeDataString(AccessToken));
 
             using (var httpClient = new HttpClient())
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 httpClient.DefaultRequestHeaders.Add("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
+
                 var jsonString = JsonConvert.SerializeObject(post, new JsonSerializerSettings() {
                     NullValueHandling = NullValueHandling.Ignore
                 });
@@ -875,13 +876,14 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append(path);
 
             string AccessToken = _localBox.AccessToken;
-            localBoxUrl.Append("?access_token=" + Uri.EscapeDataString(AccessToken));
 
             using (var httpClient = new HttpClient())
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 httpClient.DefaultRequestHeaders.Add("x-li-format", "json");
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
+
 
                 var httpRequestMessage = new HttpRequestMessage
                 {

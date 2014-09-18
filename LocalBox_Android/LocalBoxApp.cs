@@ -2,12 +2,15 @@
 
 using Android.App;
 using Android.Runtime;
+using Android.Content;
 
 namespace localbox.android
 {
 	[Application(Label = "LocalBox", Theme = "@android:style/Theme.Holo.Light")]
     public class LocalBoxApp : Application
     {
+		private static Context context;
+
         public LocalBoxApp (IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
         {
         }
@@ -19,8 +22,14 @@ namespace localbox.android
         public override void OnCreate ()
         {
             base.OnCreate();
+
+			context = ApplicationContext;
         }
 
+		public static Context GetAppContext()
+		{
+			return context;
+		}
     }
 }
 

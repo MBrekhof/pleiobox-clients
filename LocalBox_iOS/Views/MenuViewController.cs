@@ -8,6 +8,7 @@ using System.Linq;
 using LocalBox_iOS.Views.Table;
 using System.IO;
 using LocalBox_iOS.Helpers;
+using System.Net;
 
 
 namespace LocalBox_iOS.Views
@@ -37,6 +38,7 @@ namespace LocalBox_iOS.Views
 
 			DialogHelper._indicatorViewLeftCorner = _indicatorViewLeftCorner;
         }
+
 		/*
         public void SelectFirst()
         {
@@ -120,6 +122,15 @@ namespace LocalBox_iOS.Views
 					try
 					{
                     	Waardes.Instance.GeselecteerdeBox = boxList[indexPath.Row].Id;
+
+						//Reset certificate validation check to default behavior
+						//ServicePointManager.ServerCertificateValidationCallback = null;
+						/*
+						if(boxList[indexPath.Row].OriginalSslCertificate != null){ //Selected localbox does have a ssl certificate
+							//Set ssl validator for selected LocalBox
+							SslValidator sslValidator = new SslValidator ();
+							ServicePointManager.ServerCertificateValidationCallback = sslValidator.ValidateServerCertficate;
+						}*/
 
 						if(boxList[indexPath.Row].BackColor.StartsWith("#")){
                     		_parent.UpdateBalkKleur(boxList[indexPath.Row].BackColor);

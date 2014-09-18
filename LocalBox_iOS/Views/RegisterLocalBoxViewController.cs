@@ -6,6 +6,7 @@ using MonoTouch.UIKit;
 
 using LocalBox_Common;
 using LocalBox_iOS.Views;
+using System.Net;
 
 namespace LocalBox_iOS
 {
@@ -95,6 +96,10 @@ namespace LocalBox_iOS
 			LocalBox box = await BusinessLayer.Instance.RegisterLocalBox (newUrl, cookieString, false);
 
 			if (box != null) {
+
+				//Set certificate for localbox
+				//box.OriginalSslCertificate = CertificateHelper.BytesOfCertificate;
+
 				AppDelegate.localBoxToRegister = box;
 				this.View.RemoveFromSuperview ();
 				homeController.RequestWachtwoord (AppDelegate.localBoxToRegister, enteredUsername, enteredPassword);
@@ -120,7 +125,7 @@ namespace LocalBox_iOS
 
 			return true;
 		}
-
 	}
+
 }
 

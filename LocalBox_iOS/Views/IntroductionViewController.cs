@@ -3,6 +3,8 @@ using System.Drawing;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using LocalBox_iOS.Views;
+using LocalBox_Common;
+using System.Net;
 
 namespace LocalBox_iOS
 {
@@ -59,34 +61,94 @@ namespace LocalBox_iOS
 			};
 
 			buttonOpenInternetBrowser.TouchUpInside += (o, s) => {
-			
-				UIAlertView alertOpenUrl = new UIAlertView ("Nieuwe LocalBox", 
-															"Voer hieronder de url naar de te registeren LocalBox in", null, 
-															"Annuleer", "Open URL");
-				alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
-				alertOpenUrl.GetTextField(0).Placeholder = "https://yourlocalbox.com";
-				alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => 
-				{
-					if (args.ButtonIndex == 1)
-					{
-						string urlString = ((UIAlertView)sender).GetTextField(0).Text;
-
-						if(string.IsNullOrEmpty(urlString))
-						{
-							var alertView = new UIAlertView("Error", "URL is niet ingevuld", null, "OK", null);
-							alertView.Show();
-						}
-						else{
-							//Open webview
-							introductionPageViewController.View.RemoveFromSuperview ();
-
-							homeController.ShowRegisterLocalBoxView(urlString);
-						}
-					}
-				};
-				alertOpenUrl.Show();
+				OpenUrlDialog();
 			};
 		}
+
+		void OpenUrlDialog()
+		{
+			UIAlertView alertOpenUrl = new UIAlertView ("Nieuwe LocalBox", 
+				"Voer hieronder de url naar de te registeren LocalBox in", null, 
+				"Annuleer", "Open URL");
+			alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
+			alertOpenUrl.GetTextField(0).Placeholder = "https://yourlocalbox.com";
+			alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => 
+			{
+				if (args.ButtonIndex == 1)
+				{
+					string urlString = ((UIAlertView)sender).GetTextField(0).Text;
+
+					if(string.IsNullOrEmpty(urlString))
+					{
+						var alertView = new UIAlertView("Error", "URL is niet ingevuld", null, "OK", null);
+						alertView.Show();
+					}
+					else{
+
+						if(urlString.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase))
+						{
+							UIAlertView alertHttpUrl = new UIAlertView ("Waarschuwing", 
+								"U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?", null, 
+								"Annuleer", "Ga verder");
+							alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => 
+							{
+								if (a.ButtonIndex == 1)
+								{
+									if(!string.IsNullOrEmpty(urlString))
+									{
+										OpenInternetBrowser(urlString);
+									}
+								}else {
+									OpenUrlDialog();
+								}
+							};
+							alertHttpUrl.Show();
+						}
+						else if (urlString.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase))
+						{
+							if(CertificateHelper.DoesHaveAValidCertificate(urlString))
+							{
+								OpenInternetBrowser(urlString);
+							}
+							else {
+								UIAlertView alertHttpUrl = new UIAlertView ("Error", 
+									"U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Dit wordt momenteel niet ondersteund door de iOS app.\n\n" +
+									"Als alternatief kunt u, indien de LocalBox server dit ondersteund, een http:// webadres opgeven.", null, 
+									 "OK", null);
+								alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => 
+								{
+									OpenUrlDialog();
+								};
+								alertHttpUrl.Show();
+							}
+						}else {
+							UIAlertView alertUrl = new UIAlertView ("Error", 
+								"Het opgegeven webadres dient met https:// of http:// te beginnen.", null, 
+								"OK", null);
+							alertUrl.Clicked += (object send, UIButtonEventArgs a) => 
+							{
+								OpenUrlDialog();
+							};
+							alertUrl.Show();
+						}
+					}
+				}
+			};
+			alertOpenUrl.Show();
+		}
+
+
+
+
+
+		void OpenInternetBrowser(string urlString)
+		{
+			//Open webview
+			introductionPageViewController.View.RemoveFromSuperview ();
+
+			homeController.ShowRegisterLocalBoxView(urlString);
+		}
+
 
 
 		void HideButtons()

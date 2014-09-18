@@ -49,7 +49,7 @@ namespace LocalBox_Common
 				
 					using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
 						if (response.StatusCode != HttpStatusCode.OK) {
-							// TODO: foutmelding?
+
 							Console.Out.WriteLine ("Error fetching data. Server returned status code: {0}", response.StatusCode);
 							return result;
 						}
@@ -97,7 +97,6 @@ namespace LocalBox_Common
 									result = box;
   
 								} catch (Exception ex) {
-									// TODO: foutafhandeling bij ongeldige JSON?!
 									result = null;
 								}
 							}

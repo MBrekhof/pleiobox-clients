@@ -18,7 +18,6 @@ namespace LocalBox_Common
 
 		[DataMember]
         public string Name { get; set; }
-        //[Unique]
 
 		[DataMember]
 		public string BaseUrl { get; set; }
@@ -34,6 +33,10 @@ namespace LocalBox_Common
 
 		[DataMember]
         public string LogoUrl { get; set; }
+
+		[DataMember]
+		public byte[] OriginalSslCertificate { get; set; }
+
 
 		public string ApiKey { get; set; }
 		public string ApiSecret { get; set; }

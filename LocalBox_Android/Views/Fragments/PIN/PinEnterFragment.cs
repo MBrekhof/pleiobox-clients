@@ -123,6 +123,8 @@ namespace localbox.android
 
         void HandleClickOk(object sender, EventArgs e)
         {
+			string fullPin = PinHelper.GetPinWithDeviceId (pin.ToString());
+
             if (pin.Length != digits.Length)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity);
@@ -139,7 +141,7 @@ namespace localbox.android
                 AlertDialog dialog = builder.Create();
                 dialog.Show();
 			}
-			else if (DataLayer.Instance.UnlockDatabase(pin.ToString()))
+			else if (DataLayer.Instance.UnlockDatabase(fullPin))
 			{
 
 				if (HomeActivity.shouldLockApp) {
