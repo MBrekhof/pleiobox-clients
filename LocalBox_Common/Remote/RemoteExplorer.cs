@@ -34,7 +34,6 @@ namespace LocalBox_Common.Remote
 
 		public bool IsAuthorized ()
 		{
-			// TIJDELIJK:
 			DateTime expi;
 			DateTime.TryParse (_localBox.DatumTijdTokenExpiratie, out expi);
 

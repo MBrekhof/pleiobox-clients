@@ -57,11 +57,9 @@
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="PGP\CryptoHelper.cs" />
-    <Compile Include="Helpers\FileEncryptHelper.cs" />
     <Compile Include="Data\DataLayer.cs" />
     <Compile Include="Data\Database.cs" />
     <Compile Include="Model\TreeNode.cs" />
-    <Compile Include="Remote\Constants.cs" />
     <Compile Include="Remote\RemoteExplorer.cs" />
     <Compile Include="Remote\Authorization\LocalBoxAuthorization.cs" />
     <Compile Include="Remote\Model\DataItem.cs" />

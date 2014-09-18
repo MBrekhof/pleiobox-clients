@@ -58,9 +58,7 @@
     <Compile Include="Data\DataLayer.cs" />
     <Compile Include="Model\TreeNode.cs" />
     <Compile Include="Data\Database.cs" />
-    <Compile Include="Helpers\FileEncryptHelper.cs" />
     <Compile Include="AES256\AESKeyAndIVGenerator.cs" />
-    <Compile Include="Remote\Constants.cs" />
     <Compile Include="Remote\RemoteExplorer.cs" />
     <Compile Include="Remote\Authorization\LocalBoxAuthorization.cs" />
     <Compile Include="Remote\Model\DataItem.cs" />

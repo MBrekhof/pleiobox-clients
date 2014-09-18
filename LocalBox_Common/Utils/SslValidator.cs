@@ -58,8 +58,6 @@ namespace LocalBox_Common
 			// Dit zal dan ook de enige error zijn die we doorlaten, de rest knalt die op.
 
 			// Als we dus te maken hebben met een Man in The Middle attack (mitma), zal de error PartialChain zijn.
-			// Dit omdat Staat der Nederlanden de enige root in onze chain is, het certificaat wat we 
-			// binnenkrijgen bij een mitma kan hiermee niet ondertekend kan zijn (!).
 
 			// Eerst de chain opbouwen zodat het certificaat erin wordt opgenomen + alle errors.
 			newChain.Build (new X509Certificate2 (cert));
