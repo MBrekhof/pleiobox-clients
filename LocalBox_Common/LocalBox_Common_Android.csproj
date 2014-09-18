@@ -51,14 +51,12 @@
       <HintPath>Dll\sqlcipher\lib\android\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\LocalBox_Android\Components\json.net-4.5.11\lib\android\Newtonsoft.Json.dll</HintPath>
+      <HintPath>Dll\json.net\lib\android\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="PGP\CryptoHelper.cs" />
-    <Compile Include="PGP\IoHelper.cs" />
-    <Compile Include="AES256\AESEncrypter.cs" />
     <Compile Include="Helpers\FileEncryptHelper.cs" />
     <Compile Include="Data\DataLayer.cs" />
     <Compile Include="Data\Database.cs" />
@@ -105,11 +103,5 @@
     <Folder Include="AES256\" />
     <Folder Include="Helpers\" />
     <Folder Include="Utils\" />
-  </ItemGroup>
-  <ItemGroup>
-    <XamarinComponentReference Include="json.net">
-      <Version>4.5.11</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
   </ItemGroup>
 </Project>
