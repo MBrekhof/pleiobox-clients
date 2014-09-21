@@ -23,14 +23,25 @@ namespace LocalBox_iOS
 			this.parentController = parentController;
 			this.homeController = homeController;
 
-			pageControl = new UIPageControl{
-				Pages = TotalPages,
-				Frame = new RectangleF(
-					parentController.View.Frame.Width /2 - 50,  //X
-					parentController.View.Frame.Height - 305, 	//Y
-					100, 										//Width
-					50) 										//Height
-			};
+			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) { //iOS 8
+				pageControl = new UIPageControl {
+					Pages = TotalPages,
+					Frame = new RectangleF (
+						parentController.View.Frame.Width / 2 - 50,  //X
+						parentController.View.Frame.Height - 75, 	//Y
+						100, 										//Width
+						50) 										//Height
+				};
+			} else { //iOS7
+				pageControl = new UIPageControl { 
+					Pages = TotalPages,
+					Frame = new RectangleF (
+						parentController.View.Frame.Width / 2 - 50,  //X
+						parentController.View.Frame.Height - 330, 	//Y
+						100, 										//Width
+						50) 										//Height
+				};
+			}
 
 			pageControl.Enabled = false;
 			pageControl.ValueChanged += HandlePageControlValueChanged;
