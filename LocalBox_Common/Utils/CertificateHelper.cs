@@ -15,31 +15,35 @@ namespace LocalBox_Common
 
 		public static void StoreCertificateFromUrl (string url)
 		{
+			Environment.SetEnvironmentVariable ("MONO_TLS_SESSION_CACHE_TIMEOUT", "0");
+
+			ServicePointManager.CheckCertificateRevocationList = true;
+			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, cert, chain, errors) => 
+				{ 
+					if(errors == SslPolicyErrors.None)
+					{
+						foreach (var certificate in chain.ChainPolicy.ExtraStore) 
+						{
+							BytesOfCertificate = certificate.Export(X509ContentType.Cert);
+							return true;
+						}
+
+						var certi = new X509Certificate2(cert);
+						BytesOfCertificate = certi.Export(X509ContentType.Cert);
+					}
+					return true;
+				});
+
 			using (var client = new WebClient ()) {
 				try {
-					client.OpenRead(new Uri (url));
+					client.DownloadString(new Uri (url));
 
 				} catch (Exception ex){
 					Console.WriteLine (ex.Message);
 				}
 			}
 
-			ServicePointManager.CheckCertificateRevocationList = true;
-			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, cert, chain, errors) => 
-			{ 
-				if(errors == SslPolicyErrors.None)
-				{
-					foreach (var certificate in chain.ChainPolicy.ExtraStore) 
-					{
-						BytesOfCertificate = certificate.Export(X509ContentType.Cert);
-						return true;
-					}
 
-					var certi = new X509Certificate2(cert);
-					BytesOfCertificate = certi.Export(X509ContentType.Cert);
-				}
-				return true;
-			});
 		}
 
 
