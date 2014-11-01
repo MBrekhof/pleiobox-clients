@@ -82,6 +82,7 @@
     <Compile Include="Model\APIKeys.cs" />
     <Compile Include="Utils\CertificateHelper.cs" />
     <Compile Include="Utils\SslValidator.cs" />
+    <Compile Include="Constants\DocumentConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -101,5 +102,6 @@
     <Folder Include="AES256\" />
     <Folder Include="Helpers\" />
     <Folder Include="Utils\" />
+    <Folder Include="Constants\" />
   </ItemGroup>
 </Project>

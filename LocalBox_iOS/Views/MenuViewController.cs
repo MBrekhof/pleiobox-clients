@@ -53,9 +53,8 @@ namespace LocalBox_iOS.Views
                 logo.Image = UIImage.FromBundle("RijkslogoArtboard-1");
             }
             else
-            {
-                var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                var p = Path.Combine(documentsPath, logoUrl.Substring(logoUrl.LastIndexOf("/") + 1));
+            {;
+				var p = Path.Combine(DocumentConstants.DocumentsPath, logoUrl.Substring(logoUrl.LastIndexOf("/") + 1));
 
                 if (File.Exists(p))
                 {

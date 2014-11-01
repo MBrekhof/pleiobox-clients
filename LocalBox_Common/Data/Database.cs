@@ -25,7 +25,7 @@ namespace LocalBox_Common
 //                {
 //                    if (_instance == null)
 //                    {
-//                        string db = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "localbox.db");
+//                        string db = Path.Combine(Environment.GetFolderPath(DocumentConstants.DocumentsPath, "localbox.db");
 //                        _instance = new Database(db, "1234");
 //                    }
 //                }

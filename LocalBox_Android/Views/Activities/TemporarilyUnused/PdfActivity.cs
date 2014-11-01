@@ -177,7 +177,7 @@ namespace localbox.android
 								if (!file.Exists () || file.CanWrite ()) 
 								{
 									//Save pdf file to temporary file - this file is used to upload
-									var documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal);
+									var documentsPath = DocumentConstants.DocumentsPath;
 									temporaryFilePath = System.IO.Path.Combine (documentsPath, "temporary.pdf");
 
 									if (File.Exists (temporaryFilePath)) {

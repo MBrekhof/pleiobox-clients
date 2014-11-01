@@ -191,8 +191,7 @@ namespace LocalBox_iOS.Views
 							string filePath = string.Empty;
 
 							//Create temp file
-							var documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal);
-							string temporaryFilePath = System.IO.Path.Combine (documentsPath, _treeNode.Name);
+							string temporaryFilePath = System.IO.Path.Combine (DocumentConstants.DocumentsPath, _treeNode.Name);
 
 							if (File.Exists (temporaryFilePath)) {
 								File.Delete (temporaryFilePath);

@@ -51,8 +51,10 @@
     <Folder Include="Data\" />
     <Folder Include="Model\" />
     <Folder Include="Utils\" />
+    <Folder Include="Constants\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <Compile Include="PGP\CryptoHelper.cs" />
     <Compile Include="Data\DataLayer.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Model\APIKeys.cs" />
     <Compile Include="Utils\SslValidator.cs" />
     <Compile Include="Utils\CertificateHelper.cs" />
+    <Compile Include="Constants\DocumentConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\AboutResources.txt" />

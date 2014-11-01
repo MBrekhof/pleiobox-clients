@@ -225,7 +225,7 @@ namespace LocalBox_iOS.Views
 							filename = representation.Filename.Substring (0, representation.Filename.LastIndexOf ('.')) + ".jpg";
 						}
 						string destination = Path.Combine (NodePath, filename);
-						filename = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Personal), filename);
+						filename = Path.Combine (DocumentConstants.DocumentsPath, filename);
 						NSError err = null;
 						if (data.Save (filename, false, out err)) {
 							upoc.Dismiss (true);

@@ -92,7 +92,7 @@ namespace localbox.android
 
 				string logoUrl = DataLayer.Instance.GetSelectedOrDefaultBox ().LogoUrl;
 
-				string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+				string documentsPath = DocumentConstants.DocumentsPath;
 				string pathToLogo =  System.IO.Path.Combine(documentsPath, logoUrl.Substring(logoUrl.LastIndexOf("/") + 1));
 
 				if (File.Exists (pathToLogo)) 

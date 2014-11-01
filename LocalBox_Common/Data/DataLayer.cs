@@ -33,7 +33,7 @@ namespace LocalBox_Common
 
         DataLayer()
         {
-            databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "localbox.db");
+			databasePath = Path.Combine(DocumentConstants.DocumentsPath, "localbox.db");
         }
             
         public Database DbInstance()
@@ -43,7 +43,7 @@ namespace LocalBox_Common
 
         public bool DatabaseCreated()
         {
-            return File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "localbox.db"));
+			return File.Exists(Path.Combine(DocumentConstants.DocumentsPath, "localbox.db"));
         }
 
         public bool DatabaseUnlocked()
@@ -80,8 +80,8 @@ namespace LocalBox_Common
 
 		private async void DeleteDatabase()
 		{
-			if(File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "localbox.db"))){
-				File.Delete (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments), "localbox.db"));
+			if(File.Exists(Path.Combine(DocumentConstants.DocumentsPath, "localbox.db"))){
+				File.Delete (Path.Combine (DocumentConstants.DocumentsPath, "localbox.db"));
 			}
 		}
 
@@ -257,7 +257,7 @@ namespace LocalBox_Common
         }
 
         public void EmptyDecryptedFolder() {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "decrypted");
+			var path = Path.Combine(DocumentConstants.DocumentsPath, "decrypted");
             if (Directory.Exists(path))
             {
                 Array.ForEach(Directory.GetDirectories(path), e=> Directory.Delete(e, true));
@@ -267,7 +267,7 @@ namespace LocalBox_Common
 
         public string GetFilePathSync(string path)
         {
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			var documentsPath = DocumentConstants.DocumentsPath;
 			var pathToFile =  Path.Combine(documentsPath, "" + Waardes.Instance.GeselecteerdeBox, path.Substring(1, path.Length -1));
             EmptyDecryptedFolder();
 
@@ -461,7 +461,7 @@ namespace LocalBox_Common
 
 		public void DeleteLocalFileOrFolder(string path)
         {
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			var documentsPath = DocumentConstants.DocumentsPath;
             string pathToRemove = Path.Combine(documentsPath, "" + Waardes.Instance.GeselecteerdeBox, path.Substring(1, path.Length -1));
 
             if(File.Exists(pathToRemove) || Directory.Exists(pathToRemove)) {
@@ -504,8 +504,7 @@ namespace LocalBox_Common
 
 		public void DeleteLocalBox(int localBoxId)
 		{
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            string pathToRemove = Path.Combine(documentsPath, "" + localBoxId);
+			string pathToRemove = Path.Combine(DocumentConstants.DocumentsPath, "" + localBoxId);
             if (Directory.Exists(pathToRemove))
             {
                 Directory.Delete(pathToRemove, true);
@@ -620,7 +619,7 @@ namespace LocalBox_Common
 			try {
 
 				//Save pdf file to temporary file - this file is used to upload
-				var documentsPath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal);
+				var documentsPath = DocumentConstants.DocumentsPath;
 				string temporaryFilePath = System.IO.Path.Combine (documentsPath, "temporary.pdf");
 
 				if (File.Exists (temporaryFilePath)) {

@@ -128,8 +128,7 @@ namespace LocalBox_Common
 					if (response.IsSuccessStatusCode) {
 						byte[] responseByteArray = response.Content.ReadAsByteArrayAsync ().Result;
 
-						var documentsPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-						var p = Path.Combine (documentsPath, logoUrl.Substring (logoUrl.LastIndexOf ("/") + 1));
+						var p = Path.Combine (DocumentConstants.DocumentsPath, logoUrl.Substring (logoUrl.LastIndexOf ("/") + 1));
 
 						if (p != null)
 							File.WriteAllBytes (p, responseByteArray);
@@ -172,7 +171,7 @@ namespace LocalBox_Common
 					}
 
 					return result;
-				} catch {
+				} catch (Exception ex) {
 					return result;
 				}
 			});
