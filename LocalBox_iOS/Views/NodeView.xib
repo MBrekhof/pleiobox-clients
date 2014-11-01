@@ -27,7 +27,7 @@
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="2lV-Yz-I6s">
                             <rect key="frame" x="20" y="23" width="44" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" image="buttons/IcTop_Terug"/>
+                            <state key="normal" image="IcTop_Terug"/>
                         </button>
                     </subviews>
                     <color key="backgroundColor" red="0.5607843137254902" green="0.792156862745098" blue="0.90980392156862744" alpha="1" colorSpace="calibratedRGB"/>
@@ -43,21 +43,21 @@
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="lQL-9p-ZPq">
                                     <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <state key="normal" image="buttons/IcBottom-Toevoegen">
+                                    <state key="normal" image="IcBottom-Toevoegen">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="e4G-Ti-TgE">
                                     <rect key="frame" x="52" y="0.0" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <state key="normal" image="buttons/IcBottom-Upload">
+                                    <state key="normal" image="IcBottom-Upload">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Y0E-Ie-olp">
                                     <rect key="frame" x="104" y="0.0" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <state key="normal" image="buttons/IcBottom-Sync">
+                                    <state key="normal" image="IcBottom-Sync">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
@@ -98,9 +98,9 @@
         </tableViewController>
     </objects>
     <resources>
-        <image name="buttons/IcBottom-Sync" width="16" height="16"/>
-        <image name="buttons/IcBottom-Toevoegen" width="16" height="16"/>
-        <image name="buttons/IcBottom-Upload" width="16" height="16"/>
-        <image name="buttons/IcTop_Terug" width="16" height="16"/>
+        <image name="IcBottom-Sync" width="16" height="16"/>
+        <image name="IcBottom-Toevoegen" width="16" height="16"/>
+        <image name="IcBottom-Upload" width="16" height="16"/>
+        <image name="IcTop_Terug" width="16" height="16"/>
     </resources>
 </document>

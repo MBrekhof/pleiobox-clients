@@ -22,12 +22,12 @@
                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Su8-Kd-pzm">
                                     <rect key="frame" x="20" y="23" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" image="buttons/IcTop_Terug"/>
+                                    <state key="normal" image="IcTop_Terug"/>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Lih-1g-YGF">
                                     <rect key="frame" x="464" y="23" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" image="buttons/IcTop_Sluiten">
+                                    <state key="normal" image="IcTop_Sluiten">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
@@ -54,7 +54,7 @@
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="wSK-OL-wFU">
                                     <rect key="frame" x="239" y="16" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" image="buttons/IcBottom-Opslaan">
+                                    <state key="normal" image="IcBottom-Opslaan">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
@@ -89,8 +89,8 @@
         </view>
     </objects>
     <resources>
-        <image name="buttons/IcBottom-Opslaan" width="16" height="16"/>
-        <image name="buttons/IcTop_Sluiten" width="16" height="16"/>
-        <image name="buttons/IcTop_Terug" width="16" height="16"/>
+        <image name="IcBottom-Opslaan" width="16" height="16"/>
+        <image name="IcTop_Sluiten" width="16" height="16"/>
+        <image name="IcTop_Terug" width="16" height="16"/>
     </resources>
 </document>

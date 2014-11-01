@@ -262,15 +262,15 @@ namespace LocalBox_iOS.Views
                 {
                     case 0:
 						cell.Titel = "Toevoegen";
-						cell.Image = UIImage.FromBundle("buttons/IcBottom-ToevoegenLB");
+						cell.Image = UIImage.FromBundle("IcBottom-ToevoegenLB");
 						break;
                     case 1:
 						cell.Titel = "Vergrendelen";
-						cell.Image = UIImage.FromBundle("buttons/IcBottom-Vergrendel");
+						cell.Image = UIImage.FromBundle("IcBottom-Vergrendel");
 						break;
 					case 2:
 						cell.Titel = "Over de app";
-						cell.Image = UIImage.FromBundle("buttons/IcBottom-Over-de-app");
+						cell.Image = UIImage.FromBundle("IcBottom-Over-de-app");
 						break;
 
                 }

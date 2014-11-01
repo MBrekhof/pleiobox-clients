@@ -4,6 +4,10 @@ using System.Drawing;
 using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using LocalBox_iOS;
+using LocalBox_iOS.Helpers;
+using System.Threading.Tasks;
+using System.Threading;
 
 public class ActionSheetDatePickerCustom
 {
@@ -41,6 +45,8 @@ public class ActionSheetDatePickerCustom
 		set { _actionSheet = value; }
 	}
 
+	UIViewController viewController = new UIViewController ();
+
 
        
 	public ActionSheetDatePickerCustom (UIView owner)
@@ -68,7 +74,7 @@ public class ActionSheetDatePickerCustom
 		_toolbar.Translucent = true;
 
 		// Add the done button
-		_doneButton = new UIBarButtonItem (UIBarButtonSystemItem.Done, null, null);
+		_doneButton = new UIBarButtonItem ("Gereed", UIBarButtonItemStyle.Done, null);
                 
 		_toolbar.Items = new UIBarButtonItem[] {
 			new UIBarButtonItem (UIBarButtonSystemItem.FlexibleSpace, null, null),
@@ -90,7 +96,9 @@ public class ActionSheetDatePickerCustom
 		RectangleF actionSheetFrame = new RectangleF (0, (UIScreen.MainScreen.ApplicationFrame.Width - actionSheetSize.Height), actionSheetSize.Width, actionSheetSize.Height);
                 
 		// show the action sheet and add the controls to it
-		_actionSheet.ShowInView (_owner);
+		if (!UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
+			_actionSheet.ShowInView (_owner);
+		}
                 
 		// resize the action sheet to fit our other stuff
 		_actionSheet.Frame = actionSheetFrame;
@@ -103,31 +111,88 @@ public class ActionSheetDatePickerCustom
 
 		// ipad
 		if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad) {
-			var popover = _actionSheet.Superview.Superview;
-			if (popover != null) {
 
-				MARGIN = 50;
+			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
+			
+				int size = (int)picker.Frame.Size.Height + 44;
 
-				var y = (UIScreen.MainScreen.ApplicationFrame.Width - _actionSheet.Frame.Height) / 2;
-				var width = _actionSheet.Frame.Width - (MARGIN * 2);
-				var height = _actionSheet.Frame.Height;
+				viewController.View.Frame = new RectangleF (0, UIApplication.SharedApplication.KeyWindow.Frame.Height, _owner.Frame.Size.Width, UIApplication.SharedApplication.KeyWindow.Frame.Height);
+				//picker.Frame = new RectangleF (new PointF (0, 44), picker.Frame.Size);
+				picker.Frame = new RectangleF (picker.Frame.X, 44, _owner.Frame.Width, picker.Frame.Height);
+				viewController.View.AddSubview (picker);
+				viewController.View.BackgroundColor = UIColor.White;
 
-				popover.Frame = new RectangleF (175, y, width, height);
+				_toolbar = new UIToolbar (new RectangleF (0, 0, _owner.Frame.Size.Width, 44));
 
-				//_actionSheet.Frame = new RectangleF (x + 200, y, width - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT), height - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT));
-				_actionSheet.Frame = new RectangleF (400, y, 651, 239);
+				var leftButton = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace) { Width = 50 };
+				var middleButton = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace) { Width = 50 };
 
-				picker.Frame = new RectangleF (picker.Frame.X, picker.Frame.Y, _actionSheet.Frame.Width, picker.Frame.Height);
+				_toolbar.SetItems( new UIBarButtonItem[] { leftButton, middleButton, _doneButton }, false);
 
-				_toolbar.SizeToFit ();
+				float xPosition = _owner.Frame.Size.Width / 2 - 150;
+				UILabel labelTitle = new UILabel (new RectangleF (xPosition, 0, 300, 44));
+				labelTitle.Text = "Kies een vervaldatum:";
+				labelTitle.TextAlignment = UITextAlignment.Center;
+				FontHelper.SetFont (labelTitle);
+
+				viewController.View.AddSubview (_toolbar);
+				viewController.View.AddSubview (labelTitle);
+
+				UIApplication.SharedApplication.KeyWindow.AddSubview (viewController.View);
+
+				UIView.BeginAnimations ("slide");
+				UIView.SetAnimationDuration (0.3);
+				viewController.View.Frame = new RectangleF (new PointF (0, UIApplication.SharedApplication.KeyWindow.Frame.Height - size), viewController.View.Frame.Size);
+				UIView.CommitAnimations ();
+			}
+
+
+			else {
+				var popover = _actionSheet.Superview.Superview;
+				if (popover != null) {
+
+					MARGIN = 50;
+
+					var y = (UIScreen.MainScreen.ApplicationFrame.Width - _actionSheet.Frame.Height) / 2;
+					var width = _actionSheet.Frame.Width - (MARGIN * 2);
+					var height = _actionSheet.Frame.Height;
+
+					popover.Frame = new RectangleF (175, y, width, height);
+
+					//_actionSheet.Frame = new RectangleF (x + 200, y, width - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT), height - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT));
+					_actionSheet.Frame = new RectangleF (400, y, 651, 239);
+
+					picker.Frame = new RectangleF (picker.Frame.X, picker.Frame.Y, _actionSheet.Frame.Width, picker.Frame.Height);
+
+					_toolbar.SizeToFit ();
+				}
 			}
 		}
+			
+
 	}
 
        
 	public void Hide (bool animated)
 	{
-		_actionSheet.DismissWithClickedButtonIndex (0, animated);
+		if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
+			UIView.BeginAnimations ("slide");
+			UIView.SetAnimationDuration (0.3);
+			viewController.View.Frame = new RectangleF (new PointF (0, UIApplication.SharedApplication.KeyWindow.Frame.Height), viewController.View.Frame.Size);
+			UIView.CommitAnimations ();
+
+			Task.Factory.StartNew (() => {
+				Thread.Sleep (1000);
+				_owner.InvokeOnMainThread (() => {
+					viewController.View.RemoveFromSuperview ();
+					viewController = null;
+				});
+
+			});
+		} 
+		else {
+			_actionSheet.DismissWithClickedButtonIndex (0, animated);
+		}
 	}
         
              

@@ -21,7 +21,7 @@
                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QNb-pM-cE6">
                                     <rect key="frame" x="296" y="23" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" image="buttons/IcTop_Sluiten">
+                                    <state key="normal" image="IcTop_Sluiten">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
@@ -63,7 +63,7 @@
                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGx-8U-1vP">
                                     <rect key="frame" x="158" y="16" width="44" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" image="buttons/IcBottom-Opslaan">
+                                    <state key="normal" image="IcBottom-Opslaan">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
@@ -95,7 +95,7 @@
         </view>
     </objects>
     <resources>
-        <image name="buttons/IcBottom-Opslaan" width="16" height="16"/>
-        <image name="buttons/IcTop_Sluiten" width="16" height="16"/>
+        <image name="IcBottom-Opslaan" width="16" height="16"/>
+        <image name="IcTop_Sluiten" width="16" height="16"/>
     </resources>
 </document>

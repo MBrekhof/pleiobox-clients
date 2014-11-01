@@ -18,12 +18,12 @@
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="iTC-of-uvu">
                             <rect key="frame" x="20" y="24" width="44" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" image="buttons/IcTop_Terug"/>
+                            <state key="normal" image="IcTop_Terug"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="rda-XM-oiW">
                             <rect key="frame" x="704" y="24" width="44" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" image="buttons/IcTop_Maximaliseren">
+                            <state key="normal" image="IcTop_Maximaliseren">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
@@ -65,7 +65,7 @@
         </view>
     </objects>
     <resources>
-        <image name="buttons/IcTop_Maximaliseren" width="16" height="16"/>
-        <image name="buttons/IcTop_Terug" width="16" height="16"/>
+        <image name="IcTop_Maximaliseren" width="16" height="16"/>
+        <image name="IcTop_Terug" width="16" height="16"/>
     </resources>
 </document>

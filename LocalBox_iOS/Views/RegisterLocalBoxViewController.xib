@@ -41,7 +41,7 @@
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oEP-ac-BEO">
                     <rect key="frame" x="943" y="66" width="40" height="40"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="buttons/IcTop_Sluiten">
+                    <state key="normal" image="IcTop_Sluiten">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -55,6 +55,6 @@
         </view>
     </objects>
     <resources>
-        <image name="buttons/IcTop_Sluiten" width="16" height="16"/>
+        <image name="IcTop_Sluiten" width="16" height="16"/>
     </resources>
 </document>

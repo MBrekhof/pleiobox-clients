@@ -74,11 +74,11 @@ namespace LocalBox_iOS.Views.ItemView
         public override void ViewWillResize() {
             if (UIApplication.SharedApplication.KeyWindow.RootViewController.View.Subviews.Contains(this))
             {
-                FullScreenButton.SetImage(UIImage.FromBundle("buttons/IcTop_Minimaliseren"), UIControlState.Normal);
+                FullScreenButton.SetImage(UIImage.FromBundle("IcTop_Minimaliseren"), UIControlState.Normal);
             }
             else
             {
-                FullScreenButton.SetImage(UIImage.FromBundle("buttons/IcTop_Maximaliseren"), UIControlState.Normal);
+                FullScreenButton.SetImage(UIImage.FromBundle("IcTop_Maximaliseren"), UIControlState.Normal);
             }
         }
 

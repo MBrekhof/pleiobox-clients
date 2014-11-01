@@ -13,7 +13,7 @@
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="XGF-g0-OFm">
                     <rect key="frame" x="178" y="3" width="44" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="buttons/IcVerwijderen">
+                    <state key="normal" image="IcVerwijderen">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                 </button>
@@ -25,6 +25,6 @@
         </view>
     </objects>
     <resources>
-        <image name="buttons/IcVerwijderen" width="16" height="16"/>
+        <image name="IcVerwijderen" width="16" height="16"/>
     </resources>
 </document>

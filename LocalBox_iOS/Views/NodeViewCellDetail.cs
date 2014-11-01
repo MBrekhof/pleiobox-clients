@@ -138,7 +138,7 @@ namespace LocalBox_iOS.Views
 
 
         private UIButton DelenRootButton() {
-            var button = Button("buttons/IcDelen", null);
+            var button = Button("IcDelen", null);
 
             button.TouchUpInside += (object sender, EventArgs e) =>
             {
@@ -149,7 +149,7 @@ namespace LocalBox_iOS.Views
         }
 
         private UIButton DelenButton() {
-            var button = Button("buttons/IcDelen", null);
+            var button = Button("IcDelen", null);
             
 			button.TouchUpInside += (object sender, EventArgs e) =>
             {
@@ -160,7 +160,7 @@ namespace LocalBox_iOS.Views
         }
 
         private UIButton FavorietButton() {
-            var button =  Button("buttons/IcMaak-favoriet", null);
+            var button =  Button("IcMaak-favoriet", null);
             button.TouchUpInside += (object sender, EventArgs e) => {
                 if(_treeNode.IsFavorite) {
                     DialogHelper.ShowProgressDialog("Favoriet verwijderen", "Bestand verwijderd uit de lijst met favorieten", async () =>  {
@@ -180,7 +180,7 @@ namespace LocalBox_iOS.Views
         }
 
         private UIButton OpenenMetButton() {
-			var button = Button("buttons/IcOpenen-in", null);
+			var button = Button("IcOpenen-in", null);
             button.TouchUpInside += (object sender, EventArgs e) => {
                 DialogHelper.ShowProgressDialog("Bestand ophalen", "Bestand aan het ophalen", async () => {
 					try{
@@ -223,7 +223,7 @@ namespace LocalBox_iOS.Views
 
 
 		private UIButton VerplaatsButton() {
-			return Button("buttons/IcVerplaatsen", () => {
+			return Button("IcVerplaatsen", () => {
 			
 				HomeController homeController = HomeController.homeController;
 				homeController.MoveFile(_treeNode.Path, _nodeView);
@@ -236,7 +236,7 @@ namespace LocalBox_iOS.Views
 
 
         private UIButton VerwijderenButton() {
-            return Button("buttons/IcVerwijderen", () => {
+            return Button("IcVerwijderen", () => {
                 
 				UIAlertView alertView = new UIAlertView("Waarschuwing", 
 													"Bent u zeker van deze verwijder actie? \nDeze actie is niet terug te draaien.", 

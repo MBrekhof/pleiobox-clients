@@ -31,7 +31,7 @@
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="uca-e5-aps">
                             <rect key="frame" x="362" y="16" width="44" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <state key="normal" image="buttons/IcBottom-Sync">
+                            <state key="normal" image="IcBottom-Sync">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
@@ -65,6 +65,6 @@
         </tableViewController>
     </objects>
     <resources>
-        <image name="buttons/IcBottom-Sync" width="16" height="16"/>
+        <image name="IcBottom-Sync" width="16" height="16"/>
     </resources>
 </document>
