@@ -227,60 +227,78 @@ namespace LocalBox_iOS.Views
 		}
 
 
-
-		public async void RequestWachtwoord(LocalBox box, string enteredUsername, string enteredPassword)
+		public async void AddLocalBox(LocalBox lbToAdd)
 		{
-			if (string.IsNullOrEmpty (enteredUsername) || string.IsNullOrEmpty (enteredPassword)) {
-				if (_introduction != null) {
-					View.WillRemoveSubview (_introduction.View);
+			bool result = false;
+	
+			DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
+				result = await BusinessLayer.Instance.Authenticate (lbToAdd);
+
+				if (result) {
+					LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (lbToAdd, InitialiseMenuAfterRegistration);
+					AppDelegate.localBoxToRegister = null;
 				}
+			});
+		}
 
-				UIAlertView createFolderAlert = new UIAlertView ("Registreren", "Geef uw gebruikersnaam en wachtwoord", null, "Annuleer", "Ok");
-				createFolderAlert.AlertViewStyle = UIAlertViewStyle.LoginAndPasswordInput;
-				createFolderAlert.GetTextField (0).Placeholder = "Gebruikersnaam";
-				createFolderAlert.GetTextField (1).Placeholder = "Wachtwoord";
 
-				if (!string.IsNullOrEmpty (box.User)) {
-					createFolderAlert.GetTextField (0).Text = box.User;
-				}
 
-				createFolderAlert.Clicked += (object s, UIButtonEventArgs args) =>
-            	DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
-					if (args.ButtonIndex == 1) {
-						box.User = ((UIAlertView)s).GetTextField (0).Text;
-						bool result = false;
-						result = await BusinessLayer.Instance.Authenticate (box, ((UIAlertView)s).GetTextField (1).Text);
-					
-						if (result) {
-							LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
-							AppDelegate.localBoxToRegister = null;
-						} else {
-							Debug.WriteLine ("Authenticatie mislukt..");
-							RequestWachtwoord (box, "", "");
-						}
-					} else {
-						DataLayer.Instance.DeleteLocalBox (box.Id);
-						InitialiseMenu ();
-					}
-				});
-				createFolderAlert.Show ();
-			} else {
-				bool result = false;
-
-				box.User = enteredUsername;
-				DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
-					result = await BusinessLayer.Instance.Authenticate (box, (enteredPassword));
-
-					if (result) {
-						LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
-						AppDelegate.localBoxToRegister = null;
-					} else {
-						Debug.WriteLine ("Authenticatie mislukt..");
-						RequestWachtwoord (box, "", "");
-					}
-				});
-			}
-        }
+//		public async void RequestWachtwoord(LocalBox box, string enteredUsername, string enteredPassword)
+//		{
+//			if (string.IsNullOrEmpty (enteredUsername) || string.IsNullOrEmpty (enteredPassword)) {
+//				if (_introduction != null) {
+//					View.WillRemoveSubview (_introduction.View);
+//				}
+//
+//				UIAlertView createFolderAlert = new UIAlertView ("Registreren", "Geef uw gebruikersnaam en wachtwoord", null, "Annuleer", "Ok");
+//				createFolderAlert.AlertViewStyle = UIAlertViewStyle.LoginAndPasswordInput;
+//				createFolderAlert.GetTextField (0).Placeholder = "Gebruikersnaam";
+//				createFolderAlert.GetTextField (1).Placeholder = "Wachtwoord";
+//
+//				createFolderAlert.GetTextField (0).Text = "test";
+//				createFolderAlert.GetTextField (1).Text = "M6ta6cveo";
+//
+//				if (!string.IsNullOrEmpty (box.User)) {
+//					createFolderAlert.GetTextField (0).Text = box.User;
+//				}
+//
+//				createFolderAlert.Clicked += (object s, UIButtonEventArgs args) =>
+//            	DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
+//					if (args.ButtonIndex == 1) {
+//						box.User = ((UIAlertView)s).GetTextField (0).Text;
+//						bool result = false;
+//						result = await BusinessLayer.Instance.Authenticate (box, ((UIAlertView)s).GetTextField (1).Text);
+//					
+//						if (result) {
+//							LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
+//							AppDelegate.localBoxToRegister = null;
+//						} else {
+//							Debug.WriteLine ("Authenticatie mislukt..");
+//							RequestWachtwoord (box, "", "");
+//						}
+//					} else {
+//						DataLayer.Instance.DeleteLocalBox (box.Id);
+//						InitialiseMenu ();
+//					}
+//				});
+//				createFolderAlert.Show ();
+//			} else {
+//				bool result = false;
+//
+//				box.User = enteredUsername;
+//				DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
+//					result = await BusinessLayer.Instance.Authenticate (box, (enteredPassword));
+//
+//					if (result) {
+//						LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
+//						AppDelegate.localBoxToRegister = null;
+//					} else {
+//						Debug.WriteLine ("Authenticatie mislukt..");
+//						RequestWachtwoord (box, "", "");
+//					}
+//				});
+//			}
+//        }
 
         public void PincodeInstellen()
         {
@@ -302,14 +320,15 @@ namespace LocalBox_iOS.Views
                 _pinView = null;
             }
             // al pincode aangemaakt
-			if (AppDelegate.localBoxToRegister != null)
-            {
-				RequestWachtwoord(AppDelegate.localBoxToRegister, "", "");
-            }
-            else
-            {
+//			if (AppDelegate.localBoxToRegister != null)
+//            {
+//				//RequestWachtwoord(AppDelegate.localBoxToRegister, "", "");
+//				ShowIntroductionView ();
+//            }
+//            else
+//            {
                 InitialiseMenu();
-            }
+//            }
         }
 
         public void PincodeOpgeven()
@@ -341,19 +360,20 @@ namespace LocalBox_iOS.Views
                 _pinView = null;
             }
 
-			if (AppDelegate.localBoxToRegister != null)
-			{
-				RequestWachtwoord(AppDelegate.localBoxToRegister, "", "");
-			}
-			else
-			{
+//			if (AppDelegate.localBoxToRegister != null)
+//			{
+//				//RequestWachtwoord(AppDelegate.localBoxToRegister, "", "");
+//				ShowIntroductionView ();
+//			}
+//			else
+//			{
                 if (AppDelegate.fileToUpload != null)
                 {
 					ImportFile(AppDelegate.fileToUpload);
                     AppDelegate.fileToUpload = null;
                 }
 				InitialiseMenu();
-			}
+//			}
         }
 
 
