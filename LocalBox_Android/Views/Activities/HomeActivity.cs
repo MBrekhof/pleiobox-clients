@@ -616,7 +616,7 @@ namespace localbox.android
 					{
 						bool validCertificate = CertificateHelper.DoesHaveAValidCertificate(editTextUrl.Text);
 						if(validCertificate){
-							EnterCredential(editTextUrl.Text, false);
+							ShowRegisterLocalBoxDialog(editTextUrl.Text, false);
 							dialog.Dismiss();
 						}
 						else {
@@ -641,7 +641,7 @@ namespace localbox.android
 			dialogAlert.SetMessage ("U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?");
 			dialogAlert.SetButton2 ("Cancel", (s, ev) => { ShowOpenUrlDialog (); });
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
-				EnterCredential(urlToOpen, false);
+				ShowRegisterLocalBoxDialog(urlToOpen, false);
 				dialogAlert.Dismiss();
 			});
 			dialogAlert.Show ();
@@ -655,59 +655,16 @@ namespace localbox.android
 			dialogAlert.SetMessage ("U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Weet u zeker dat u wilt doorgaan?");
 			dialogAlert.SetButton2 ("Cancel", (s, ev) => { ShowOpenUrlDialog (); });
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
-				EnterCredential(urlToOpen, true);
+				ShowRegisterLocalBoxDialog(urlToOpen, true);
 				dialogAlert.Dismiss();
 			});
 			dialogAlert.Show ();
 		}
 
 
-		//Register new LocalBox part 2
-		public void EnterCredential (string urlToNewLocalBox, bool ignoreSslError)
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
-			View viewRegisterLocalBox = factory.Inflate (Resource.Layout.dialog_register_localbox, null);
 
-			EditText editTextUsername = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_username);          
-			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
-
-			var dialogBuilder = new AlertDialog.Builder (this);
-			dialogBuilder.SetTitle ("Inloggegevens voor betreffende LocalBox");
-			dialogBuilder.SetView (viewRegisterLocalBox);
-			dialogBuilder.SetPositiveButton (Resource.String.login, (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
-			var buttonLogin = dialog.GetButton ((int)DialogButtonType.Positive);
-			buttonLogin.Click += (sender, args) => {
-				if (string.IsNullOrEmpty (editTextUsername.Text)) {
-					ShowToast("Gebruikersnaam is niet ingevuld");
-				} else if (string.IsNullOrEmpty (editTextPassword.Text)) {
-					ShowToast("Wachtwoord is niet ingevuld");
-				} else {
-					ShowProgressDialog("Laden...");
-					try{
-						HideProgressDialog();
-						ShowRegisterLocalBoxDialog(urlToNewLocalBox, editTextUsername.Text, editTextPassword.Text, ignoreSslError);
-						dialog.Dismiss();
-					}
-					catch{
-						HideProgressDialog();
-						ShowToast("Openen van opgegeven URL is mislukt.");
-					}
-				}
-			};
-			buttonCancelRegistration.Click += (sender, args) => {
-				//DataLayer.Instance.DeleteLocalBox (localBox.Id);
-				menuFragment.UpdateLocalBoxes ();
-				dialog.Dismiss ();
-			};
-		}
-			
-		//Register new LocalBox part 3
-		private void ShowRegisterLocalBoxDialog (string urlToOpen, string enteredUsername, string enteredPassword, bool ignoreSslError)
+		//Register new LocalBox part 2	
+		private void ShowRegisterLocalBoxDialog (string urlToOpen, bool ignoreSslError)
 		{
 			if (urlToOpen.IndexOf("register_app", StringComparison.OrdinalIgnoreCase) < 0) //url misses '/register_app' at the end
 			{
@@ -722,93 +679,35 @@ namespace localbox.android
 			fragmentTransaction = FragmentManager.BeginTransaction ();
 
 			Android.App.DialogFragment dialogFragmentRegisterLocalBox;
-			RegisterLocalBoxFragment registerLocalBoxFragment = new RegisterLocalBoxFragment (urlToOpen, enteredUsername, enteredPassword, ignoreSslError);
+			RegisterLocalBoxFragment registerLocalBoxFragment = new RegisterLocalBoxFragment (urlToOpen, ignoreSslError);
 
 			dialogFragmentRegisterLocalBox = registerLocalBoxFragment;
 			dialogFragmentRegisterLocalBox.Show (fragmentTransaction, "registerlocalboxdialog");
 		}
-			
-		//Register new LocalBox part 4
-		public async void RegisterLocalBox (LocalBox localBox, string enteredUsername, string enteredPassword)
-		{
-			ShowProgressDialog ("LocalBox laden...");
-			localBox.User = enteredUsername;
-			bool authenticateSucceeded = await BusinessLayer.Instance.Authenticate (localBox, enteredPassword);
 
-			HideProgressDialog ();
-			if (!authenticateSucceeded) {
-				ReEnterCredential (localBox);
-			} 
-			else {
-				if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
-					EnterPassphrase (localBox);
+
+		//Register new LocalBox part 3
+		public async void AddLocalBox(LocalBox lbToAdd)
+		{
+			bool result = false;
+
+			ShowProgressDialog ("LocalBox laden...");
+
+			result = await BusinessLayer.Instance.Authenticate (lbToAdd);
+
+			if (result) {
+				if (lbToAdd.HasCryptoKeys && !lbToAdd.HasPassPhrase) {
+					EnterPassphrase (lbToAdd);
 				} else {
-					SetUpPassphrase (localBox);
+					SetUpPassphrase (lbToAdd);
 				}
 			}
+
+			HideProgressDialog ();
 		}
-			
+
+
 		//Register new LocalBox part 4
-		public void ReEnterCredential(LocalBox localBox)
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
-			View viewRegisterLocalBox = factory.Inflate (Resource.Layout.dialog_register_localbox, null);
-
-			EditText editTextUsername = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_username);          
-			EditText editTextPassword = (EditText)viewRegisterLocalBox.FindViewById<EditText> (Resource.Id.editText_dialog_register_password); 
-			editTextUsername.Text = localBox.User;
-
-			var dialogBuilder = new AlertDialog.Builder (this);
-			dialogBuilder.SetTitle ("Registreren");
-			dialogBuilder.SetView (viewRegisterLocalBox);
-			dialogBuilder.SetPositiveButton (Resource.String.add, (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			var buttonCancelRegistration = dialog.GetButton ((int)DialogButtonType.Negative);
-			var buttonRegister = dialog.GetButton ((int)DialogButtonType.Positive);
-			buttonRegister.Click += async (sender, args) => {
-				if (String.IsNullOrEmpty (editTextUsername.Text)) {
-					ShowToast("Gebruikersnaam is niet ingevuld");
-				} else if (String.IsNullOrEmpty (editTextPassword.Text)) {
-					ShowToast("Wachtwoord is niet ingevuld");
-				} else {
-					try {
-						ShowProgressDialog ("Uw inloggegevens controleren. Een ogenblik geduld a.u.b.");
-						localBox.User = editTextUsername.Text;
-						bool authenticateSucceeded = await BusinessLayer.Instance.Authenticate (localBox, editTextPassword.Text);
-
-						HideProgressDialog ();
-						if (!authenticateSucceeded) {
-							ShowToast("Inloggegevens zijn foutief");
-						} else {
-							dialog.Dismiss ();
-							ShowToast("Inloggegevens geaccepteerd");
-
-							if (localBox.HasCryptoKeys && !localBox.HasPassPhrase) {
-								EnterPassphrase (localBox);
-							} else {
-								SetUpPassphrase (localBox);
-							}
-						}
-					} catch (Exception ex) {
-						HideProgressDialog ();
-						ShowToast("LocalBox registratie mislukt. Probeer het a.u.b. opnieuw");
-						Log.Info ("STACKTRACE", ex.StackTrace);
-						Log.Info ("MESSAGE", ex.Message);
-					}
-				}
-			};
-			buttonCancelRegistration.Click += (sender, args) => {
-				DataLayer.Instance.DeleteLocalBox (localBox.Id);
-				menuFragment.UpdateLocalBoxes ();
-				dialog.Dismiss ();
-			};
-		}
-
-
-		//Register new LocalBox part 5
 		private void SetUpPassphrase (LocalBox localBox)
 		{
 			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
@@ -871,7 +770,7 @@ namespace localbox.android
 		}
 
 
-		//Register new LocalBox part 5
+		//Register new LocalBox part 4
 		private void EnterPassphrase (LocalBox localBox)
 		{
 			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (this);
