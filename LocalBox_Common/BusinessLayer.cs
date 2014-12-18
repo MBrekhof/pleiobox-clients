@@ -92,7 +92,7 @@ namespace LocalBox_Common
 
 									//Voorkomt crash in Android
 									if (DataLayer.Instance.DatabaseUnlocked ()) {
-										box.Id = DataLayer.Instance.AddLocalBox (box);
+										box.Id = DataLayer.Instance.AddOrUpdateLocalBox (box);
 									}
 									result = box;
   
@@ -110,34 +110,7 @@ namespace LocalBox_Common
 				return result;
 			});
 		}
-
-//		void GetLogo (string logoUrl)
-//		{
-//			using (var httpClient = new HttpClient ()) {
-//				httpClient.MaxResponseContentBufferSize = int.MaxValue;
-//				httpClient.DefaultRequestHeaders.ExpectContinue = false;
-//				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
-//
-//				var httpRequestMessage = new HttpRequestMessage {
-//					Method = HttpMethod.Get,
-//					RequestUri = new Uri (logoUrl)
-//				};
-//				try {
-//					var response = httpClient.SendAsync (httpRequestMessage).Result;
-//
-//					if (response.IsSuccessStatusCode) {
-//						byte[] responseByteArray = response.Content.ReadAsByteArrayAsync ().Result;
-//
-//						var p = Path.Combine (DocumentConstants.DocumentsPath, logoUrl.Substring (logoUrl.LastIndexOf ("/") + 1));
-//
-//						if (p != null)
-//							File.WriteAllBytes (p, responseByteArray);
-//					}
-//				} catch {
-//					Debug.WriteLine ("Fout bij het ophalen van het logo: " + logoUrl);
-//				}
-//			}
-//		}
+			
 
 		private void SetKeys (LocalBox localBox)
 		{
@@ -147,34 +120,7 @@ namespace LocalBox_Common
 				localBox.PrivateKey = Convert.FromBase64String (user.PrivateKey);
 				localBox.PublicKey = Convert.FromBase64String (user.PublicKey);
 			}
-			DataLayer.Instance.UpdateLocalBox (localBox);
-		}
-
-
-		public Task<bool> Authenticate (LocalBox localBox, string password)
-		{
-			return Task.Run (() => {
-				bool result = false;
-
-				try {
-					//ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
-
-					var explorer = new RemoteExplorer (localBox);
-					result = explorer.Authorize (password);
-
-					if (result) {
-						DataLayer.Instance.AddLocalBox (localBox);
-						SetKeys (localBox);
-					} else {
-						//Login failure so delete local box
-						DataLayer.Instance.DeleteLocalBox (localBox.Id);
-					}
-
-					return result;
-				} catch (Exception ex) {
-					return result;
-				}
-			});
+			DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 		}
 
 
@@ -189,7 +135,7 @@ namespace LocalBox_Common
 					//result = explorer.Authorize (password);
 
 					//if (result) {
-						DataLayer.Instance.AddLocalBox (localBox);
+					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 						SetKeys (localBox);
 					//} else {
 						//Login failure so delete local box
@@ -325,7 +271,7 @@ namespace LocalBox_Common
 						localBox.PublicKey = publicKey;
 						localBox.PrivateKey = privateKey;
 						localBox.PassPhrase = passPhrase;
-						DataLayer.Instance.UpdateLocalBox (localBox);
+						DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 					}
 					return result;
 				} catch {
@@ -342,7 +288,7 @@ namespace LocalBox_Common
 					var result = CryptoHelper.ValidatePassPhrase (localBox.PrivateKey, passPhrase);
 
 					localBox.PassPhrase = passPhrase;
-					DataLayer.Instance.UpdateLocalBox (localBox);
+					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 
 					return result;
 				} catch {

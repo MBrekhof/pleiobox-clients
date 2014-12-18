@@ -20,7 +20,7 @@ using LocalBox_Common;
 using LocalBox_Common.Remote;
 //Reference to unused pdftron dll deleted
 /*
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[Activity (Label = "PDF viewer")]			
 	public class PdfActivity : Activity

@@ -19,7 +19,7 @@ using Android.Graphics;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class MenuFragment : ListFragment
 	{
@@ -155,7 +155,7 @@ namespace localbox.android
 
 				HideProgressDialog();
 			} 
-			catch{
+			catch (Exception ex){
 				HideProgressDialog ();
 				Toast.MakeText (Activity, "Er is iets fout gegaan", ToastLength.Short).Show ();
 			}

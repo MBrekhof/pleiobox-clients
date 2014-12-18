@@ -16,9 +16,7 @@ namespace LocalBox_iOS.Views
 	public partial class NodeView : BaseNode, IListNode
 	{
 		public static readonly UINib Nib = UINib.FromName ("NodeView", NSBundle.MainBundle);
-
 		public UITableView Table { get { return NodeItemTable; } }
-
 		private NodeViewController _nodeViewController;
 
 		public bool PresentingDetail {
@@ -301,7 +299,10 @@ namespace LocalBox_iOS.Views
 
 		private void ShowErrorRetrievingList ()
 		{
-			DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het ophalen van de map");
+			if (!SslValidator.CertificateErrorRaised) {
+				DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het ophalen van de map");
+			}
+			SslValidator.CertificateErrorRaised = false;
 		}
 
 		private void ShowErrorCreatingFolder ()

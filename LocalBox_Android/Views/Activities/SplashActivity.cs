@@ -13,7 +13,7 @@ using Android.Widget;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {	
 	//Activity settings
 	[Activity(Theme = 	"@style/Theme.Splash", MainLauncher = true, NoHistory = true, 

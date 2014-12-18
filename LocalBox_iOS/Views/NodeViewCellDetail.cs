@@ -226,9 +226,6 @@ namespace LocalBox_iOS.Views
 			
 				HomeController homeController = HomeController.homeController;
 				homeController.MoveFile(_treeNode.Path, _nodeView);
-
-				//Hide detail cell
-				//this._buttonContainer.RemoveFromSuperview();
 			});
 		}
 

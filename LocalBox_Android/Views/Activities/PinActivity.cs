@@ -12,7 +12,7 @@ using Android.Widget;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[Activity(Label = "LocalBox", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape, WindowSoftInputMode = SoftInput.AdjustPan)]
 	public class PinActivity : Activity

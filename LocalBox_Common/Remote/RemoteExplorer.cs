@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using LocalBox_Common.Remote.Authorization;
 using LocalBox_Common.Remote.Model;
 using System.Net.Http.Headers;
+using System.Net;
 
 namespace LocalBox_Common.Remote
 {
@@ -25,6 +26,19 @@ namespace LocalBox_Common.Remote
 		public RemoteExplorer ()
 		{
 			_localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
+
+			//Reset certificate validation check to default behavior
+			ServicePointManager.ServerCertificateValidationCallback = null;
+
+			if(_localBox.OriginalServerCertificate != null){ //Selected localbox does have a ssl certificate
+
+				//Set ssl validator for selected LocalBox
+				SslValidator sslValidator = new SslValidator ();
+				ServicePointManager.ServerCertificateValidationCallback = sslValidator.ValidateServerCertficate;
+			}else {
+				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+			}
+			
 		}
 
 		public RemoteExplorer (LocalBox box)
@@ -51,19 +65,6 @@ namespace LocalBox_Common.Remote
 			return false;
 		}
 
-		public bool Authorize (string password)
-		{
-			bool result;
-
-			var lba = new LocalBoxAuthorization (_localBox);
-			result = lba.Authorize (_localBox.User, password);
-
-			_localBox.AccessToken = lba.AccessToken;
-			_localBox.RefreshToken = lba.RefreshToken;
-			_localBox.DatumTijdTokenExpiratie = lba.Expiry.ToString ();
-
-			return result;
-		}
 
 		private void ReAuthorise ()
 		{
@@ -83,13 +84,12 @@ namespace LocalBox_Common.Remote
 			_localBox.DatumTijdTokenExpiratie = lba.Expiry.ToString ();
 			_localBox.RefreshToken = lba.RefreshToken;
 
-			DataLayer.Instance.UpdateLocalBox (_localBox);
+			DataLayer.Instance.AddOrUpdateLocalBox (_localBox);
 		}
 
 		public DataGroup GetFiles (string currentFolderId = "")
 		{
 			if (!IsAuthorized ()) {
-				// Expired of nog nooit?
 				ReAuthorise ();
 			}
 
@@ -134,7 +134,6 @@ namespace LocalBox_Common.Remote
 		{
 			try {
 				if (!IsAuthorized ()) {
-					// Expired of nog nooit?
 					ReAuthorise ();
 				}
 
@@ -174,7 +173,6 @@ namespace LocalBox_Common.Remote
 		public bool DeleteFile (string filePath)
 		{
 			if (!IsAuthorized ()) {
-				// Expired of nog nooit?
 				ReAuthorise ();
 			}
 
@@ -214,7 +212,6 @@ namespace LocalBox_Common.Remote
 			}
 
 			if (!IsAuthorized ()) {
-				// Expired of nog nooit?
 				ReAuthorise ();
 			}
 
@@ -252,7 +249,6 @@ namespace LocalBox_Common.Remote
 			}
 
 			if (!IsAuthorized ()) {
-				// Expired of nog nooit?
 				ReAuthorise ();
 			}
 
@@ -292,7 +288,6 @@ namespace LocalBox_Common.Remote
 			}
 
 			if (!IsAuthorized ()) {
-				// Expired of nog nooit?
 				ReAuthorise ();
 			}
 
@@ -364,7 +359,6 @@ namespace LocalBox_Common.Remote
 			return Task.Run (() => {
 
 				if (!IsAuthorized ()) {
-					// Expired of nog nooit?
 					ReAuthorise ();
 				}
 
@@ -450,7 +444,6 @@ namespace LocalBox_Common.Remote
 		{
 			return Task.Run (() => {
 				if (!IsAuthorized ()) {
-					// Expired of nog nooit?
 					ReAuthorise ();
 				}
 
@@ -569,7 +562,6 @@ namespace LocalBox_Common.Remote
 		{
 			return Task.Run (() => {
 				if (!IsAuthorized ()) {
-					// Expired of nog nooit?
 					ReAuthorise ();
 				}
 				try {
@@ -616,7 +608,6 @@ namespace LocalBox_Common.Remote
 		public List <ShareInventation> GetPendingShareInventations ()
 		{
 			if (!IsAuthorized ()) {
-				// Expired of nog nooit?
 				ReAuthorise ();
 			}
 					
@@ -652,7 +643,6 @@ namespace LocalBox_Common.Remote
 		public bool AcceptShareInventation(int shareInventationId)
 		{
             if (!IsAuthorized ()) {
-                // Expired of nog nooit?
                 ReAuthorise ();
             }
 
@@ -692,7 +682,6 @@ namespace LocalBox_Common.Remote
         public UserResponse GetUser(string name = null)
         {
             if (!IsAuthorized ()) {
-                // Expired of nog nooit?
                 ReAuthorise ();
             }
 
@@ -737,7 +726,6 @@ namespace LocalBox_Common.Remote
         public bool UpdateUser(UserPost post)
         {
             if (!IsAuthorized ()) {
-                // Expired of nog nooit?
                 ReAuthorise ();
             }
 
@@ -777,7 +765,6 @@ namespace LocalBox_Common.Remote
         public bool AddAesKey(string path, AesKeyPost post)
         {
             if (!IsAuthorized ()) {
-                // Expired of nog nooit?
                 ReAuthorise ();
             }
 
@@ -821,7 +808,6 @@ namespace LocalBox_Common.Remote
         public bool RevokeAesKey(string path, AesKeyRevoke post)
         {
             if (!IsAuthorized ()) {
-                // Expired of nog nooit?
                 ReAuthorise ();
             }
 
@@ -865,7 +851,6 @@ namespace LocalBox_Common.Remote
         public bool GetAesKey(string path, out AesKeyResponse result)
         {
             if (!IsAuthorized ()) {
-                // Expired of nog nooit?
                 ReAuthorise ();
             }
 

@@ -6,7 +6,7 @@ using Android.Content;
 using Android.Views;
 using Android.Widget;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class FileListAdapter : ArrayAdapter<FileSystemInfo>
 	{

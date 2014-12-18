@@ -13,8 +13,6 @@ namespace LocalBox_iOS.Views
         void Lock();
 
 		void ShowIntroductionView ();
-
-		//void OpenPDFViewer (PdfItemView pdfItemView);
     }
 }
 

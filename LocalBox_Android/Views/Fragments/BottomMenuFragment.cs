@@ -14,7 +14,7 @@ using Android.Support.V4.App;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class BottomMenuFragment : ListFragment
 	{

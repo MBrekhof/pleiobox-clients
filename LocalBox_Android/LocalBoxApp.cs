@@ -4,7 +4,7 @@ using Android.App;
 using Android.Runtime;
 using Android.Content;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[Application(Label = "LocalBox", Theme = "@android:style/Theme.Holo.Light")]
     public class LocalBoxApp : Application

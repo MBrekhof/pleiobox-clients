@@ -15,7 +15,7 @@ using Android.Net.Http;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class RegisterLocalBoxFragment : DialogFragment
 	{
@@ -78,9 +78,6 @@ namespace localbox.android
 			LocalBox box = await BusinessLayer.Instance.RegisterLocalBox (url, cookieString, true);
 
 			if (box != null) {
-
-				//Set certificate for localbox
-				//box.OriginalSslCertificate = CertificateHelper.BytesOfCertificate;
 
 				parentActivity.HideProgressDialog ();
 

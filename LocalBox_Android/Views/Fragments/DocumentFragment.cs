@@ -14,7 +14,7 @@ using Android.Webkit;
 
 using System.IO;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class DocumentFragment : Fragment
 	{

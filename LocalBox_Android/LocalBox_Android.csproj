@@ -8,7 +8,7 @@
     <ProjectGuid>{4FD99C83-1A0B-4F24-BB92-D670B2C71971}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>localbox.android</RootNamespace>
+    <RootNamespace>LocalBox_Droid</RootNamespace>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -30,6 +30,7 @@
     <ConsolePause>false</ConsolePause>
     <AndroidSupportedAbis>armeabi;x86</AndroidSupportedAbis>
     <AndroidLinkMode>None</AndroidLinkMode>
+    <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -91,6 +92,9 @@
     <Compile Include="Views\Activities\TemporarilyUnused\PdfActivity.cs" />
     <Compile Include="Views\Activities\VideoPlayerActivity.cs" />
     <Compile Include="Views\Fragments\PIN\PinHelper.cs" />
+    <Compile Include="Views\Activities\DialogHelper.cs">
+      <DependentUpon>HomeActivity.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

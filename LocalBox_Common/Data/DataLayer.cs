@@ -483,15 +483,11 @@ namespace LocalBox_Common
             DeleteLocalFileOrFolder(e.Path);
         }
 
-        public int AddLocalBox(LocalBox box)
+        public int AddOrUpdateLocalBox(LocalBox box)
         {
-            return database.AddLocalBox(box);
+			return database.AddOrUpdateLocalBox(box);
         }
 
-        public void UpdateLocalBox(LocalBox box)
-        {
-            database.Update(box);
-        }
 
 		public Task<PublicUrl> CreatePublicFileShare(string filePath, DateTime expirationDateOfShare)
 		{

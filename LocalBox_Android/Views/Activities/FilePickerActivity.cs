@@ -14,7 +14,7 @@ using Android.Graphics;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[Activity (Label = "Selecteer een bestand om te uploaden")]			
 	public class FilePickerActivity : FragmentActivity

@@ -15,7 +15,7 @@ using Android.Graphics;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[Activity(Label = "Document", ScreenOrientation=Android.Content.PM.ScreenOrientation.Landscape)]	
 	public class DocumentFullscreenActivity : Activity

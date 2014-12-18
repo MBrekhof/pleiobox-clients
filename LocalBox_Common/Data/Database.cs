@@ -87,7 +87,7 @@ namespace LocalBox_Common
 
         #region
 
-        public int AddLocalBox(LocalBox box)
+		public int AddOrUpdateLocalBox(LocalBox box)
         {
             int a = -1;
             if ((from l in this.Table<LocalBox>()

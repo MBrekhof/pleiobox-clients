@@ -20,7 +20,7 @@ using Android.Net;
 using LocalBox_Common;
 using LocalBox_Common.Remote;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class ExplorerFragment : ListFragment
 	{
@@ -412,7 +412,10 @@ namespace localbox.android
 				Console.WriteLine (ex.StackTrace);
 
 				parentActivity.HideProgressDialog ();
-				Toast.MakeText (Android.App.Application.Context, "Data verversen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+				if (!SslValidator.CertificateErrorRaised) {
+					Toast.MakeText (Android.App.Application.Context, "Data verversen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
+				}
+				SslValidator.CertificateErrorRaised = false;
 			}
 		}
 
@@ -522,17 +525,15 @@ namespace localbox.android
 
 
 
-		private async void CreatePublicFileShare (string filePath)
+		private void CreatePublicFileShare (string filePath)
 		{
 			try {
 				popupWindow.Dismiss ();
 
 				parentActivity.ShowProgressDialog (null);
-
-				parentActivity.pathToNewFileShare = filePath;
-				parentActivity.ShowDialog (0);
-
-			} catch {
+				parentActivity.ShowShareFileDatePicker(filePath);
+			} 
+			catch {
 				parentActivity.HideProgressDialog ();
 				Toast.MakeText (Android.App.Application.Context, "Bestand delen mislukt", ToastLength.Short).Show ();
 			}

@@ -20,12 +20,6 @@ namespace LocalBox_iOS
 			this.introductionPageViewController = introductionPageViewController;
 			this.homeController = homeController;
 		}
-			
-		public override void DidReceiveMemoryWarning ()
-		{
-			// Releases the view if it doesn't have a superview.
-			base.DidReceiveMemoryWarning ();
-		}
 
 		public override void ViewDidLoad ()
 		{
@@ -106,21 +100,21 @@ namespace LocalBox_iOS
 						}
 						else if (urlString.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase))
 						{
-							if(CertificateHelper.DoesHaveAValidCertificate(urlString))
-							{
+							//if(CertificateHelper.DoesHaveAValidCertificate(urlString))
+							//{
 								OpenInternetBrowser(urlString);
-							}
-							else {
-								UIAlertView alertHttpUrl = new UIAlertView ("Error", 
-									"U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Dit wordt momenteel niet ondersteund door de iOS app.\n\n" +
-									"Als alternatief kunt u, indien de LocalBox server dit ondersteund, een http:// webadres opgeven.", null, 
-									 "OK", null);
-								alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => 
-								{
-									OpenUrlDialog();
-								};
-								alertHttpUrl.Show();
-							}
+							//}
+//							else {
+//								UIAlertView alertHttpUrl = new UIAlertView ("Error", 
+//									"U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Dit wordt momenteel niet ondersteund door de iOS app.\n\n" +
+//									"Als alternatief kunt u, indien de LocalBox server dit ondersteund, een http:// webadres opgeven.", null, 
+//									 "OK", null);
+//								alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => 
+//								{
+//									OpenUrlDialog();
+//								};
+//								alertHttpUrl.Show();
+//							}
 						}else {
 							UIAlertView alertUrl = new UIAlertView ("Error", 
 								"Het opgegeven webadres dient met https:// of http:// te beginnen.", null, 

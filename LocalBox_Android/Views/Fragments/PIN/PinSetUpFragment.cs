@@ -12,7 +12,7 @@ using Android.Util;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class PinSetUpFragment : DialogFragment
     {

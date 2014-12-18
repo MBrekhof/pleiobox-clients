@@ -12,7 +12,7 @@ using Android.Net;
 using Android.Content.PM;
 using Android.Views;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[Activity (Label = "", ScreenOrientation = ScreenOrientation.Landscape)]			
 	public class VideoPlayerActivity : Activity

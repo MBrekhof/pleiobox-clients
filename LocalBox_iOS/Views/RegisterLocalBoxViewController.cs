@@ -154,7 +154,8 @@ namespace LocalBox_iOS
 					//Get access token and refresh token
 					webViewRegisterLocalBox.LoadRequest (new NSUrlRequest (NSUrl.FromString (tokensRequestUrl)));
 				}
-			} else {
+			}
+			else {
 				viewActivityIndicator.Hidden = true;
 				new UIAlertView ("Error", "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null).Show ();
 			}

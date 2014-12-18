@@ -15,16 +15,11 @@ namespace LocalBox_iOS.Views
     public partial class HomeController : UIViewController, IHome
 	{
 		public static HomeController homeController;
-
-        UIViewController _master;
-        UIViewController _detail;
-		UIPageViewController _introduction;
-
-        UIView _pinView;
-
-        UIColor _defaultColor;
-
-
+        private UIViewController _master;
+		private UIViewController _detail;
+		private UIPageViewController _introduction;
+		private UIView _pinView;
+		private UIColor _defaultColor;
 
         public HomeController () : base ()
         {
@@ -32,14 +27,6 @@ namespace LocalBox_iOS.Views
 
 		public HomeController (IntPtr handle) : base (handle)
 		{
-		}
-
-		public override void DidReceiveMemoryWarning ()
-		{
-			// Releases the view if it doesn't have a superview.
-			base.DidReceiveMemoryWarning ();
-			
-			// Release any cached data, images, etc that aren't in use.
 		}
 
 		public override void ViewDidLoad ()
@@ -57,6 +44,40 @@ namespace LocalBox_iOS.Views
 			} else {
 				PincodeOpgeven ();
 			}
+
+
+			SslValidator.CertificateMismatchFound += (object sender, EventArgs e) => 
+			{
+				SslValidator.CertificateErrorRaised = true;
+
+				//Incorrect ssl found so show pop-up
+				Console.WriteLine ("SSL mismatch!!!");
+				InvokeOnMainThread ( () => {
+				var alert = new UIAlertView ("Waarschuwing", 
+					"De identiteit van de server kan niet goed vastgesteld worden. " +
+					"Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
+					"extra te controleren?", null, "Ja", "Nee");
+
+				alert.Clicked += (s, buttonArgs) =>  {
+					if(buttonArgs.ButtonIndex == 0){
+
+						//Get new certificate from server
+						bool certificateSucessfullyRenewed = CertificateHelper.VerifyCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
+
+						if(certificateSucessfullyRenewed){
+							new UIAlertView ("Succes", "Controle met succes uitgevoerd. U kunt weer verder werken.", null, "OK").Show ();
+						}else {
+							new UIAlertView ("Foutmelding", "Dit netwerk is niet te vertrouwen.", null, "OK").Show ();
+						}
+
+					}
+				};
+				
+				alert.Show ();
+
+				Console.WriteLine ("ABCDEF");
+				});
+			};
         }
 
 
@@ -95,19 +116,10 @@ namespace LocalBox_iOS.Views
 
 			//Dimension
 			_introduction.View.Frame = new RectangleF(0, 0, View.Bounds.Width, View.Bounds.Height);
-			//_introduction.View.Frame = new RectangleF(50, 50, View.Bounds.Width - 100, View.Bounds.Height - 100);
 
 			View.Add(_introduction.View);
 			AddChildViewController(_introduction);
 		}
-
-		/*
-		public void OpenPDFViewer(PdfItemView pdfItemView)
-		{
-			UINavigationController navigationController = new UINavigationController (pdfItemView);
-			this.PresentViewController (navigationController, true, null);
-		}*/
-
 
         void UpdateMaster(UIViewController viewController)
         {
@@ -120,14 +132,6 @@ namespace LocalBox_iOS.Views
             _master.View.Frame = new RectangleF(0, 0, 224, View.Bounds.Height);
 
             View.Add(_master.View);
-//			if (DataLayer.Instance.GetLocalBoxesSync ().Count > 0) {
-//				((MenuViewController)_master).SelectFirst ();
-//				((MenuViewController)_master).UpdateBalkKleur (DataLayer.Instance.GetLocalBoxesSync () [0].BackColor);
-//				((MenuViewController)_master).SetLogo (DataLayer.Instance.GetLocalBoxesSync () [0].LogoUrl);
-//				Waardes.Instance.GeselecteerdeBox = DataLayer.Instance.GetLocalBoxesSync () [0].Id;
-//				UpdateDetail (new NodeViewController (DataLayer.Instance.GetLocalBoxesSync () [0].BackColor), false);
-//			} 
-//			else
 
             if(AppDelegate.localBoxToRegister == null && DataLayer.Instance.GetLocalBoxesSync ().Count == 0) {
 				ShowIntroductionView ();
@@ -227,15 +231,16 @@ namespace LocalBox_iOS.Views
 		}
 
 
-		public async void AddLocalBox(LocalBox lbToAdd)
+		public void AddLocalBox(LocalBox localBoxToAdd)
 		{
 			bool result = false;
 	
 			DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
-				result = await BusinessLayer.Instance.Authenticate (lbToAdd);
+			
+				result = await BusinessLayer.Instance.Authenticate (localBoxToAdd);
 
 				if (result) {
-					LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (lbToAdd, InitialiseMenuAfterRegistration);
+					LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (localBoxToAdd, InitialiseMenuAfterRegistration);
 					AppDelegate.localBoxToRegister = null;
 				}
 			});
@@ -243,62 +248,7 @@ namespace LocalBox_iOS.Views
 
 
 
-//		public async void RequestWachtwoord(LocalBox box, string enteredUsername, string enteredPassword)
-//		{
-//			if (string.IsNullOrEmpty (enteredUsername) || string.IsNullOrEmpty (enteredPassword)) {
-//				if (_introduction != null) {
-//					View.WillRemoveSubview (_introduction.View);
-//				}
-//
-//				UIAlertView createFolderAlert = new UIAlertView ("Registreren", "Geef uw gebruikersnaam en wachtwoord", null, "Annuleer", "Ok");
-//				createFolderAlert.AlertViewStyle = UIAlertViewStyle.LoginAndPasswordInput;
-//				createFolderAlert.GetTextField (0).Placeholder = "Gebruikersnaam";
-//				createFolderAlert.GetTextField (1).Placeholder = "Wachtwoord";
-//
-//				createFolderAlert.GetTextField (0).Text = "test";
-//				createFolderAlert.GetTextField (1).Text = "M6ta6cveo";
-//
-//				if (!string.IsNullOrEmpty (box.User)) {
-//					createFolderAlert.GetTextField (0).Text = box.User;
-//				}
-//
-//				createFolderAlert.Clicked += (object s, UIButtonEventArgs args) =>
-//            	DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
-//					if (args.ButtonIndex == 1) {
-//						box.User = ((UIAlertView)s).GetTextField (0).Text;
-//						bool result = false;
-//						result = await BusinessLayer.Instance.Authenticate (box, ((UIAlertView)s).GetTextField (1).Text);
-//					
-//						if (result) {
-//							LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
-//							AppDelegate.localBoxToRegister = null;
-//						} else {
-//							Debug.WriteLine ("Authenticatie mislukt..");
-//							RequestWachtwoord (box, "", "");
-//						}
-//					} else {
-//						DataLayer.Instance.DeleteLocalBox (box.Id);
-//						InitialiseMenu ();
-//					}
-//				});
-//				createFolderAlert.Show ();
-//			} else {
-//				bool result = false;
-//
-//				box.User = enteredUsername;
-//				DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
-//					result = await BusinessLayer.Instance.Authenticate (box, (enteredPassword));
-//
-//					if (result) {
-//						LocalBox_iOS.Helpers.CryptoHelper.ValidateKeyPresence (box, InitialiseMenuAfterRegistration);
-//						AppDelegate.localBoxToRegister = null;
-//					} else {
-//						Debug.WriteLine ("Authenticatie mislukt..");
-//						RequestWachtwoord (box, "", "");
-//					}
-//				});
-//			}
-//        }
+
 
         public void PincodeInstellen()
         {
@@ -319,16 +269,8 @@ namespace LocalBox_iOS.Views
                 _pinView.RemoveFromSuperview();
                 _pinView = null;
             }
-            // al pincode aangemaakt
-//			if (AppDelegate.localBoxToRegister != null)
-//            {
-//				//RequestWachtwoord(AppDelegate.localBoxToRegister, "", "");
-//				ShowIntroductionView ();
-//            }
-//            else
-//            {
-                InitialiseMenu();
-//            }
+
+            InitialiseMenu();
         }
 
         public void PincodeOpgeven()
@@ -348,8 +290,6 @@ namespace LocalBox_iOS.Views
                 _pinView = instellenView;
                 View.Add(instellenView);
             }
-
-
         }
 
         void Resume(object sender, EventArgs e)
@@ -359,21 +299,13 @@ namespace LocalBox_iOS.Views
                 _pinView.RemoveFromSuperview();
                 _pinView = null;
             }
-
-//			if (AppDelegate.localBoxToRegister != null)
-//			{
-//				//RequestWachtwoord(AppDelegate.localBoxToRegister, "", "");
-//				ShowIntroductionView ();
-//			}
-//			else
-//			{
-                if (AppDelegate.fileToUpload != null)
-                {
-					ImportFile(AppDelegate.fileToUpload);
-                    AppDelegate.fileToUpload = null;
-                }
-				InitialiseMenu();
-//			}
+				
+            if (AppDelegate.fileToUpload != null)
+            {
+				ImportFile(AppDelegate.fileToUpload);
+                AppDelegate.fileToUpload = null;
+            }
+			InitialiseMenu();
         }
 
 

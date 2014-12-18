@@ -10,7 +10,7 @@ using Android.Content.Res;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	[ContentProvider(new string[] { "com.belastingdienst.localbox" })]
 	public class CustomContentProvider : ContentProvider

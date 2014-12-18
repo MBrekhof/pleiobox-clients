@@ -1,7 +1,9 @@
 ﻿using System;
-using SQLite;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
+using SQLite;
+
 
 namespace LocalBox_Common
 {
@@ -35,7 +37,24 @@ namespace LocalBox_Common
         public string LogoUrl { get; set; }
 
 		[DataMember]
-		public byte[] OriginalSslCertificate { get; set; }
+		public string pin_cert { get; set; }
+
+		[DataMember]
+		public byte[] OriginalServerCertificate {
+			get
+			{
+				try{
+					var certByte = Convert.FromBase64String((pin_cert).Replace("\n", ""));
+					return certByte;
+				} catch {
+					return null;
+				}
+			}
+			set {
+				pin_cert = System.Convert.ToBase64String(OriginalServerCertificate);
+			}
+		}
+
 
 
 		public string ApiKey { get; set; }

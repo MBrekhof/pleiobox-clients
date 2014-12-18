@@ -11,14 +11,10 @@ namespace LocalBox_iOS.Views
 {
     public partial class LocationChooserView : UIView
     {
-
         public static readonly UINib Nib = UINib.FromName("LocationChooserView", NSBundle.MainBundle);
-
         private LocationChooseDataSource _dataSource;
 		private IListNode _parentNodeView;
-
 		public bool NewFileUpload { get; private set; }
-
 
         public LocationChooserView() 
         {

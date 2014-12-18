@@ -4,7 +4,7 @@ using Android.Content;
 using Android.Runtime;
 using Android.Views;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public static class LayoutInflateHelper
 	{

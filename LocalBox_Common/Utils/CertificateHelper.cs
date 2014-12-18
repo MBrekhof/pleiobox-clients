@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Linq;
 using System.Security;
 using System.Net.Security;
 using System.Security.Cryptography;
@@ -11,25 +12,20 @@ namespace LocalBox_Common
 {
 	public class CertificateHelper
 	{
-		public static byte[] BytesOfCertificate;
+		public static byte[] BytesOfServerCertificate;
 
-		public static void StoreCertificateFromUrl (string url)
+
+		public static void GetCertificateFromUrl (string url)
 		{
 			Environment.SetEnvironmentVariable ("MONO_TLS_SESSION_CACHE_TIMEOUT", "0");
 
 			ServicePointManager.CheckCertificateRevocationList = true;
 			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, cert, chain, errors) => 
 				{ 
-					if(errors == SslPolicyErrors.None)
+					if(errors == SslPolicyErrors.None) //self signed ssl certificate retrieves: System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors
 					{
-						foreach (var certificate in chain.ChainPolicy.ExtraStore) 
-						{
-							BytesOfCertificate = certificate.Export(X509ContentType.Cert);
-							return true;
-						}
-
-						var certi = new X509Certificate2(cert);
-						BytesOfCertificate = certi.Export(X509ContentType.Cert);
+						var serverX509Certificate2 = new X509Certificate2(cert);
+						BytesOfServerCertificate = serverX509Certificate2.Export(X509ContentType.Cert);
 					}
 					return true;
 				});
@@ -49,10 +45,10 @@ namespace LocalBox_Common
 
 		public static bool DoesHaveAValidCertificate (string urlToOpen)
 		{
-			BytesOfCertificate = null;
+			BytesOfServerCertificate = null;
 
-			StoreCertificateFromUrl (urlToOpen);
-			var certificateBytes = CertificateHelper.BytesOfCertificate;
+			GetCertificateFromUrl (urlToOpen);
+			var certificateBytes = CertificateHelper.BytesOfServerCertificate;
 
 			if (certificateBytes != null) {
 				return true;
@@ -60,6 +56,31 @@ namespace LocalBox_Common
 				return false;
 			}
 		}
+
+
+		public static bool VerifyCertificateForLocalBox(LocalBox localBox)
+		{
+			var serverCertificateBytes = CertificateHelper.BytesOfServerCertificate;
+
+			if (serverCertificateBytes != null) {
+			
+				//TODO: Get certificate from remote PEM file
+				byte[] BytesOfRemotePEMCertificate = CertificateHelper.BytesOfServerCertificate;
+
+				if(BytesOfRemotePEMCertificate.SequenceEqual(BytesOfServerCertificate)) //Compare byte arrays of certificates
+				{
+					localBox.OriginalServerCertificate = serverCertificateBytes;
+					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
+
+					return true;
+				}else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
 
 	}
 }

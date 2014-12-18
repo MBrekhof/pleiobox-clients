@@ -3,7 +3,7 @@ using Android.Widget;
 using Android.Graphics;
 using Android.App;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class FontHelper
 	{

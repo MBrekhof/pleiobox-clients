@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 using LocalBox_Common;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class PinEnterFragment : DialogFragment
     {

@@ -1,4 +1,4 @@
-namespace localbox.android
+namespace LocalBox_Droid
 {
     using System.IO;
 

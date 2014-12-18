@@ -14,7 +14,7 @@ using Android.Widget;
 using LocalBox_Common;
 using LocalBox_Common.Remote;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class ShareFragment : DialogFragment
 	{

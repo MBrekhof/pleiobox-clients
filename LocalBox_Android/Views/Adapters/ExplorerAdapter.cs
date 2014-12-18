@@ -14,7 +14,7 @@ using Android.Widget;
 using LocalBox_Common;
 
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class ExplorerAdapter : BaseAdapter<TreeNode> {
 

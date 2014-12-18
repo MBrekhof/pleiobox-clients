@@ -22,13 +22,6 @@ namespace LocalBox_iOS.Views
             _home = home;
         }
 
-        public override void DidReceiveMemoryWarning()
-        {
-            // Releases the view if it doesn't have a superview.
-            base.DidReceiveMemoryWarning();
-			
-            // Release any cached data, images, etc that aren't in use.
-        }
 
         public override void ViewDidLoad()
         {
@@ -38,13 +31,6 @@ namespace LocalBox_iOS.Views
 
 			DialogHelper._indicatorViewLeftCorner = _indicatorViewLeftCorner;
         }
-
-		/*
-        public void SelectFirst()
-        {
-            NSIndexPath path = NSIndexPath.FromRowSection(0, 0);
-            MenuTable.SelectRow(path, false, UITableViewScrollPosition.None);
-		}*/
 
         public void SetLogo(string logoUrl)
         {
@@ -124,12 +110,12 @@ namespace LocalBox_iOS.Views
 
 						//Reset certificate validation check to default behavior
 						//ServicePointManager.ServerCertificateValidationCallback = null;
-						/*
-						if(boxList[indexPath.Row].OriginalSslCertificate != null){ //Selected localbox does have a ssl certificate
-							//Set ssl validator for selected LocalBox
-							SslValidator sslValidator = new SslValidator ();
-							ServicePointManager.ServerCertificateValidationCallback = sslValidator.ValidateServerCertficate;
-						}*/
+
+//						if(boxList[indexPath.Row].OriginalSslCertificate != null){ //Selected localbox does have a ssl certificate
+//							//Set ssl validator for selected LocalBox
+//							SslValidator sslValidator = new SslValidator ();
+//							ServicePointManager.ServerCertificateValidationCallback = sslValidator.ValidateServerCertficate;
+//						}
 
 						if(boxList[indexPath.Row].BackColor.StartsWith("#")){
                     		_parent.UpdateBalkKleur(boxList[indexPath.Row].BackColor);
@@ -254,9 +240,7 @@ namespace LocalBox_iOS.Views
                 var cell = tableView.DequeueReusableCell (MenuFooterViewCell.Key) as MenuFooterViewCell;
                 if (cell == null)
                     cell = MenuFooterViewCell.Create();
-                // TODO: populate the cell with the appropriate data based on the indexPath
-              
-
+  
                 switch (indexPath.Row)
                 {
                     case 0:
@@ -271,12 +255,11 @@ namespace LocalBox_iOS.Views
 						cell.Titel = "Over de app";
 						cell.Image = UIImage.FromBundle("IcBottom-Over-de-app");
 						break;
-
                 }
-                        
+                
                 return cell;
-
             }
+
         }
     }
 }

@@ -157,10 +157,6 @@
     <Compile Include="Views\MenuViewController.designer.cs">
       <DependentUpon>MenuViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\InstellingenViewController.cs" />
-    <Compile Include="Views\InstellingenViewController.designer.cs">
-      <DependentUpon>InstellingenViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\NodeViewController.cs" />
     <Compile Include="Views\NodeViewController.designer.cs">
       <DependentUpon>NodeViewController.cs</DependentUpon>
@@ -193,10 +189,6 @@
     </Compile>
     <Compile Include="Views\NodeViewCellDetail.designer.cs">
       <DependentUpon>NodeViewCellDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\WachtwoordView.cs" />
-    <Compile Include="Views\WachtwoordView.designer.cs">
-      <DependentUpon>WachtwoordView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Pincode\KeyPad.cs" />
     <Compile Include="Views\Pincode\PincodeInstellenView.cs" />
@@ -261,9 +253,6 @@
     <InterfaceDefinition Include="Views\MenuViewController.xib">
       <DependentUpon>MenuViewController.cs</DependentUpon>
     </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\InstellingenViewController.xib">
-      <DependentUpon>InstellingenViewController.cs</DependentUpon>
-    </InterfaceDefinition>
     <InterfaceDefinition Include="Views\NodeViewController.xib">
       <DependentUpon>NodeViewController.cs</DependentUpon>
     </InterfaceDefinition>
@@ -284,9 +273,6 @@
     </InterfaceDefinition>
     <InterfaceDefinition Include="Views\NodeViewCellDefault.xib">
       <DependentUpon>NodeViewCellDefault.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\WachtwoordView.xib">
-      <DependentUpon>WachtwoordView.cs</DependentUpon>
     </InterfaceDefinition>
     <InterfaceDefinition Include="Views\LocationChooserView.xib">
       <DependentUpon>LocationChooserView.cs</DependentUpon>
@@ -312,8 +298,12 @@
     <InterfaceDefinition Include="Views\AboutViewController.xib">
       <DependentUpon>AboutViewController.cs</DependentUpon>
     </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\IntroductionViewController.xib" />
-    <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib" />
+    <InterfaceDefinition Include="Views\IntroductionViewController.xib">
+      <DependentUpon>IntroductionViewController.cs</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib">
+      <DependentUpon>RegisterLocalBoxViewController.cs</DependentUpon>
+    </InterfaceDefinition>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using Android.App;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class CustomProgressDialog
 	{

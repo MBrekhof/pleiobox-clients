@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class Constants
 	{

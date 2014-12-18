@@ -12,7 +12,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Webkit;
 
-namespace localbox.android
+namespace LocalBox_Droid
 {
 	public class AboutAppFragment : DialogFragment
 	{
