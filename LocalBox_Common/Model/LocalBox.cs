@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using SQLite;
+using Xamarin;
 
 
 namespace LocalBox_Common
@@ -46,7 +47,8 @@ namespace LocalBox_Common
 				try{
 					var certByte = Convert.FromBase64String((pin_cert).Replace("\n", ""));
 					return certByte;
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return null;
 				}
 			}

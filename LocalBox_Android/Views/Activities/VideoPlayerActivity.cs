@@ -11,6 +11,7 @@ using Android.Widget;
 using Android.Net;
 using Android.Content.PM;
 using Android.Views;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -43,7 +44,8 @@ namespace LocalBox_Droid
 				videoView.SetVideoURI (uri);
 				videoView.Start ();
 			}
-			catch {
+			catch (Exception ex){
+				Insights.Report(ex);
 				this.RunOnUiThread (new Action (() => { 
 					Toast.MakeText (this, "Het openen van de video is mislukt. Probeer het a.u.b. opnieuw.", ToastLength.Long).Show ();
 				}));

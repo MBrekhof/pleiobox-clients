@@ -10,6 +10,7 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Math;
+using Xamarin;
 
 namespace LocalBox_Common
 {
@@ -58,7 +59,8 @@ namespace LocalBox_Common
                         var i = (PgpSecretKeyRing) item;
                         var key = i.GetSecretKey().ExtractPrivateKey(passPhrase.ToCharArray());
                         return true;
-                    } catch {
+					} catch (Exception ex){
+						Insights.Report(ex);
                         return false;
                     }
                 }

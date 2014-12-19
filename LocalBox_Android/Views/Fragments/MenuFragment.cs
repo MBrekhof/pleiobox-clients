@@ -18,6 +18,7 @@ using Android.Graphics.Drawables;
 using Android.Graphics;
 
 using LocalBox_Common;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -156,6 +157,7 @@ namespace LocalBox_Droid
 				HideProgressDialog();
 			} 
 			catch (Exception ex){
+				Insights.Report(ex);
 				HideProgressDialog ();
 				Toast.MakeText (Activity, "Er is iets fout gegaan", ToastLength.Short).Show ();
 			}
@@ -201,7 +203,8 @@ namespace LocalBox_Droid
 						}
 						//Reset logo
 						imageViewLogo.SetImageResource (Resource.Drawable.beeldmerk_belastingdienst);
-					}catch{
+					}catch (Exception ex){
+						Insights.Report(ex);
 						Toast.MakeText (Android.App.Application.Context, "Het verwijderen van de LocalBox is mislukt", ToastLength.Short).Show ();
 					}
 				});

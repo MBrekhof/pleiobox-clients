@@ -7,6 +7,9 @@ using System.Security;
 using System.Net.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using LocalBox_Common.Remote;
+using System.Threading.Tasks;
+using Xamarin;
 
 namespace LocalBox_Common
 {
@@ -35,6 +38,7 @@ namespace LocalBox_Common
 					client.DownloadString(new Uri (url));
 
 				} catch (Exception ex){
+					Insights.Report(ex);
 					Console.WriteLine (ex.Message);
 				}
 			}
@@ -58,14 +62,21 @@ namespace LocalBox_Common
 		}
 
 
-		public static bool VerifyCertificateForLocalBox(LocalBox localBox)
+		public static async Task<bool> VerifyCertificateForLocalBox(LocalBox localBox)
 		{
 			var serverCertificateBytes = CertificateHelper.BytesOfServerCertificate;
 
 			if (serverCertificateBytes != null) {
 			
-				//TODO: Get certificate from remote PEM file
-				byte[] BytesOfRemotePEMCertificate = CertificateHelper.BytesOfServerCertificate;
+				//Get certificate from remote PEM file
+				byte[] BytesOfRemotePEMCertificate = null;
+				RemoteExplorer remoteExplorer = new RemoteExplorer ();
+				var remotePEM = await remoteExplorer.GetActivePEMFromServer ();
+
+				if(!string.IsNullOrEmpty (remotePEM))
+				{
+					BytesOfRemotePEMCertificate = Convert.FromBase64String((remotePEM).Replace("\n", ""));
+				}
 
 				if(BytesOfRemotePEMCertificate.SequenceEqual(BytesOfServerCertificate)) //Compare byte arrays of certificates
 				{

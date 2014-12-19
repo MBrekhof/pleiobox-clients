@@ -126,6 +126,12 @@
     <Reference Include="Mono.Data.Sqlcipher">
       <HintPath>..\LocalBox_Common\Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\Xamarin.Insights.dll</HintPath>
+    </Reference>
+    <Reference Include="PLCrashReporter">
+      <HintPath>packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\PLCrashReporter.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -145,6 +151,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

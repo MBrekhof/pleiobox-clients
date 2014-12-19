@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Xamarin;
 
 namespace LocalBox_Common
 {
@@ -21,7 +22,8 @@ namespace LocalBox_Common
 
 					return mimeTypes.TryGetValue (extension, out mimeType) ? mimeType : "application/octet-stream";
 				}
-				catch{
+				catch (Exception ex){
+					Insights.Report(ex);
 					return mimeType;
 				}
 			} else {

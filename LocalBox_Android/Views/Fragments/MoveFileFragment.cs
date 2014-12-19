@@ -14,6 +14,7 @@ using Android.Widget;
 using Android.Graphics;
 
 using LocalBox_Common;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -106,7 +107,8 @@ namespace LocalBox_Droid
 						Console.WriteLine("Current opened folder; " + pathOfCurrentOpenedFolder);
 					}));
 				}
-				catch{
+				catch (Exception ex){
+					Insights.Report(ex);
 					HideProgressDialog();
 					Toast.MakeText (Activity, "Er is iets fout gegaan. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
 				}
@@ -203,7 +205,8 @@ namespace LocalBox_Droid
 					}
 				}
 			}
-			catch{
+			catch (Exception ex){
+				Insights.Report(ex);
 				HideProgressDialog ();
 				Toast.MakeText (Activity, "Er is iets fout gegaan. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
 			}

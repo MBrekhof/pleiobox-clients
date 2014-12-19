@@ -14,6 +14,7 @@ using Android.Runtime;
 using Android.Net.Http;
 
 using LocalBox_Common;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -57,6 +58,9 @@ namespace LocalBox_Droid
 			webview = view.FindViewById<WebView>(Resource.Id.webview_register_localbox);
 
 			try{
+				//Reset validation check - otherwise it will cause errors if there is an active certificate pinning enabled
+				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+
 				CookieManager.Instance.SetAcceptCookie (true);
 
 				webview.Settings.JavaScriptEnabled = true;
@@ -64,7 +68,8 @@ namespace LocalBox_Droid
 				webview.Settings.JavaScriptCanOpenWindowsAutomatically = true;
 				webview.SetWebViewClient(new MyWebViewClient(this));
 				webview.LoadUrl(urlToOpen);
-			}catch{
+			}catch (Exception ex){
+				Insights.Report(ex);
 				return view;
 			}
 			return view;

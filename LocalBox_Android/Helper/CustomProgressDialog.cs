@@ -1,5 +1,6 @@
 ﻿using System;
 using Android.App;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -27,7 +28,8 @@ namespace LocalBox_Droid
 				progressDialog.SetMessage (message);
 				progressDialog.SetCancelable (false);
 				progressDialog.Show ();
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 			}
 		}
 

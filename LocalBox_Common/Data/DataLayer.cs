@@ -9,6 +9,7 @@ using System.Linq;
 using SQLite;
 using System.Threading;
 using System.Security.Cryptography;
+using Xamarin;
 
 namespace LocalBox_Common
 {
@@ -63,8 +64,9 @@ namespace LocalBox_Common
 				loginAttempts = 0;
 				return true;
             }
-			catch (SQLiteException)
+			catch (SQLiteException ex)
             {
+				Insights.Report(ex);
 				if (loginAttempts >= 5) 
 				{
 					//5x foutieve pincode ingevoerd dus verwijder geregistreerde localboxen
@@ -102,8 +104,9 @@ namespace LocalBox_Common
                 {
                     db = new Database(databasePath, pincode);
                 }
-                catch (SQLiteException)
+                catch (SQLiteException ex)
                 {
+					Insights.Report (ex);
                     return false;
                 }
                 finally
@@ -318,7 +321,8 @@ namespace LocalBox_Common
                     	    stream.CopyTo(fs);
                     	}
                     	return decpath;
-					}catch{
+					}catch (Exception ex){
+						Insights.Report(ex);
 						return pathToFile;
 					}
                 }
@@ -535,7 +539,8 @@ namespace LocalBox_Common
 					using (var stream = File.OpenRead (file)) {
 						return remoteExplorer.UploadFile (destination, stream);
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 
@@ -586,6 +591,7 @@ namespace LocalBox_Common
 
 
 			} catch (Exception ex){
+				Insights.Report(ex);
 				Console.WriteLine (ex.Message);
 				return uploadedSucceeded;
 			}

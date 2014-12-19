@@ -10,6 +10,8 @@ using LocalBox_Common;
 using LocalBox_iOS.Helpers;
 using LocalBox_iOS.Views.ItemView;
 
+using Xamarin;
+
 namespace LocalBox_iOS.Views
 {
     public partial class HomeController : UIViewController, IHome
@@ -46,36 +48,32 @@ namespace LocalBox_iOS.Views
 			}
 
 
-			SslValidator.CertificateMismatchFound += (object sender, EventArgs e) => 
-			{
+			SslValidator.CertificateMismatchFound += (object sender, EventArgs e) => {
 				SslValidator.CertificateErrorRaised = true;
 
 				//Incorrect ssl found so show pop-up
 				Console.WriteLine ("SSL mismatch!!!");
-				InvokeOnMainThread ( () => {
-				var alert = new UIAlertView ("Waarschuwing", 
-					"De identiteit van de server kan niet goed vastgesteld worden. " +
-					"Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
-					"extra te controleren?", null, "Ja", "Nee");
+				InvokeOnMainThread (() => {
+					var alert = new UIAlertView ("Waarschuwing", 
+						           "De identiteit van de server kan niet goed vastgesteld worden. " +
+						           "Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
+						           "extra te controleren?", null, "Ja", "Nee");
 
-				alert.Clicked += (s, buttonArgs) =>  {
-					if(buttonArgs.ButtonIndex == 0){
+					alert.Clicked += async (s, buttonArgs) => {
+						if (buttonArgs.ButtonIndex == 0) {
 
-						//Get new certificate from server
-						bool certificateSucessfullyRenewed = CertificateHelper.VerifyCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
+							//Get new certificate from server
+							bool certificateSucessfullyRenewed = await CertificateHelper.VerifyCertificateForLocalBox (DataLayer.Instance.GetSelectedOrDefaultBox ());
 
-						if(certificateSucessfullyRenewed){
-							new UIAlertView ("Succes", "Controle met succes uitgevoerd. U kunt weer verder werken.", null, "OK").Show ();
-						}else {
-							new UIAlertView ("Foutmelding", "Dit netwerk is niet te vertrouwen.", null, "OK").Show ();
+							if (certificateSucessfullyRenewed) {
+								new UIAlertView ("Succes", "Controle met succes uitgevoerd. U kunt weer verder werken.", null, "OK").Show ();
+							} else {
+								new UIAlertView ("Foutmelding", "Dit netwerk is niet te vertrouwen.", null, "OK").Show ();
+							}
 						}
-
-					}
-				};
+					};
 				
-				alert.Show ();
-
-				Console.WriteLine ("ABCDEF");
+					alert.Show ();
 				});
 			};
         }
@@ -202,7 +200,8 @@ namespace LocalBox_iOS.Views
                 	UIColor theColor = UIColor.FromRGBA(red, green, blue, 1.0f);
                 	kleurenBalk.BackgroundColor = theColor;
 				}
-			}catch{
+			}catch (Exception ex){
+				Insights.Report(ex);
 			}
         }
 
@@ -368,7 +367,8 @@ namespace LocalBox_iOS.Views
 							new UIAlertView ("Fout", "Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
 							"Eventuele annotaties zijn niet verwerkt.", null, "OK").Show ();
 						}
-					} catch {
+					} catch (Exception ex){
+						Insights.Report(ex);
 						DialogHelper.HideBlockingProgressDialog ();
 						new UIAlertView ("Fout", "Er is een fout opgetreden bij het bijwerken van het PDF bestand. \n" +
 							"Eventuele annotaties zijn niet verwerkt.", null, "OK").Show ();

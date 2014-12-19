@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using Xamarin;
 
 namespace LocalBox_Common
 {
@@ -96,7 +97,8 @@ namespace LocalBox_Common
 									}
 									result = box;
   
-								} catch (Exception ex) {
+								} catch (Exception ex){
+									Insights.Report(ex);
 									result = null;
 								}
 							}
@@ -104,6 +106,7 @@ namespace LocalBox_Common
 					}
 				}
 				catch (Exception ex){
+					Insights.Report(ex);
 					Console.WriteLine(ex.Message);					
 					return result;
 				}
@@ -143,7 +146,8 @@ namespace LocalBox_Common
 					//}
 
 					return true;
-				} catch (Exception ex) {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					DataLayer.Instance.DeleteLocalBox (localBox.Id);
 					return false;
 				}
@@ -173,7 +177,8 @@ namespace LocalBox_Common
 
 				return explorer.GetShareSettings (pathOfShare);
 			}
-			catch{
+			catch (Exception ex){
+				Insights.Report(ex);
 				return null;
 			}
 		}
@@ -236,7 +241,8 @@ namespace LocalBox_Common
 				}
 				return result;
 			} 
-			catch {
+			catch (Exception ex){
+				Insights.Report(ex);
 				return result;
 			}
 		}
@@ -274,7 +280,8 @@ namespace LocalBox_Common
 						DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 					}
 					return result;
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 
@@ -291,7 +298,8 @@ namespace LocalBox_Common
 					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 
 					return result;
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			});

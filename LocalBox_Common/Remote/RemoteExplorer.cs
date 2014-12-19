@@ -14,6 +14,8 @@ using LocalBox_Common.Remote.Authorization;
 using LocalBox_Common.Remote.Model;
 using System.Net.Http.Headers;
 using System.Net;
+using Newtonsoft.Json.Linq;
+using Xamarin;
 
 namespace LocalBox_Common.Remote
 {
@@ -38,7 +40,6 @@ namespace LocalBox_Common.Remote
 			}else {
 				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
 			}
-			
 		}
 
 		public RemoteExplorer (LocalBox box)
@@ -68,23 +69,30 @@ namespace LocalBox_Common.Remote
 
 		private void ReAuthorise ()
 		{
-			var lba = new LocalBoxAuthorization (_localBox);
+			try {
+				var localBoxAuthorization = new LocalBoxAuthorization (_localBox);
 
-			// Ververs het access token met het refreshtoken uit de database:
-			string refreshToken = _localBox.RefreshToken;
+				// Ververs het access token met het refreshtoken uit de database:
+				string refreshToken = _localBox.RefreshToken;
 
-			if (string.IsNullOrEmpty (refreshToken)) {
-				// Er moet al eens met userId/password geauthoriseerd zijn!
-				throw new InvalidOperationException ("Refreshtoken is leeg!");
+				if (string.IsNullOrEmpty (refreshToken)) {
+					throw new InvalidOperationException ("Refreshtoken is leeg voor refresh!");
+				} else {
+					localBoxAuthorization.RefreshAccessToken (refreshToken);
+
+					if(localBoxAuthorization.AccessToken != null && localBoxAuthorization.RefreshToken != null){
+						_localBox.AccessToken = localBoxAuthorization.AccessToken;
+						_localBox.DatumTijdTokenExpiratie = localBoxAuthorization.Expiry.ToString ();
+						_localBox.RefreshToken = localBoxAuthorization.RefreshToken;
+
+						DataLayer.Instance.AddOrUpdateLocalBox (_localBox);
+					}else {
+						throw new InvalidOperationException ("Refreshtoken is leeg na refresh!");
+					}
+				}
+			} catch (Exception ex) { 
+				Insights.Report (ex);
 			}
-
-			lba.RefreshAccessToken (refreshToken);
-
-			_localBox.AccessToken = lba.AccessToken;
-			_localBox.DatumTijdTokenExpiratie = lba.Expiry.ToString ();
-			_localBox.RefreshToken = lba.RefreshToken;
-
-			DataLayer.Instance.AddOrUpdateLocalBox (_localBox);
 		}
 
 		public DataGroup GetFiles (string currentFolderId = "")
@@ -124,6 +132,61 @@ namespace LocalBox_Common.Remote
 
 			return new DataGroup ();
 		}
+
+
+
+		public Task<string> GetActivePEMFromServer ()
+		{
+			string urlToRegistrionJson = _localBox.BaseUrl + "register_app";
+			return null;
+			//TODO
+
+//			string result = null;
+//
+//			try {
+//				HttpWebRequest request = (HttpWebRequest)WebRequest.Create (boxUrl); 
+//
+//				request.ContentType = "application/json";
+//				request.Timeout	= 10000; //10 seconds before timeout
+//
+//				//If cookie not null then add to http request header
+//				//if (cookieString != null) {
+//				//request.Headers.Add (HttpRequestHeader.
+//				//}
+//				string authToken = "Bearer" + " " + _localBox.AccessToken;
+//				request.Headers.Add ("Authorization", authToken);
+//				request.Method = "GET";
+//
+//				using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
+//					if (response.StatusCode != HttpStatusCode.OK) {
+//
+//						Console.Out.WriteLine ("Error fetching data. Server returned status code: {0}", response.StatusCode);
+//						return null;
+//					}
+//
+//					using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
+//						var content = reader.ReadToEnd ();
+//						if (string.IsNullOrWhiteSpace (content)) {
+//							Console.Out.WriteLine ("Response contained empty body...");
+//							return null;
+//						} else {
+//							try {
+//								LocalBox box = JsonConvert.DeserializeObject<LocalBox> (content);
+//									
+//								return null;
+//							} catch (Exception ex) {
+//								result = null;
+//							}
+//						}
+//					}
+//				}
+//			} catch (Exception ex) {
+//				Console.WriteLine (ex.Message);					
+//				return null;
+//			}
+		}
+
+
 
 		public byte[] GetFile (string path)
 		{
@@ -165,7 +228,8 @@ namespace LocalBox_Common.Remote
 				}
 
 				return null;
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				return null;
 			}
 		}
@@ -196,7 +260,8 @@ namespace LocalBox_Common.Remote
 					if (response.IsSuccessStatusCode) {
 						return true;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 
@@ -235,7 +300,8 @@ namespace LocalBox_Common.Remote
 					if (response.IsSuccessStatusCode) {
 						return true;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			}
@@ -274,7 +340,8 @@ namespace LocalBox_Common.Remote
 					if (response.IsSuccessStatusCode) {
 						return true;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			}
@@ -313,7 +380,8 @@ namespace LocalBox_Common.Remote
 					if (response.IsSuccessStatusCode) {
 						return true;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			}
@@ -347,7 +415,8 @@ namespace LocalBox_Common.Remote
 					} else {
 						return false;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			}
@@ -432,7 +501,8 @@ namespace LocalBox_Common.Remote
 						} else {
 							return false;
 						}
-					} catch {
+					} catch (Exception ex){
+						Insights.Report(ex);
 						return false;
 					}
 				}
@@ -473,7 +543,8 @@ namespace LocalBox_Common.Remote
 							return JsonConvert.DeserializeObject<Share> (jsonString);
 						}
 						return null;
-					} catch {
+					} catch (Exception ex){
+						Insights.Report(ex);
 						return null;
 					}
 				}
@@ -516,7 +587,8 @@ namespace LocalBox_Common.Remote
 							} else {
 								return false;
 							}
-						} catch {
+						} catch (Exception ex){
+							Insights.Report(ex);
 							return false;
 						}
 					}
@@ -551,7 +623,8 @@ namespace LocalBox_Common.Remote
 					} else {
 						return false;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			}
@@ -598,7 +671,8 @@ namespace LocalBox_Common.Remote
 						}
 						return null;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return null;
 				}
 			});
@@ -673,7 +747,8 @@ namespace LocalBox_Common.Remote
 					} else {
 						return false;
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					return false;
 				}
 			}
@@ -716,7 +791,8 @@ namespace LocalBox_Common.Remote
                         return result;
                     }
                     return null;
-                } catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
                     return null;
                 }
             }
@@ -755,8 +831,8 @@ namespace LocalBox_Common.Remote
 
                     return response.IsSuccessStatusCode;
                 }
-                catch
-                {
+				catch (Exception ex){
+					Insights.Report(ex);
                     return false;
                 }
             }
@@ -798,8 +874,8 @@ namespace LocalBox_Common.Remote
 
                     return response.IsSuccessStatusCode;
                 }
-                catch
-                {
+				catch (Exception ex){
+					Insights.Report(ex);
                     return false;
                 }
             }
@@ -841,8 +917,8 @@ namespace LocalBox_Common.Remote
 
                     return response.IsSuccessStatusCode;
                 }
-                catch
-                {
+				catch (Exception ex){
+					Insights.Report(ex);
                     return false;
                 }
             }
@@ -893,8 +969,8 @@ namespace LocalBox_Common.Remote
                         return false;
                     }
                 }
-                catch
-                {
+				catch (Exception ex){
+					Insights.Report(ex);
                     result = null;
                     return false;
                 }

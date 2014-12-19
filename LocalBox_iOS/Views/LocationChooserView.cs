@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using LocalBox_iOS.Helpers;
 using System.Linq;
 
+using Xamarin;
+
 namespace LocalBox_iOS.Views
 {
     public partial class LocationChooserView : UIView
@@ -103,7 +105,8 @@ namespace LocalBox_iOS.Views
 							}
 						}
 					}
-				}catch{
+				} catch (Exception ex){
+					Insights.Report(ex);
 					DialogHelper.HideBlockingProgressDialog();
 					string message;
 
@@ -246,7 +249,8 @@ namespace LocalBox_iOS.Views
 					_parent.TerugButton.Hidden = false;
 					_parent.ShowSaveButton (!NodeStack.Peek ().Path.Equals ("/"));
 					tableView.ReloadData ();
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					new UIAlertView ("Fout", "Er is een fout opgetreden. Controleer uw internet verbinding en probeer het a.u.b. opnieuw.", null, "OK").Show ();
 				}
 			}

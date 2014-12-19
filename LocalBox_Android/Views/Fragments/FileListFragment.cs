@@ -10,6 +10,7 @@ using Android.Views;
 using Android.Widget;
 
 using LocalBox_Common;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -57,7 +58,8 @@ namespace LocalBox_Droid
 						
 						Activity.Finish ();
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					Toast.MakeText (Activity, "Er is iets fout gegaan", ToastLength.Short).Show ();
 				}
 				progressDialog.Hide ();

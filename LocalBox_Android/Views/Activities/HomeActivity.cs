@@ -23,6 +23,7 @@ using Android.Views.InputMethods;
 
 using LocalBox_Common;
 using LocalBox_Common.Remote;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -224,7 +225,8 @@ namespace LocalBox_Droid
 					}
 					SplashActivity.clipData = null;
 				})).Start ();
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				SplashActivity.clipData = null;
 				HideProgressDialog ();
 				ShowToast ("Er is een fout opgetreden. Probeer het a.u.b. later nogmaals");
@@ -328,7 +330,8 @@ namespace LocalBox_Droid
 						ShowToast("Bestand succesvol geupload");
 						RefreshExplorerFragmentData();
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					HideProgressDialog ();
 					ShowToast ("Het uploaden is mislukt. Probeer het a.u.b. opnieuw");
 				}
@@ -434,15 +437,6 @@ namespace LocalBox_Droid
 			dialogHelper.ShowOpenUrlDialog ();
 		}
 
-		private void ShowHttpWarningDialog(string urlToOpen)
-		{
-			dialogHelper.ShowHttpWarningDialog (urlToOpen);
-		}
-
-		private void ShowInvalidCertificateDialog(string urlToOpen)
-		{
-			dialogHelper.ShowInvalidCertificateDialog (urlToOpen);
-		}
 			
 		//Register new LocalBox part 2	
 		public void ShowRegisterLocalBoxDialog (string urlToOpen, bool ignoreSslError)
@@ -501,7 +495,8 @@ namespace LocalBox_Droid
 						progressDialog.Hide ();
 					}));
 				}
-			}catch{
+			}catch (Exception ex){
+				Insights.Report(ex);
 			}
 		}
 
@@ -511,7 +506,8 @@ namespace LocalBox_Droid
 				this.RunOnUiThread (new Action (() => { 
 					Toast.MakeText (this, message, ToastLength.Long).Show ();
 				}));
-			}catch{
+			}catch (Exception ex){
+				Insights.Report(ex);
 			}
 		}
 

@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Content.Res;
 
 using LocalBox_Common;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -113,9 +114,10 @@ namespace LocalBox_Droid
                     _out.Flush();
                     _out.Close();
                 }
-                catch (Java.IO.IOException e)
+                catch (Java.IO.IOException ex)
                 {
-                    Android.Util.Log.Error(GetType().Name, "Exception transferring file", e);
+					Insights.Report (ex);
+                    Android.Util.Log.Error(GetType().Name, "Exception transferring file", ex);
                 }
             }
         }

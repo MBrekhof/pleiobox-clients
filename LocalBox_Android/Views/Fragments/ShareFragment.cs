@@ -13,6 +13,7 @@ using Android.Widget;
 
 using LocalBox_Common;
 using LocalBox_Common.Remote;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -120,7 +121,8 @@ namespace LocalBox_Droid
 					}
 					HideProgressDialog ();
 				} 
-				catch {
+				catch (Exception ex){
+					Insights.Report(ex);
 					HideProgressDialog ();
 					Toast.MakeText (Activity, "Er is iets fout gegaan bij het delen", ToastLength.Short).Show ();
 				}

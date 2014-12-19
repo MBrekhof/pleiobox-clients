@@ -11,6 +11,8 @@ using Android.InputMethodServices;
 
 using LocalBox_Common;
 
+using Xamarin;
+
 namespace LocalBox_Droid
 {
 	public class DialogHelperForHomeActivity
@@ -31,10 +33,10 @@ namespace LocalBox_Droid
 				.SetMessage("De identiteit van de server kan niet goed vastgesteld worden. " +
 					"Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
 					"extra te controleren?")
-				.SetPositiveButton("Ja", (s, args) =>
+				.SetPositiveButton("Ja", async (s, args) =>
 					{
 						//Get new certificate from server
-						bool newCertificateIsValid = CertificateHelper.VerifyCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
+						bool newCertificateIsValid = await CertificateHelper.VerifyCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
 
 						if(newCertificateIsValid){
 							homeActivity.ShowToast ("Controle met succes uitgevoerd. U kunt weer verder werken.");
@@ -146,7 +148,8 @@ namespace LocalBox_Droid
 				} else {
 					homeActivity.ShowToast("Geen gebruikers gevonden om mee te kunnen delen");
 				}
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				homeActivity.HideProgressDialog ();
 			}
 		}
@@ -193,7 +196,8 @@ namespace LocalBox_Droid
 				} else {
 					homeActivity.ShowToast("Geen mappen gevonden om bestand naar te verplaatsen");
 				}
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				homeActivity.HideProgressDialog ();
 				homeActivity.ShowToast ("Er is iets fout gegaan bij het ophalen van mappen. \nProbeer het a.u.b. opnieuw");
 			}
@@ -253,7 +257,8 @@ namespace LocalBox_Droid
 							//Refresh data
 							homeActivity.RefreshExplorerFragmentData();
 						}
-					}catch{
+					}catch (Exception ex){
+						Insights.Report(ex);
 						homeActivity.HideProgressDialog();
 						homeActivity.ShowToast("Toevoegen map mislukt. Probeer het a.u.b. opnieuw");
 					}
@@ -293,7 +298,7 @@ namespace LocalBox_Droid
 				} else {
 					if(editTextUrl.Text.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase))
 					{
-						ShowHttpWarningDialog(editTextUrl.Text);
+						ShowHttpWarningDialog(editTextUrl.Text, dialog);
 
 						//Dismiss keyboard
 						InputMethodManager manager = (InputMethodManager) homeActivity.GetSystemService(Context.InputMethodService);
@@ -310,7 +315,8 @@ namespace LocalBox_Droid
 							dialog.Dismiss();
 						}
 						else {
-							ShowInvalidCertificateDialog(editTextUrl.Text);
+							ShowInvalidCertificateDialog(editTextUrl.Text, dialog);
+
 						}
 					}
 					else {
@@ -325,30 +331,32 @@ namespace LocalBox_Droid
 
 
 
-		public void ShowHttpWarningDialog(string urlToOpen)
+		public void ShowHttpWarningDialog(string urlToOpen, AlertDialog urlDialog)
 		{
 			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
 			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
 			dialogAlert.SetTitle ("Waarschuwing");
 			dialogAlert.SetMessage ("U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?");
-			dialogAlert.SetButton2 ("Cancel", (s, ev) => { homeActivity.ShowOpenUrlDialog (); });
+			dialogAlert.SetButton2 ("Cancel", (s, ev) => { dialogAlert.Dismiss(); });
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
 				homeActivity.ShowRegisterLocalBoxDialog(urlToOpen, false);
+				urlDialog.Dismiss ();
 				dialogAlert.Dismiss();
 			});
 			dialogAlert.Show ();
 		}
 
 
-		public void ShowInvalidCertificateDialog(string urlToOpen)
+		public void ShowInvalidCertificateDialog(string urlToOpen, AlertDialog urlDialog)
 		{
 			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
 			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
 			dialogAlert.SetTitle ("Waarschuwing");
 			dialogAlert.SetMessage ("U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Weet u zeker dat u wilt doorgaan?");
-			dialogAlert.SetButton2 ("Cancel", (s, ev) => { homeActivity.ShowOpenUrlDialog (); });
+			dialogAlert.SetButton2 ("Cancel", (s, ev) => { dialogAlert.Dismiss(); });
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
 				homeActivity.ShowRegisterLocalBoxDialog(urlToOpen, true);
+				urlDialog.Dismiss ();
 				dialogAlert.Dismiss();
 			});
 			dialogAlert.Show ();
@@ -384,9 +392,6 @@ namespace LocalBox_Droid
 			bool result = false;
 
 			homeActivity.ShowProgressDialog ("LocalBox laden...");
-
-			//Add certificate to LocalBox object - will be stored in local database
-			//lbToAdd.OriginalServerCertificate = CertificateHelper.BytesOfServerCertificate;
 
 			result = await BusinessLayer.Instance.Authenticate (lbToAdd);
 
@@ -449,7 +454,8 @@ namespace LocalBox_Droid
 								SplashActivity.intentData = null;
 							}
 						} 
-						catch {
+						catch (Exception ex){
+							Insights.Report(ex);
 							homeActivity.HideProgressDialog ();
 							homeActivity.ShowToast("Passphrase instellen mislukt. Probeer het a.u.b. opnieuw");
 						}
@@ -501,7 +507,8 @@ namespace LocalBox_Droid
 							homeActivity.menuFragment.UpdateLocalBoxes ();
 							SplashActivity.intentData = null;
 						}
-					} catch {
+					} catch (Exception ex){
+						Insights.Report(ex);
 						homeActivity.HideProgressDialog ();
 						homeActivity.ShowToast("Passphrase verifieren mislukt. Probeer het a.u.b. opnieuw");
 					}

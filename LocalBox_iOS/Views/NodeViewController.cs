@@ -1,17 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using MonoTouch.Foundation;
+using MonoTouch.UIKit;
+using LocalBox_Common.Remote;
+
 using LocalBox_Common;
 using LocalBox_iOS.Helpers;
 using LocalBox_iOS.Views.ItemView;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using System.IO;
-using LocalBox_Common.Remote;
+using Xamarin;
 
 namespace LocalBox_iOS.Views
 {
@@ -73,7 +75,8 @@ namespace LocalBox_iOS.Views
                 	_nodes.Add(node);
                 	Add(node);
                 	AnimateViews();
-				}catch{
+				} catch (Exception ex){
+					Insights.Report(ex);
 					DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van de map.\n" +
 												 "Ververs de huidige map en probeer het a.u.b. nogmaals.");
 				}
@@ -96,7 +99,8 @@ namespace LocalBox_iOS.Views
                         	Add(item);
                         	AnimateViews();
 						}
-						catch{
+						catch (Exception ex){
+							Insights.Report(ex);
 							DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van het bestand." +
 														 "\nVervers a.u.b. de map en probeer het opnieuw.");
 						}
@@ -126,7 +130,8 @@ namespace LocalBox_iOS.Views
 				_nodes.Add (node);
 				Add (node);
 				AnimateViews ();
-			} catch {
+			}  catch (Exception ex){
+				Insights.Report(ex);
 			}
 		}
 

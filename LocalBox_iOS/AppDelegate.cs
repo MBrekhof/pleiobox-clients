@@ -1,13 +1,15 @@
-﻿
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
+
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+
 using LocalBox_iOS.Views;
-using System;
 using LocalBox_Common;
 using LocalBox_iOS.Helpers;
 
+using Xamarin;
 
 namespace LocalBox_iOS
 {
@@ -55,6 +57,10 @@ namespace LocalBox_iOS
         public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
         {
             Window = new UIWindow (UIScreen.MainScreen.Bounds);
+
+			//Initialize Xamarin Insights => API key can be replaced with your own Xamarin Insights API key
+			Insights.Initialize("eef088ee56eae5e8b764cddc809e4a8ddbe119ec");
+
 
             ViewController = new HomeController();
             Window.RootViewController = ViewController;

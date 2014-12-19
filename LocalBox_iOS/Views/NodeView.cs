@@ -11,6 +11,8 @@ using System.IO;
 using System.Diagnostics;
 using MonoTouch.MessageUI;
 
+using Xamarin;
+
 namespace LocalBox_iOS.Views
 {
 	public partial class NodeView : BaseNode, IListNode
@@ -99,7 +101,8 @@ namespace LocalBox_iOS.Views
 					DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het ophalen van gebruikers. \nProbeer het a.u.b. nogmaals.");
 				}
 
-			} catch {
+			}  catch (Exception ex){
+				Insights.Report(ex);
 				DialogHelper.HideBlockingProgressDialog ();
 				DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden. \n" +
 				"Probeer het a.u.b. nogmaals.");
@@ -152,7 +155,8 @@ namespace LocalBox_iOS.Views
 
 						DialogHelper.HideProgressDialog ();
 
-					} catch {
+					}  catch (Exception ex){
+						Insights.Report(ex);
 						DialogHelper.HideProgressDialog ();
 						DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het delen van het bestand." +
 						"\nVervers a.u.b. de map en probeer het opnieuw.");
@@ -173,8 +177,9 @@ namespace LocalBox_iOS.Views
 			try {
 				Node = await DataLayer.Instance.GetFolder (NodePath);
 				NodeItemTable.Source = new NodeViewSource (Node, _nodeViewController, this);
-			} catch (Exception e) {
-				Debug.WriteLine ("Exception in " + e.Source + ": " + e.Message);
+			}  catch (Exception ex){
+				Insights.Report(ex);
+				Debug.WriteLine ("Exception in " + ex.Source + ": " + ex.Message);
 				ShowErrorRetrievingList ();
 			}
 			NodeItemTableController.RefreshControl.EndRefreshing ();

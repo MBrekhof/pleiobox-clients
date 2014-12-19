@@ -45,6 +45,12 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Dll\json.net\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>..\LocalBox_iOS\packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\Xamarin.Insights.dll</HintPath>
+    </Reference>
+    <Reference Include="PLCrashReporter">
+      <HintPath>..\LocalBox_iOS\packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\PLCrashReporter.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -94,5 +100,8 @@
       <Project>{7A94F49C-F81C-4F5D-B407-071E0C7F33E4}</Project>
       <Name>BouncyCastleAPI_iOS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

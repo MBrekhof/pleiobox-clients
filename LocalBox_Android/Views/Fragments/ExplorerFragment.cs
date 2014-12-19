@@ -19,6 +19,7 @@ using Android.Net;
 
 using LocalBox_Common;
 using LocalBox_Common.Remote;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -235,7 +236,8 @@ namespace LocalBox_Droid
 						OpenFileIn (clickedItem);
 					}
 				}
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				parentActivity.HideProgressDialog ();
 				Toast.MakeText (Activity, "Het openen is mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
 			}
@@ -408,6 +410,7 @@ namespace LocalBox_Droid
 				parentActivity.HideProgressDialog();
 			} 
 			catch (Exception ex){
+				Insights.Report(ex);
 				Console.WriteLine (ex.Message);
 				Console.WriteLine (ex.StackTrace);
 
@@ -510,12 +513,13 @@ namespace LocalBox_Droid
 
 					Activity.StartActivity (intent);
 				}
-			} catch (Exception exception) {
-				Console.WriteLine (exception.Message);
+			} catch (Exception ex){
+				Insights.Report(ex);
+				Console.WriteLine (ex.Message);
 
 				parentActivity.HideProgressDialog ();
 
-				if (exception is ActivityNotFoundException) {
+				if (ex is ActivityNotFoundException) {
 					Toast.MakeText (Android.App.Application.Context, "Geen app op uw apparaat gevonden om dit bestandstype te kunnen openen", ToastLength.Long).Show ();
 				} else {
 					Toast.MakeText (Android.App.Application.Context, "Openen bestand mislukt", ToastLength.Long).Show ();
@@ -533,7 +537,8 @@ namespace LocalBox_Droid
 				parentActivity.ShowProgressDialog (null);
 				parentActivity.ShowShareFileDatePicker(filePath);
 			} 
-			catch {
+			catch (Exception ex){
+				Insights.Report(ex);
 				parentActivity.HideProgressDialog ();
 				Toast.MakeText (Android.App.Application.Context, "Bestand delen mislukt", ToastLength.Short).Show ();
 			}
@@ -564,7 +569,8 @@ namespace LocalBox_Droid
 
 				//Refresh listview
 				RefreshData ();
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				parentActivity.HideProgressDialog ();
 				Toast.MakeText (Android.App.Application.Context, "Favoriet maken mislukt", ToastLength.Short).Show ();
 			}
@@ -609,7 +615,8 @@ namespace LocalBox_Droid
 				{
 					RefreshData();
 				}
-			} catch {
+			} catch (Exception ex){
+				Insights.Report(ex);
 				parentActivity.HideProgressDialog ();
 				Toast.MakeText (Android.App.Application.Context, "Mislukt om bestand uit favorieten te verwijderen", ToastLength.Short).Show ();
 			}
@@ -639,7 +646,8 @@ namespace LocalBox_Droid
 						//Refresh listview
 						RefreshData ();
 					}
-				} catch {
+				} catch (Exception ex){
+					Insights.Report(ex);
 					parentActivity.HideProgressDialog (); 
 					Toast.MakeText (Android.App.Application.Context, "Verwijderen mislukt - druk op ververs en probeer het a.u.b. opnieuw", ToastLength.Long).Show ();
 				}

@@ -4,6 +4,8 @@ using Android.App;
 using Android.Runtime;
 using Android.Content;
 
+using Xamarin;
+
 namespace LocalBox_Droid
 {
 	[Application(Label = "LocalBox", Theme = "@android:style/Theme.Holo.Light")]
@@ -24,6 +26,9 @@ namespace LocalBox_Droid
             base.OnCreate();
 
 			context = ApplicationContext;
+
+			//Initialize Xamarin Insights => API key can be replaced with your own Xamarin Insights API key
+			Insights.Initialize("eef088ee56eae5e8b764cddc809e4a8ddbe119ec", context);
         }
 
 		public static Context GetAppContext()

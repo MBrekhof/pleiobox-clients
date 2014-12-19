@@ -14,6 +14,7 @@ using Android.App;
 using Android.Graphics;
 
 using LocalBox_Common;
+using Xamarin;
 
 namespace LocalBox_Droid
 {
@@ -56,7 +57,8 @@ namespace LocalBox_Droid
 				//Set Font
 				FontHelper.SetFont (textviewFilename);
 
-			}catch{
+			}catch (Exception ex){
+				Insights.Report(ex);
 				Toast.MakeText (this, "Het openen van het bestand is mislukt", ToastLength.Short).Show ();
 				this.Finish ();
 			}

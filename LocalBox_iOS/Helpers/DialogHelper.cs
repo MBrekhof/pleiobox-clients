@@ -3,6 +3,8 @@ using MonoTouch.UIKit;
 using System.Threading;
 using MonoTouch.Foundation;
 
+using Xamarin;
+
 namespace LocalBox_iOS.Helpers
 {
     public static class DialogHelper
@@ -43,8 +45,8 @@ namespace LocalBox_iOS.Helpers
                             finalize();
                       });
                     }
-                    catch
-                    {
+					catch (Exception ex){
+						Insights.Report(ex);
                     }
                 }
             });

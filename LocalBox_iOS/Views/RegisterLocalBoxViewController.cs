@@ -8,6 +8,8 @@ using MonoTouch.UIKit;
 using LocalBox_Common;
 using LocalBox_iOS.Views;
 
+using Xamarin;
+
 namespace LocalBox_iOS
 {
 	public partial class RegisterLocalBoxViewController : UIViewController
@@ -29,6 +31,9 @@ namespace LocalBox_iOS
 			base.ViewDidLoad ();
 
 			try{
+				//Reset validation check - otherwise it will cause errors if there is an active certificate pinning enabled
+				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+
 				NSHttpCookieStorage.SharedStorage.AcceptPolicy = NSHttpCookieAcceptPolicy.Always;
 
 				webViewRegisterLocalBox.ScalesPageToFit = true;
@@ -37,7 +42,8 @@ namespace LocalBox_iOS
 				webViewRegisterLocalBox.ShouldStartLoad += webViewShouldStartLoad;
 				webViewRegisterLocalBox.LoadFinished += webViewLoadFinished;
 			}
-			catch {
+			catch (Exception ex){
+				Insights.Report(ex);
 				this.View.RemoveFromSuperview();
 				new UIAlertView ("Error", "Openen van internet browser is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null).Show ();
 			}
@@ -84,7 +90,8 @@ namespace LocalBox_iOS
 
 				return true;
 			} 
-			catch {
+			catch (Exception ex){
+				Insights.Report(ex);
 				this.View.RemoveFromSuperview ();
 				var alertView = new UIAlertView("Error", "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null);
 				alertView.Show();

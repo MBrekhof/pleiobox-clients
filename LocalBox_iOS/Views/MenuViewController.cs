@@ -9,6 +9,7 @@ using LocalBox_iOS.Views.Table;
 using System.IO;
 using LocalBox_iOS.Helpers;
 using System.Net;
+using Xamarin;
 
 
 namespace LocalBox_iOS.Views
@@ -122,7 +123,8 @@ namespace LocalBox_iOS.Views
 						}
                     	_parent.SetLogo(boxList[indexPath.Row].LogoUrl);
 						_parent._home.UpdateDetail(new NodeViewController(boxList[indexPath.Row].BackColor, _parent._home), true);
-					}catch{
+					} catch (Exception ex){
+						Insights.Report(ex);
 						DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van de LocalBox.\n" +
 													 "Probeer het a.u.b. nogmaals.");
 					}
@@ -157,7 +159,8 @@ namespace LocalBox_iOS.Views
 								if(selectedRow != null && selectedRow.Row == indexPath.Row) {
 									_parent._home.RemoveDetail();
 								}
-							}catch{
+							} catch (Exception ex){
+								Insights.Report(ex);
 								DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het verwijderen van de LocalBox.\n" +
 															 "Probeer het a.u.b. nogmaals.");
 							}

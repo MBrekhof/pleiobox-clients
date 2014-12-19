@@ -9,6 +9,8 @@ using System.Linq;
 using MonoTouch.MessageUI;
 using System.IO;
 
+using Xamarin;
+
 namespace LocalBox_iOS.Views
 {
     public partial class NodeViewCellDetail : UIView
@@ -84,7 +86,8 @@ namespace LocalBox_iOS.Views
                 	}
             	}
             	AddButtons(buttons);
-			}catch{
+			} catch (Exception ex){
+				Insights.Report(ex);
 				DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van de map.\n" +
 											 "Probeer het a.u.b. nogmaals.");
 			}
@@ -210,7 +213,8 @@ namespace LocalBox_iOS.Views
                     	iac.PresentOptionsMenu(ConvertRectFromView(button.Frame, this), _buttonContainer, true);
 
 						DialogHelper.HideProgressDialog();
-					}catch{
+					} catch (Exception ex){
+						Insights.Report(ex);
 						DialogHelper.HideProgressDialog();
 						DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van het bestand." +
 															 "\n Ververs a.u.b. de map en probeer het opnieuw.");

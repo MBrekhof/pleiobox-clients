@@ -6,6 +6,7 @@ using System.Collections;
 using LocalBox_Common.Remote;
 using Synchronization.Models;
 using System.Collections.Generic;
+using Xamarin;
 
 namespace LocalBox_Common
 {
@@ -266,8 +267,8 @@ namespace LocalBox_Common
 
                 return result;
             }
-            catch (Exception ex)
-            {
+			catch (Exception ex){
+				Insights.Report(ex);
                 Console.WriteLine("Exception in " + ex.Source + ": " + ex.Message);
                 if (beganTransaction)
                     Rollback();
@@ -292,8 +293,8 @@ namespace LocalBox_Common
                 if (beganTransaction)
                     Commit();
             }
-            catch (Exception ex)
-            {
+			catch (Exception ex){
+				Insights.Report(ex);
                 Console.WriteLine("Exception in " + ex.Source + ": " + ex.Message);
                 if (beganTransaction)
                     Rollback();
