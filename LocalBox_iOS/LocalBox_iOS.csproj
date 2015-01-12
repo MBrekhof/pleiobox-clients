@@ -234,7 +234,6 @@
     </Compile>
     <Compile Include="Views\ItemView\WebItemView.cs" />
     <Compile Include="Views\ItemView\PdfItemView.cs" />
-    <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Views\AboutViewController.cs" />
     <Compile Include="Views\AboutViewController.designer.cs">
       <DependentUpon>AboutViewController.cs</DependentUpon>
