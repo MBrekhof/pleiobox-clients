@@ -29,13 +29,10 @@ namespace LocalBox_Common.Remote
 		{
 			_localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
 
-			//Reset certificate validation check to default behavior
-			ServicePointManager.ServerCertificateValidationCallback = null;
-
 			if(_localBox.OriginalServerCertificate != null){ //Selected localbox does have a ssl certificate
 
 				//Set ssl validator for selected LocalBox
-				SslValidator sslValidator = new SslValidator ();
+				SslValidator sslValidator = new SslValidator (_localBox);
 				ServicePointManager.ServerCertificateValidationCallback = sslValidator.ValidateServerCertficate;
 			}else {
 				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;

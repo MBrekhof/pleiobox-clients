@@ -12,6 +12,7 @@ using Android.InputMethodServices;
 using LocalBox_Common;
 
 using Xamarin;
+using System.Net;
 
 namespace LocalBox_Droid
 {
@@ -36,7 +37,7 @@ namespace LocalBox_Droid
 				.SetPositiveButton("Ja", async (s, args) =>
 					{
 						//Get new certificate from server
-						bool newCertificateIsValid = await CertificateHelper.VerifyCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
+						bool newCertificateIsValid = CertificateHelper.RenewCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
 
 						if(newCertificateIsValid){
 							homeActivity.ShowToast ("Controle met succes uitgevoerd. U kunt weer verder werken.");
@@ -296,6 +297,10 @@ namespace LocalBox_Droid
 				if (String.IsNullOrEmpty (editTextUrl.Text)) {
 					homeActivity.ShowToast("URL is niet ingevuld");
 				} else {
+
+					//Reset certificate validation check - otherwise it will cause errors if there is an active certificate pinning enabled
+					ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+
 					if(editTextUrl.Text.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase))
 					{
 						ShowHttpWarningDialog(editTextUrl.Text, dialog);

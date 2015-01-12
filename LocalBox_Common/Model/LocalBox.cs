@@ -45,15 +45,23 @@ namespace LocalBox_Common
 			get
 			{
 				try{
-					var certByte = Convert.FromBase64String((pin_cert).Replace("\n", ""));
-					return certByte;
+					if(!string.IsNullOrEmpty (pin_cert)){
+						var certByte = Convert.FromBase64String((pin_cert).Replace("\n", ""));
+						return certByte;
+					}else {
+						return null;
+					}
 				} catch (Exception ex){
 					Insights.Report(ex);
 					return null;
 				}
 			}
 			set {
-				pin_cert = System.Convert.ToBase64String(OriginalServerCertificate);
+				try{
+					pin_cert = System.Convert.ToBase64String(OriginalServerCertificate);
+				} catch (Exception ex){
+					Insights.Report(ex);
+				}
 			}
 		}
 

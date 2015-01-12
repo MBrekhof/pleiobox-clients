@@ -72,6 +72,10 @@ namespace LocalBox_iOS
 				{
 					string urlString = ((UIAlertView)sender).GetTextField(0).Text;
 
+					//Reset certificate validation check - otherwise it will cause errors if there is an active certificate pinning enabled
+					ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+
+
 					if(string.IsNullOrEmpty(urlString))
 					{
 						var alertView = new UIAlertView("Error", "URL is niet ingevuld", null, "OK", null);

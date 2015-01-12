@@ -62,25 +62,24 @@ namespace LocalBox_Common
 		}
 
 
-		public static async Task<bool> VerifyCertificateForLocalBox(LocalBox localBox)
+		public static bool RenewCertificateForLocalBox(LocalBox localBox)
 		{
+			//Temporarly accept all certificates to succeed
+			ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+
+			//Current certificate
 			var serverCertificateBytes = CertificateHelper.BytesOfServerCertificate;
 
-			if (serverCertificateBytes != null) {
+			//Renewed Certificate
+			GetCertificateFromUrl (localBox.BaseUrl);
+			var newServerCertificateBytes = CertificateHelper.BytesOfServerCertificate;
+
+
+			if (newServerCertificateBytes != null) {
 			
-				//Get certificate from remote PEM file
-				byte[] BytesOfRemotePEMCertificate = null;
-				RemoteExplorer remoteExplorer = new RemoteExplorer ();
-				var remotePEM = await remoteExplorer.GetActivePEMFromServer ();
-
-				if(!string.IsNullOrEmpty (remotePEM))
+				if(newServerCertificateBytes.SequenceEqual(serverCertificateBytes)) //Compare byte arrays of certificates
 				{
-					BytesOfRemotePEMCertificate = Convert.FromBase64String((remotePEM).Replace("\n", ""));
-				}
-
-				if(BytesOfRemotePEMCertificate.SequenceEqual(BytesOfServerCertificate)) //Compare byte arrays of certificates
-				{
-					localBox.OriginalServerCertificate = serverCertificateBytes;
+					localBox.OriginalServerCertificate = newServerCertificateBytes;
 					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 
 					return true;

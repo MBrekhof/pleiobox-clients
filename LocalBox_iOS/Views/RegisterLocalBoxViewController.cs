@@ -31,9 +31,6 @@ namespace LocalBox_iOS
 			base.ViewDidLoad ();
 
 			try{
-				//Reset validation check - otherwise it will cause errors if there is an active certificate pinning enabled
-				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
-
 				NSHttpCookieStorage.SharedStorage.AcceptPolicy = NSHttpCookieAcceptPolicy.Always;
 
 				webViewRegisterLocalBox.ScalesPageToFit = true;

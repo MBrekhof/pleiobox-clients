@@ -11,6 +11,7 @@ using LocalBox_iOS.Helpers;
 using LocalBox_iOS.Views.ItemView;
 
 using Xamarin;
+using System.Net;
 
 namespace LocalBox_iOS.Views
 {
@@ -59,11 +60,11 @@ namespace LocalBox_iOS.Views
 						           "Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
 						           "extra te controleren?", null, "Ja", "Nee");
 
-					alert.Clicked += async (s, buttonArgs) => {
+					alert.Clicked += (s, buttonArgs) => {
 						if (buttonArgs.ButtonIndex == 0) {
 
 							//Get new certificate from server
-							bool certificateSucessfullyRenewed = await CertificateHelper.VerifyCertificateForLocalBox (DataLayer.Instance.GetSelectedOrDefaultBox ());
+							bool certificateSucessfullyRenewed = CertificateHelper.RenewCertificateForLocalBox (DataLayer.Instance.GetSelectedOrDefaultBox ());
 
 							if (certificateSucessfullyRenewed) {
 								new UIAlertView ("Succes", "Controle met succes uitgevoerd. U kunt weer verder werken.", null, "OK").Show ();

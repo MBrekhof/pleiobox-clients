@@ -58,9 +58,6 @@ namespace LocalBox_Droid
 			webview = view.FindViewById<WebView>(Resource.Id.webview_register_localbox);
 
 			try{
-				//Reset validation check - otherwise it will cause errors if there is an active certificate pinning enabled
-				ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
-
 				CookieManager.Instance.SetAcceptCookie (true);
 
 				webview.Settings.JavaScriptEnabled = true;

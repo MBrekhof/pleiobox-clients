@@ -12,9 +12,9 @@ namespace LocalBox_Common
 		private LocalBox localBox;
 
 
-		public SslValidator ()
+		public SslValidator (LocalBox localBox)
 		{
-			localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
+			this.localBox = localBox;
 			LoadRootCertificate (); 
 		}
 
