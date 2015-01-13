@@ -1,15 +1,15 @@
-﻿using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using System.Drawing;
+using System;
+using Foundation;
+using UIKit;
+using CoreGraphics;
 using LocalBox_Common;
 using System.Threading;
 using LocalBox_iOS.Helpers;
 using System.Linq;
-using MonoTouch.AssetsLibrary;
+using AssetsLibrary;
 using System.IO;
 using System.Diagnostics;
-using MonoTouch.MessageUI;
+using MessageUI;
 
 using Xamarin;
 
@@ -36,7 +36,7 @@ namespace LocalBox_iOS.Views
 
 		}
 
-		public static NodeView Create (RectangleF frame, NodeViewController nodeViewController, string path, UIColor kleur)
+		public static NodeView Create (CGRect frame, NodeViewController nodeViewController, string path, UIColor kleur)
 		{
 			var view = (NodeView)Nib.Instantiate (null, null) [0];
 			view.Frame = frame;
@@ -118,13 +118,16 @@ namespace LocalBox_iOS.Views
 			actionSheetDatePicker = new ActionSheetDatePickerCustom (HomeController.homeController.View);
 			actionSheetDatePicker.Title = "Kies een vervaldatum:";
 			actionSheetDatePicker.Picker.Mode = UIDatePickerMode.Date;
-			actionSheetDatePicker.Picker.MinimumDate = DateTime.Today.AddDays (1);
+			actionSheetDatePicker.Picker.MinimumDate = NSDateHelper.DateTimeToNSDate (DateTime.Today.AddDays (1));
 
 			//Zet selectie standaard op 7 dagen na vandaag
-			actionSheetDatePicker.Picker.SetDate (DateTime.Today.AddDays (7), true);
+			actionSheetDatePicker.Picker.SetDate (NSDateHelper.DateTimeToNSDate (DateTime.Today.AddDays (7)), true);
 
 			actionSheetDatePicker.Picker.ValueChanged += (sender, e) => {
-				DateTime selectedDate = (sender as UIDatePicker).Date;
+
+				var nsDate = (sender as UIDatePicker).Date;
+
+				DateTime selectedDate = NSDateHelper.NSDateToDateTime (nsDate);
 				selectedExpirationDate = selectedDate.AddDays (1);
 
 				Console.WriteLine (selectedExpirationDate.ToString ());
@@ -171,7 +174,7 @@ namespace LocalBox_iOS.Views
 
 		private async void LoadData ()
 		{
-			NodeItemTable.ContentOffset = new PointF (0, -NodeItemTableController.RefreshControl.Frame.Height);
+			NodeItemTable.ContentOffset = new CGPoint (0, -NodeItemTableController.RefreshControl.Frame.Height);
 			NodeItemTableController.RefreshControl.BeginRefreshing ();
 
 			try {
@@ -281,7 +284,7 @@ namespace LocalBox_iOS.Views
 		public async void Refresh (bool refresh = true, bool scrollToTop = false)
 		{
 			if (scrollToTop) {
-				NodeItemTable.ContentOffset = new PointF (0, -NodeItemTableController.RefreshControl.Frame.Height);
+				NodeItemTable.ContentOffset = new CGPoint (0, -NodeItemTableController.RefreshControl.Frame.Height);
 				NodeItemTableController.RefreshControl.BeginRefreshing ();
 			}
 
@@ -352,12 +355,12 @@ namespace LocalBox_iOS.Views
 				_root = _node.ParentId == 0;
 			}
 
-			public override int NumberOfSections (UITableView tableView)
+			public override nint NumberOfSections (UITableView tableView)
 			{
 				return 1;
 			}
 
-			public override int RowsInSection (UITableView tableview, int section)
+			public override nint RowsInSection (UITableView tableview, nint section)
 			{
 				return _node.Children.Count + (_root ? 1 : 0);
 			}

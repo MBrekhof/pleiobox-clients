@@ -1,6 +1,6 @@
-﻿using System;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using System;
+using UIKit;
+using Foundation;
 using LocalBox_Common;
 using System.IO;
 using System.Collections.Generic;
@@ -176,12 +176,12 @@ namespace LocalBox_iOS.Views
 				_newFileUpload = newFileUpload;
             }
 
-            public override int NumberOfSections(UITableView tableView)
+            public override nint NumberOfSections(UITableView tableView)
             {
                 return 1;
             }
 
-            public override int RowsInSection(UITableView tableview, int section)
+            public override nint RowsInSection(UITableView tableview, nint section)
             {
 				if (_listItems == null)
                 {

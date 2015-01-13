@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using CoreGraphics;
 using System.Linq;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 using LocalBox_iOS;
 using LocalBox_iOS.Helpers;
 using System.Threading.Tasks;
@@ -51,7 +51,7 @@ public class ActionSheetDatePickerCustom
        
 	public ActionSheetDatePickerCustom (UIView owner)
 	{
-		picker = new UIDatePicker (RectangleF.Empty);
+		picker = new UIDatePicker (CGRect.Empty);
 
 		// save our uiview owner
 		this._owner = owner;
@@ -63,13 +63,13 @@ public class ActionSheetDatePickerCustom
 		};
                 
 		// configure the title label
-		titleLabel = new UILabel (new RectangleF (0, 0, _actionSheet.Frame.Width, 10));
+		titleLabel = new UILabel (new CGRect (0, 0, _actionSheet.Frame.Width, 10));
 		titleLabel.BackgroundColor = UIColor.Clear;
 		titleLabel.TextColor = UIColor.Black;
 		titleLabel.Font = UIFont.BoldSystemFontOfSize (18);
 
 		// Add the toolbar
-		_toolbar = new UIToolbar (new RectangleF (0, 0, _actionSheet.Frame.Width, 10));
+		_toolbar = new UIToolbar (new CGRect (0, 0, _actionSheet.Frame.Width, 10));
 		_toolbar.BarStyle = UIBarStyle.Default;
 		_toolbar.Translucent = true;
 
@@ -92,8 +92,8 @@ public class ActionSheetDatePickerCustom
 	public void Show ()
 	{
 		float titleBarHeight = 40;
-		SizeF actionSheetSize = new SizeF (_owner.Frame.Width, picker.Frame.Height + titleBarHeight);
-		RectangleF actionSheetFrame = new RectangleF (0, (UIScreen.MainScreen.ApplicationFrame.Width - actionSheetSize.Height), actionSheetSize.Width, actionSheetSize.Height);
+		CGSize actionSheetSize = new CGSize (_owner.Frame.Width, picker.Frame.Height + titleBarHeight);
+		CGRect actionSheetFrame = new CGRect (0, (UIScreen.MainScreen.ApplicationFrame.Width - actionSheetSize.Height), actionSheetSize.Width, actionSheetSize.Height);
                 
 		// show the action sheet and add the controls to it
 		if (!UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
@@ -104,10 +104,10 @@ public class ActionSheetDatePickerCustom
 		_actionSheet.Frame = actionSheetFrame;
                 
 		// move our picker to be at the bottom of the actionsheet (view coords are relative to the action sheet)
-		picker.Frame = new RectangleF (picker.Frame.X, titleBarHeight, picker.Frame.Width, picker.Frame.Height);
+		picker.Frame = new CGRect (picker.Frame.X, titleBarHeight, picker.Frame.Width, picker.Frame.Height);
 
 		// move our label to the top of the action sheet
-		titleLabel.Frame = new RectangleF (10, 4, _owner.Frame.Width - 100, 35);
+		titleLabel.Frame = new CGRect (10, 4, _owner.Frame.Width - 100, 35);
 
 		// ipad
 		if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad) {
@@ -116,21 +116,21 @@ public class ActionSheetDatePickerCustom
 			
 				int size = (int)picker.Frame.Size.Height + 44;
 
-				viewController.View.Frame = new RectangleF (0, UIApplication.SharedApplication.KeyWindow.Frame.Height, _owner.Frame.Size.Width, UIApplication.SharedApplication.KeyWindow.Frame.Height);
+				viewController.View.Frame = new CGRect (0, UIApplication.SharedApplication.KeyWindow.Frame.Height, _owner.Frame.Size.Width, UIApplication.SharedApplication.KeyWindow.Frame.Height);
 				//picker.Frame = new RectangleF (new PointF (0, 44), picker.Frame.Size);
-				picker.Frame = new RectangleF (picker.Frame.X, 44, _owner.Frame.Width, picker.Frame.Height);
+				picker.Frame = new CGRect (picker.Frame.X, 44, _owner.Frame.Width, picker.Frame.Height);
 				viewController.View.AddSubview (picker);
 				viewController.View.BackgroundColor = UIColor.White;
 
-				_toolbar = new UIToolbar (new RectangleF (0, 0, _owner.Frame.Size.Width, 44));
+				_toolbar = new UIToolbar (new CGRect (0, 0, _owner.Frame.Size.Width, 44));
 
 				var leftButton = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace) { Width = 50 };
 				var middleButton = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace) { Width = 50 };
 
 				_toolbar.SetItems( new UIBarButtonItem[] { leftButton, middleButton, _doneButton }, false);
 
-				float xPosition = _owner.Frame.Size.Width / 2 - 150;
-				UILabel labelTitle = new UILabel (new RectangleF (xPosition, 0, 300, 44));
+				nfloat xPosition = _owner.Frame.Size.Width / 2 - 150;
+				UILabel labelTitle = new UILabel (new CGRect (xPosition, 0, 300, 44));
 				labelTitle.Text = "Kies een vervaldatum:";
 				labelTitle.TextAlignment = UITextAlignment.Center;
 				FontHelper.SetFont (labelTitle);
@@ -142,7 +142,7 @@ public class ActionSheetDatePickerCustom
 
 				UIView.BeginAnimations ("slide");
 				UIView.SetAnimationDuration (0.3);
-				viewController.View.Frame = new RectangleF (new PointF (0, UIApplication.SharedApplication.KeyWindow.Frame.Height - size), viewController.View.Frame.Size);
+				viewController.View.Frame = new CGRect (new CGPoint (0, UIApplication.SharedApplication.KeyWindow.Frame.Height - size), viewController.View.Frame.Size);
 				UIView.CommitAnimations ();
 			}
 
@@ -157,12 +157,12 @@ public class ActionSheetDatePickerCustom
 					var width = _actionSheet.Frame.Width - (MARGIN * 2);
 					var height = _actionSheet.Frame.Height;
 
-					popover.Frame = new RectangleF (175, y, width, height);
+					popover.Frame = new CGRect (175, y, width, height);
 
 					//_actionSheet.Frame = new RectangleF (x + 200, y, width - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT), height - (CHROMEWIDTHLEFT + CHROMEWIDTHRIGHT));
-					_actionSheet.Frame = new RectangleF (400, y, 651, 239);
+					_actionSheet.Frame = new CGRect (400, y, 651, 239);
 
-					picker.Frame = new RectangleF (picker.Frame.X, picker.Frame.Y, _actionSheet.Frame.Width, picker.Frame.Height);
+					picker.Frame = new CGRect (picker.Frame.X, picker.Frame.Y, _actionSheet.Frame.Width, picker.Frame.Height);
 
 					_toolbar.SizeToFit ();
 				}
@@ -178,7 +178,7 @@ public class ActionSheetDatePickerCustom
 		if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) {
 			UIView.BeginAnimations ("slide");
 			UIView.SetAnimationDuration (0.3);
-			viewController.View.Frame = new RectangleF (new PointF (0, UIApplication.SharedApplication.KeyWindow.Frame.Height), viewController.View.Frame.Size);
+			viewController.View.Frame = new CGRect (new CGPoint (0, UIApplication.SharedApplication.KeyWindow.Frame.Height), viewController.View.Frame.Size);
 			UIView.CommitAnimations ();
 
 			Task.Factory.StartNew (() => {

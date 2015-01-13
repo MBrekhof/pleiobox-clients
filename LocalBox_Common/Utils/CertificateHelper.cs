@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -23,26 +23,51 @@ namespace LocalBox_Common
 			Environment.SetEnvironmentVariable ("MONO_TLS_SESSION_CACHE_TIMEOUT", "0");
 
 			ServicePointManager.CheckCertificateRevocationList = true;
-			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, cert, chain, errors) => 
-				{ 
-					if(errors == SslPolicyErrors.None) //self signed ssl certificate retrieves: System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors
-					{
-						var serverX509Certificate2 = new X509Certificate2(cert);
-						BytesOfServerCertificate = serverX509Certificate2.Export(X509ContentType.Cert);
-					}
+			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback ((sender, cert, chain, errors) => { 
+
+				if (errors == SslPolicyErrors.None) {
+					var serverX509Certificate2 = new X509Certificate2 (cert);
+					BytesOfServerCertificate = serverX509Certificate2.Export (X509ContentType.Cert);
+
 					return true;
-				});
+				} else {
+					if ((errors & System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors) != 0) {
+						if (chain != null && chain.ChainStatus != null) {
+							foreach (System.Security.Cryptography.X509Certificates.X509ChainStatus status in chain.ChainStatus) {
+								if ((cert.Subject == cert.Issuer) &&
+								     (status.Status == System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.UntrustedRoot)) {
+
+									// Self-signed certificates with an untrusted root are valid. 
+									var serverX509Certificate2 = new X509Certificate2 (cert);
+									BytesOfServerCertificate = serverX509Certificate2.Export (X509ContentType.Cert);
+
+									return true;
+								} else {
+									if (status.Status != System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NoError) {
+
+										// If there are any other errors in the certificate chain, the certificate is invalid,
+										// so the method returns false.
+										return false;
+									}
+								}
+							}
+						}
+					}
+
+					return true;
+				}
+
+			});
 
 			using (var client = new WebClient ()) {
 				try {
-					client.DownloadString(new Uri (url));
+					client.DownloadString (new Uri (url));
 
-				} catch (Exception ex){
-					Insights.Report(ex);
+				} catch (Exception ex) {
+					Insights.Report (ex);
 					Console.WriteLine (ex.Message);
 				}
 			}
-
 
 		}
 
@@ -62,7 +87,7 @@ namespace LocalBox_Common
 		}
 
 
-		public static bool RenewCertificateForLocalBox(LocalBox localBox)
+		public static bool RenewCertificateForLocalBox (LocalBox localBox)
 		{
 			//Temporarly accept all certificates to succeed
 			ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
@@ -77,13 +102,12 @@ namespace LocalBox_Common
 
 			if (newServerCertificateBytes != null) {
 			
-				if(newServerCertificateBytes.SequenceEqual(serverCertificateBytes)) //Compare byte arrays of certificates
-				{
+				if (newServerCertificateBytes.SequenceEqual (serverCertificateBytes)) { //Compare byte arrays of certificates
 					localBox.OriginalServerCertificate = newServerCertificateBytes;
 					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
 
 					return true;
-				}else {
+				} else {
 					return false;
 				}
 			} else {

@@ -6,12 +6,14 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7A94F49C-F81C-4F5D-B407-071E0C7F33E4}</ProjectGuid>
-    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>BouncyCastleAPI_iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>BouncyCastleAPI_iOS</AssemblyName>
     <newfilesearch>OnLoadAutoInsert</newfilesearch>
+    <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,14 +37,13 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
+    <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="src\" />
     <Folder Include="bzip2\" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="src\AssemblyInfo.cs" />
     <Compile Include="src\asn1\ASN1Generator.cs" />
@@ -1297,4 +1298,5 @@
     <BundleResource Include="Resources\Resource.designer.cs" />
     <BundleResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

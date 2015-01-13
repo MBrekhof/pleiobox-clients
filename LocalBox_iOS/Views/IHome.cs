@@ -1,5 +1,5 @@
-﻿using System;
-using MonoTouch.UIKit;
+using System;
+using UIKit;
 using LocalBox_iOS.Views.ItemView;
 
 namespace LocalBox_iOS.Views

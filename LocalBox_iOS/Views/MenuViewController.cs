@@ -1,7 +1,7 @@
-﻿using System;
-using System.Drawing;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using System;
+using CoreGraphics;
+using Foundation;
+using UIKit;
 using System.Collections.Generic;
 using LocalBox_Common;
 using System.Linq;
@@ -87,12 +87,12 @@ namespace LocalBox_iOS.Views
                 boxList = DataLayer.Instance.GetLocalBoxesSync();
             }
 
-            public override int RowsInSection(UITableView tableview, int section)
+            public override nint RowsInSection(UITableView tableview, nint section)
             {
                 return boxList.Count;
             }
 
-            public override int NumberOfSections(UITableView tableView)
+            public override nint NumberOfSections(UITableView tableView)
             {
                 return 1;
             }
@@ -209,12 +209,12 @@ namespace LocalBox_iOS.Views
                 _parent = parent;
             }
 
-            public override int RowsInSection(UITableView tableview, int section)
+            public override nint RowsInSection(UITableView tableview, nint section)
             {
 				return 3;
             }
 
-            public override int NumberOfSections(UITableView tableView)
+            public override nint NumberOfSections(UITableView tableView)
             {
                 return 1;
             }

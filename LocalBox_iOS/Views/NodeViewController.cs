@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Drawing;
+using CoreGraphics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 using LocalBox_Common.Remote;
 
 using LocalBox_Common;
@@ -51,7 +51,7 @@ namespace LocalBox_iOS.Views
             base.ViewWillAppear(animated);
             kleurenBalk.BackgroundColor = _balkKleur;
 
-            var node = NodeView.Create(new RectangleF(0, 0, width, View.Frame.Height), this, "/", _balkKleur);
+            var node = NodeView.Create(new CGRect(0, 0, width, View.Frame.Height), this, "/", _balkKleur);
             _nodes.Add(node);
 
             Add(_nodes[0]);
@@ -70,7 +70,7 @@ namespace LocalBox_iOS.Views
             if (treeNode.IsDirectory)
             {
 				try{
-					var node = NodeView.Create(new RectangleF(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode.Path, _balkKleur);
+					var node = NodeView.Create(new CGRect(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode.Path, _balkKleur);
                 	node.Layer.ZPosition = 10;
                 	_nodes.Add(node);
                 	Add(node);
@@ -92,7 +92,7 @@ namespace LocalBox_iOS.Views
 						try{
 
                         	var item = 
-                            WebItemView.Create(new RectangleF(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
+                            WebItemView.Create(new CGRect(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
 
                         	item.Layer.ZPosition = 10;
                         	_nodes.Add(item);
@@ -117,7 +117,7 @@ namespace LocalBox_iOS.Views
 				if (_nodes.Last ().GetType ().Equals (typeof(FavoriteNodeView)))
 					return;
 
-				var node = FavoriteNodeView.Create (new RectangleF (View.Frame.Width, 0, width, View.Frame.Height), this, _balkKleur);
+				var node = FavoriteNodeView.Create (new CGRect (View.Frame.Width, 0, width, View.Frame.Height), this, _balkKleur);
 				node.Node = new TreeNode () {
 					ParentId = _nodes.Last ().Node.Id
 				};
@@ -151,7 +151,7 @@ namespace LocalBox_iOS.Views
                     if (_nodes.Count - 2 >= 0)
                     {
                         var add = _nodes[_nodes.Count - 2];
-                        add.Frame = new RectangleF(new PointF(-add.Frame.Width, 0), add.Frame.Size);
+                        add.Frame = new CGRect(new CGPoint(-add.Frame.Width, 0), add.Frame.Size);
                         Add(add);
                     }
                 }
@@ -164,7 +164,7 @@ namespace LocalBox_iOS.Views
         {
             var toPop = _nodes.Last();
 
-            NSAction onCompletion = () =>
+            Action onCompletion = () =>
             {
                 toPop.Layer.ZPosition = -10;
                 _nodes.Remove(toPop);
@@ -172,7 +172,7 @@ namespace LocalBox_iOS.Views
                 if (_nodes.Count >= 2)
                 {
                     var oldNode = _nodes[_nodes.Count - 2];
-                    oldNode.Frame = new RectangleF(new PointF(0, 0), oldNode.Frame.Size);
+                    oldNode.Frame = new CGRect(new CGPoint(0, 0), oldNode.Frame.Size);
                     _nodes.Last().Layer.ZPosition = 1;
                     Add(oldNode);
                 }
@@ -191,7 +191,7 @@ namespace LocalBox_iOS.Views
             }
         }
 
-        public void ToggleFullScreen(NSAction onCompletion = null)
+        public void ToggleFullScreen(Action onCompletion = null)
         {
 
 
@@ -201,17 +201,17 @@ namespace LocalBox_iOS.Views
             if (rootView.Subviews.Contains(last))
             {
                 View.Add(last);
-                last.Frame = new RectangleF(-View.Frame.X, View.Frame.Y, last.Bounds.Width, last.Bounds.Height);
+                last.Frame = new CGRect(-View.Frame.X, View.Frame.Y, last.Bounds.Width, last.Bounds.Height);
                 UIView.Animate(0.5, () =>
                 {
-                    last.Frame = new RectangleF(new PointF(width, 0), new SizeF(width, View.Bounds.Height)); 
+                    last.Frame = new CGRect(new CGPoint(width, 0), new CGSize(width, View.Bounds.Height)); 
                     last.ViewWillResize();
                 }, onCompletion);
             }
             else
             {
                 UIApplication.SharedApplication.KeyWindow.RootViewController.View.Add(last);
-                last.Frame = new RectangleF(last.Frame.X + View.Frame.X, last.Bounds.Y, last.Bounds.Width, last.Bounds.Height);
+                last.Frame = new CGRect(last.Frame.X + View.Frame.X, last.Bounds.Y, last.Bounds.Width, last.Bounds.Height);
                 UIView.Animate(0.5, () =>
                 {
                     last.Frame = rootView.Bounds;
@@ -227,13 +227,13 @@ namespace LocalBox_iOS.Views
                     var nodes = _nodes.GetRange(_nodes.Count - 2, 2);
                     for(int i = 0; i < nodes.Count; i++) {
                         var node = nodes[i];
-                        node.Frame = new RectangleF(new PointF(i * width, 0), node.Frame.Size);
+                        node.Frame = new CGRect(new CGPoint(i * width, 0), node.Frame.Size);
                     }
                 } else {
                     // hier gewoon de views naastelkaar plakken
                     for(int i = 0; i < _nodes.Count; i++) {
                         var node = _nodes[i];
-                        node.Frame = new RectangleF(new PointF(i *width, 0), node.Frame.Size);
+                        node.Frame = new CGRect(new CGPoint(i *width, 0), node.Frame.Size);
                     }
                 }
                 for(int i = 0; i < _nodes.Count; i++) {

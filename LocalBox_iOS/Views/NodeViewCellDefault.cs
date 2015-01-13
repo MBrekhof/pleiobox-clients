@@ -1,6 +1,6 @@
-﻿using System;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using System;
+using UIKit;
+using Foundation;
 using LocalBox_iOS.Helpers;
 
 namespace LocalBox_iOS.Views

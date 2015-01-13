@@ -1,9 +1,9 @@
-﻿using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using System;
+using Foundation;
+using UIKit;
 using LocalBox_Common;
 using System.IO;
-using System.Drawing;
+using CoreGraphics;
 using System.Threading.Tasks;
 using LocalBox_iOS.Helpers;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace LocalBox_iOS.Views.ItemView
             }
         }
 
-        public RectangleF ContentViewSize {
+        public CGRect ContentViewSize {
             get {
                 return ContentViewContainer.Bounds;
             }
@@ -44,7 +44,7 @@ namespace LocalBox_iOS.Views.ItemView
 
         }
 
-        public static BaseItemView Create (RectangleF frame, NodeViewController nodeViewController, TreeNode node, UIColor kleur)
+        public static BaseItemView Create (CGRect frame, NodeViewController nodeViewController, TreeNode node, UIColor kleur)
         {
             var view = (BaseItemView)Nib.Instantiate (null, null) [0];
             view.Frame = frame;

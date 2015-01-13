@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS.Views.ItemView
@@ -13,19 +13,19 @@ namespace LocalBox_iOS.Views.ItemView
 	partial class BaseItemView
 	{
 		[Outlet]
-		MonoTouch.UIKit.UIView ContentViewContainer { get; set; }
+		UIKit.UIView ContentViewContainer { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton FullScreenButton { get; set; }
+		UIKit.UIButton FullScreenButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIView kleurenBalk { get; set; }
+		UIKit.UIView kleurenBalk { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton TerugButton { get; set; }
+		UIKit.UIButton TerugButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel TitelLabel { get; set; }
+		UIKit.UILabel TitelLabel { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

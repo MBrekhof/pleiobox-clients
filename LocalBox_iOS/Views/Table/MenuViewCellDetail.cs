@@ -1,7 +1,7 @@
-﻿using System;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
-using System.Drawing;
+using System;
+using UIKit;
+using Foundation;
+using CoreGraphics;
 
 namespace LocalBox_iOS.Views.Table
 {

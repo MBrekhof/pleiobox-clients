@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS.Views
@@ -13,22 +13,22 @@ namespace LocalBox_iOS.Views
 	partial class LocationChooserView
 	{
 		[Outlet]
-		MonoTouch.UIKit.UILabel _BestandsnaamLabel { get; set; }
+		UIKit.UILabel _BestandsnaamLabel { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIView ContentView { get; set; }
+		UIKit.UIView ContentView { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton OpslaanButton { get; set; }
+		UIKit.UIButton OpslaanButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton SluitenButton { get; set; }
+		UIKit.UIButton SluitenButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITableView TableView { get; set; }
+		UIKit.UITableView TableView { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton TerugButton { get; set; }
+		UIKit.UIButton TerugButton { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

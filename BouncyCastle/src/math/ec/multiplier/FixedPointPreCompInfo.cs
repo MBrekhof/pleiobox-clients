@@ -1,4 +1,4 @@
-﻿namespace Org.BouncyCastle.Math.EC.Multiplier
+namespace Org.BouncyCastle.Math.EC.Multiplier
 {
     /**
      * Class holding precomputation data for fixed-point multiplications.

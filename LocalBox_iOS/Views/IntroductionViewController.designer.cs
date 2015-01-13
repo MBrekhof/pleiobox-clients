@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS
@@ -13,22 +13,22 @@ namespace LocalBox_iOS
 	partial class IntroductionViewController
 	{
 		[Outlet]
-		MonoTouch.UIKit.UIButton buttonCancel { get; set; }
+		UIKit.UIButton buttonCancel { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton buttonOpenInternetBrowser { get; set; }
+		UIKit.UIButton buttonOpenInternetBrowser { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIImageView imageViewInfoGraphic { get; set; }
+		UIKit.UIImageView imageViewInfoGraphic { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel labelDescription { get; set; }
+		UIKit.UILabel labelDescription { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel labelImageDescription { get; set; }
+		UIKit.UILabel labelImageDescription { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel labelTitle { get; set; }
+		UIKit.UILabel labelTitle { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

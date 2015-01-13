@@ -1,6 +1,6 @@
-﻿using System;
-using MonoTouch.UIKit;
-using System.Drawing;
+using System;
+using UIKit;
+using CoreGraphics;
 using LocalBox_iOS.Views;
 
 namespace LocalBox_iOS
@@ -26,7 +26,7 @@ namespace LocalBox_iOS
 			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) { //iOS 8
 				pageControl = new UIPageControl {
 					Pages = TotalPages,
-					Frame = new RectangleF (
+					Frame = new CGRect (
 						parentController.View.Frame.Width / 2 - 50,  //X
 						parentController.View.Frame.Height - 75, 	//Y
 						100, 										//Width
@@ -35,7 +35,7 @@ namespace LocalBox_iOS
 			} else { //iOS7
 				pageControl = new UIPageControl { 
 					Pages = TotalPages,
-					Frame = new RectangleF (
+					Frame = new CGRect (
 						parentController.View.Frame.Width / 2 - 50,  //X
 						parentController.View.Frame.Height - 330, 	//Y
 						100, 										//Width

@@ -1,7 +1,7 @@
-﻿using System;
-using MonoTouch.UIKit;
+using System;
+using UIKit;
 using LocalBox_Common;
-using System.Drawing;
+using CoreGraphics;
 
 namespace LocalBox_iOS
 {

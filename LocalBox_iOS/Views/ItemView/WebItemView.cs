@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
-using System.Drawing;
+using CoreGraphics;
 using LocalBox_Common;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
+using UIKit;
+using Foundation;
 using LocalBox_iOS.Helpers;
 
 namespace LocalBox_iOS.Views.ItemView
@@ -14,7 +14,7 @@ namespace LocalBox_iOS.Views.ItemView
         {
         }
 
-        public static BaseItemView Create (RectangleF frame, NodeViewController nodeViewController, TreeNode node, string filePath, UIColor kleur)
+        public static BaseItemView Create (CGRect frame, NodeViewController nodeViewController, TreeNode node, string filePath, UIColor kleur)
         {
             var view = BaseItemView.Create(frame, nodeViewController, node, kleur);
 

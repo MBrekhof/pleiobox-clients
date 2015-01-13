@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LocalBox_Common.Remote.Authorization;
 using Synchronization.Models;
 using System.Threading.Tasks;

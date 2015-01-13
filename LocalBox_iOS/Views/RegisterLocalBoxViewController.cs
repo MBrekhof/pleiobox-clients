@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Net;
-using System.Drawing;
+using CoreGraphics;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 
 using LocalBox_Common;
 using LocalBox_iOS.Views;
@@ -115,7 +115,7 @@ namespace LocalBox_iOS
 			Console.WriteLine("URL OPENED: " + url);
 
 			//Set cookie
-			var store = MonoTouch.Foundation.NSHttpCookieStorage.SharedStorage;
+			var store = Foundation.NSHttpCookieStorage.SharedStorage;
 			var cookies = store.Cookies;
 
 			if(cookies.Length > 0){
@@ -166,7 +166,7 @@ namespace LocalBox_iOS
 		}
 
 
-		partial void CloseView (MonoTouch.Foundation.NSObject sender)
+		partial void CloseView (Foundation.NSObject sender)
 		{
 			this.View.RemoveFromSuperview();
 		}

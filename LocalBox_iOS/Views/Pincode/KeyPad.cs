@@ -1,6 +1,6 @@
-﻿using System;
-using MonoTouch.UIKit;
-using System.Drawing;
+using System;
+using UIKit;
+using CoreGraphics;
 using System.Collections.Generic;
 
 namespace LocalBox_iOS
@@ -12,15 +12,15 @@ namespace LocalBox_iOS
         public event DigitPressed OnDigitPressed;
         public event EventHandler OnBackSpace;
 
-        private float _buttonHeight;
-        private float _buttonWidth;
+        private nfloat _buttonHeight;
+        private nfloat _buttonWidth;
         public static UIColor GridBackgroundColor = UIColor.FromRGB(202, 207, 211);
 //        public static UIColor GridBackgroundColor = UIColor.FromRGB(103, 103, 103);
         public static UIColor ButtonBackgroundColor = UIColor.FromRGB(0x8f, 0xca, 0xe7);
         public static UIColor ButtonDownBackgroundColor = UIColor.FromRGB(0x68, 0xa8, 0xc8);
         public static UIColor DigitColor = UIColor.FromRGB(103, 103, 103);
 
-        public Keypad(RectangleF bounds)
+        public Keypad(CGRect bounds)
         {
             BackgroundColor = GridBackgroundColor;
             Frame = bounds;
@@ -38,9 +38,9 @@ namespace LocalBox_iOS
             for (int i = 0; i < gridButtons.Length; i++)
             {
                 var button = gridButtons[i];
-                float x = 1 + (i % 3) * _buttonWidth + 1f * (i % 3);
-                float y = 1 + ((i / 3) % 4) * _buttonHeight + 1f * ((i / 3) % 4);
-                button.Frame = new RectangleF(x, y, _buttonWidth, _buttonHeight);
+                nfloat x = 1 + (i % 3) * _buttonWidth + 1f * (i % 3);
+                nfloat y = 1 + ((i / 3) % 4) * _buttonHeight + 1f * ((i / 3) % 4);
+                button.Frame = new CGRect(x, y, _buttonWidth, _buttonHeight);
                 button.AutoresizingMask = UIViewAutoresizing.All;
                 Add(button);
             }

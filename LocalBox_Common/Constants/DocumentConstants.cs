@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 
 #if __IOS__
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using UIKit;
+using Foundation;
 #endif
 
 namespace LocalBox_Common

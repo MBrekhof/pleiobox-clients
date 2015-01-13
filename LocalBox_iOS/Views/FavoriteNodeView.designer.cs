@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS.Views
@@ -13,16 +13,16 @@ namespace LocalBox_iOS.Views
 	partial class FavoriteNodeView
 	{
 		[Outlet]
-		MonoTouch.UIKit.UIView KleurenBalk { get; set; }
+		UIKit.UIView KleurenBalk { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITableView NodeItemTable { get; set; }
+		UIKit.UITableView NodeItemTable { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITableViewController NodeItemTableController { get; set; }
+		UIKit.UITableViewController NodeItemTableController { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton SyncButton { get; set; }
+		UIKit.UIButton SyncButton { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS
@@ -13,13 +13,13 @@ namespace LocalBox_iOS
 	partial class RegisterLocalBoxViewController
 	{
 		[Outlet]
-		MonoTouch.UIKit.UIView viewActivityIndicator { get; set; }
+		UIKit.UIView viewActivityIndicator { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIWebView webViewRegisterLocalBox { get; set; }
+		UIKit.UIWebView webViewRegisterLocalBox { get; set; }
 
 		[Action ("CloseView:")]
-		partial void CloseView (MonoTouch.Foundation.NSObject sender);
+		partial void CloseView (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

@@ -175,18 +175,7 @@ namespace LocalBox_Droid
 			}
 			HideProgressDialog ();
 
-
-
-			SslValidator.CertificateMismatchFound += (object sender, EventArgs e) => 
-			{
-				SslValidator.CertificateErrorRaised = true;
-
-				//Incorrect ssl found so show message
-				Console.WriteLine ("SSL mismatch!!!");
-				this.RunOnUiThread (() => {
-					dialogHelper.ShowCertificateMismatchDialog();
-				});
-			};
+			SslValidator.CertificateMismatchFound += HandleInvalidCertificate;
 		}
 
 
@@ -260,6 +249,18 @@ namespace LocalBox_Droid
 					explorerFragment.RefreshData ();
 				}
 			}
+		}
+
+
+		void HandleInvalidCertificate (object sender, EventArgs e)
+		{
+			SslValidator.CertificateErrorRaised = true;
+
+			//Incorrect ssl found so show message
+			Console.WriteLine ("SSL mismatch!!!");
+			this.RunOnUiThread (() => {
+				dialogHelper.ShowCertificateMismatchDialog();
+			});
 		}
 
 		public override void OnBackPressed ()

@@ -57,7 +57,7 @@
     </Reference>
     <Reference Include="Mono.Android.Export" />
     <Reference Include="Xamarin.Insights">
-      <HintPath>packages\Xamarin.Insights.1.8.2.105\lib\MonoAndroid10\Xamarin.Insights.dll</HintPath>
+      <HintPath>..\LocalBox_Common\Dll\insights\android\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -104,7 +104,6 @@
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Resources\values\Themes.xml" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />

@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-using MonoTouch.UIKit;
+using UIKit;
 
 namespace LocalBox_iOS
 {

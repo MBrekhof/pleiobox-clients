@@ -1,12 +1,12 @@
-﻿using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using System;
+using Foundation;
+using UIKit;
 using LocalBox_Common;
-using System.Drawing;
+using CoreGraphics;
 using System.Collections.Generic;
 using LocalBox_iOS.Helpers;
 using System.Linq;
-using MonoTouch.MessageUI;
+using MessageUI;
 using System.IO;
 
 using Xamarin;
@@ -126,14 +126,14 @@ namespace LocalBox_iOS.Views
             float spacing = 10f;
             float height = 44f;
             float width = (buttons.Count * 44) + ((buttons.Count - 1) * spacing);
-            var rect = new RectangleF((Frame.Width - width) / 2, (Frame.Height - height) / 2, width, height);
+            var rect = new CGRect((Frame.Width - width) / 2, (Frame.Height - height) / 2, width, height);
             _buttonContainer = new UIView(rect);
             _buttonContainer.AutoresizingMask = UIViewAutoresizing.FlexibleMargins;
 
             for (int i = 0; i < buttons.Count; i++)
             {
                 UIButton button = buttons[i];
-                button.Frame = new RectangleF(54 * i, 0, button.Frame.Width, button.Frame.Height);
+                button.Frame = new CGRect(54 * i, 0, button.Frame.Width, button.Frame.Height);
                 _buttonContainer.Add(button);
             }
             Add(_buttonContainer);
@@ -263,7 +263,7 @@ namespace LocalBox_iOS.Views
 
         private UIButton Button(String image, Action action) {
             var button = new UIButton(UIButtonType.Custom);
-            button.Frame = new RectangleF(0, 0, 44, 44);
+            button.Frame = new CGRect(0, 0, 44, 44);
             button.SetImage(UIImage.FromBundle(image), UIControlState.Normal);
             button.AutoresizingMask = UIViewAutoresizing.None;
             button.TouchUpInside += delegate

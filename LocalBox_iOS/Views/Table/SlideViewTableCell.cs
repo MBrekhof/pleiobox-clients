@@ -1,7 +1,7 @@
-﻿using System;
-using System.Drawing;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using System;
+using CoreGraphics;
+using Foundation;
+using UIKit;
 
 namespace LocalBox_iOS.Views.Table
 {
@@ -22,7 +22,7 @@ namespace LocalBox_iOS.Views.Table
         {
             _lpg = new NodeGestureRecognizer((Action<UIPanGestureRecognizer>)((e) =>
             {
-                PointF change = e.TranslationInView(this);
+                CGPoint change = e.TranslationInView(this);
                 if (e.State == UIGestureRecognizerState.Changed)
                 {
                     e.CancelsTouchesInView |= Math.Abs(change.X) > 0;
@@ -31,7 +31,7 @@ namespace LocalBox_iOS.Views.Table
                         OnPresentingDetails(false, this);
                     }
                     if(TopView != null)
-                        TopView.Frame = new  RectangleF(new PointF(change.X <= 0 ? change.X : 0, TopView.Frame.Y), TopView.Frame.Size);
+                        TopView.Frame = new  CGRect(new CGPoint(change.X <= 0 ? change.X : 0, TopView.Frame.Y), TopView.Frame.Size);
                 }
                 else if (e.State == UIGestureRecognizerState.Ended)
                 {
@@ -46,7 +46,7 @@ namespace LocalBox_iOS.Views.Table
                     if(TopView != null) {
                         UIView.Animate(.65d, 0, UIViewAnimationOptions.CurveEaseOut, () =>
                         {
-                            TopView.Frame = new RectangleF(new PointF(newX, TopView.Frame.Y), TopView.Frame.Size);
+                            TopView.Frame = new CGRect(new CGPoint(newX, TopView.Frame.Y), TopView.Frame.Size);
                         }, null);
                     }
                     e.CancelsTouchesInView = false;
@@ -63,7 +63,7 @@ namespace LocalBox_iOS.Views.Table
             if (TopView == null)
                 return;
 
-            RectangleF frame = new RectangleF(new PointF(0, 0), TopView.Frame.Size);
+            CGRect frame = new CGRect(new CGPoint(0, 0), TopView.Frame.Size);
             if (animated)
             {
                 UIView.Animate(.65d, 0, UIViewAnimationOptions.CurveEaseOut, () =>

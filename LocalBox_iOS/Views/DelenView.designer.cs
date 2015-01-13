@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS
@@ -13,19 +13,19 @@ namespace LocalBox_iOS
 	partial class DelenView
 	{
 		[Outlet]
-		MonoTouch.UIKit.UITextField NaamTextField { get; set; }
+		UIKit.UITextField NaamTextField { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton OkButton { get; set; }
+		UIKit.UIButton OkButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIButton SluitenButton { get; set; }
+		UIKit.UIButton SluitenButton { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITableView TableView { get; set; }
+		UIKit.UITableView TableView { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UILabel TitelTekst { get; set; }
+		UIKit.UILabel TitelTekst { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

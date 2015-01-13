@@ -1,8 +1,8 @@
-﻿using System;
-using System.Drawing;
+using System;
+using CoreGraphics;
 using System.Linq;
 
-using MonoTouch.UIKit;
+using UIKit;
 
 using LocalBox_Common;
 
@@ -15,7 +15,7 @@ namespace LocalBox_iOS.Helpers
 			view.Layer.ShadowColor = UIColor.FromRGBA(0f, 0f, 0f, .8f).CGColor;
 			view.Layer.ShadowOpacity = 0.4f;
             view.Layer.ShadowRadius = 5.0f;
-            view.Layer.ShadowPath = UIBezierPath.FromRect(new RectangleF(-5, 0, view.Bounds.Width, view.Bounds.Height)).CGPath;
+            view.Layer.ShadowPath = UIBezierPath.FromRect(new CGRect(-5, 0, view.Bounds.Width, view.Bounds.Height)).CGPath;
         }
 
         public static bool IsInRootNode(string path) {

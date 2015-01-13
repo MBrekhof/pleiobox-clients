@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Drawing;
+using CoreGraphics;
 using System.Diagnostics;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using Foundation;
+using UIKit;
 
 using LocalBox_Common;
 using LocalBox_iOS.Helpers;
@@ -49,35 +49,56 @@ namespace LocalBox_iOS.Views
 			}
 
 
-			SslValidator.CertificateMismatchFound += (object sender, EventArgs e) => {
-				SslValidator.CertificateErrorRaised = true;
 
-				//Incorrect ssl found so show pop-up
-				Console.WriteLine ("SSL mismatch!!!");
-				InvokeOnMainThread (() => {
-					var alert = new UIAlertView ("Waarschuwing", 
-						           "De identiteit van de server kan niet goed vastgesteld worden. " +
-						           "Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
-						           "extra te controleren?", null, "Ja", "Nee");
-
-					alert.Clicked += (s, buttonArgs) => {
-						if (buttonArgs.ButtonIndex == 0) {
-
-							//Get new certificate from server
-							bool certificateSucessfullyRenewed = CertificateHelper.RenewCertificateForLocalBox (DataLayer.Instance.GetSelectedOrDefaultBox ());
-
-							if (certificateSucessfullyRenewed) {
-								new UIAlertView ("Succes", "Controle met succes uitgevoerd. U kunt weer verder werken.", null, "OK").Show ();
-							} else {
-								new UIAlertView ("Foutmelding", "Dit netwerk is niet te vertrouwen.", null, "OK").Show ();
-							}
-						}
-					};
-				
-					alert.Show ();
-				});
-			};
         }
+
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+
+			SslValidator.CertificateMismatchFound += HandleInvalidCertificate;
+		}
+
+
+		public override void ViewWillDisappear (bool animated)
+		{
+			base.ViewWillDisappear (animated);
+
+			SslValidator.CertificateMismatchFound -= HandleInvalidCertificate;
+		}
+
+
+
+		void HandleInvalidCertificate (object sender, EventArgs e)
+		{
+			SslValidator.CertificateErrorRaised = true;
+
+			//Incorrect ssl found so show pop-up
+			Console.WriteLine ("SSL mismatch!!!");
+			InvokeOnMainThread (() => {
+				var alert = new UIAlertView ("Waarschuwing", 
+					"De identiteit van de server kan niet goed vastgesteld worden. " +
+					"Maakt u gebruik van een vertrouwd netwerk om de identiteit " +
+					"extra te controleren?", null, "Ja", "Nee");
+
+				alert.Clicked += (s, buttonArgs) => {
+					if (buttonArgs.ButtonIndex == 0) {
+
+						//Get new certificate from server
+						bool certificateSucessfullyRenewed = CertificateHelper.RenewCertificateForLocalBox (DataLayer.Instance.GetSelectedOrDefaultBox ());
+
+						if (certificateSucessfullyRenewed) {
+							new UIAlertView ("Succes", "Controle met succes uitgevoerd. U kunt weer verder werken.", null, "OK").Show ();
+						} else {
+							new UIAlertView ("Foutmelding", "Dit netwerk is niet te vertrouwen.", null, "OK").Show ();
+						}
+					}
+				};
+
+				alert.Show ();
+			});
+		}
+
 
 
 		public void ShowRegisterLocalBoxView(string urlToOpen)
@@ -93,7 +114,7 @@ namespace LocalBox_iOS.Views
 			}
 
 			RegisterLocalBoxViewController registerLocalBoxViewController = new RegisterLocalBoxViewController (urlToOpen, this);
-			registerLocalBoxViewController.View.Frame = new RectangleF(0, 0, View.Bounds.Width, View.Bounds.Height);
+			registerLocalBoxViewController.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
 
 			View.Add(registerLocalBoxViewController.View);
 			AddChildViewController(registerLocalBoxViewController);
@@ -114,7 +135,7 @@ namespace LocalBox_iOS.Views
 											UIPageViewControllerNavigationDirection.Forward, false, s => { });
 
 			//Dimension
-			_introduction.View.Frame = new RectangleF(0, 0, View.Bounds.Width, View.Bounds.Height);
+			_introduction.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
 
 			View.Add(_introduction.View);
 			AddChildViewController(_introduction);
@@ -128,7 +149,7 @@ namespace LocalBox_iOS.Views
             }
             _master = viewController;
             _master.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight;
-            _master.View.Frame = new RectangleF(0, 0, 224, View.Bounds.Height);
+            _master.View.Frame = new CGRect(0, 0, 224, View.Bounds.Height);
 
             View.Add(_master.View);
 
@@ -143,7 +164,7 @@ namespace LocalBox_iOS.Views
             if (!animate)
             {
                 viewController.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
-                viewController.View.Frame = new RectangleF(224, 0, View.Bounds.Width - 224, View.Bounds.Height);
+                viewController.View.Frame = new CGRect(224, 0, View.Bounds.Width - 224, View.Bounds.Height);
 
                 View.Add(viewController.View);
 
@@ -155,7 +176,7 @@ namespace LocalBox_iOS.Views
             }
 
             viewController.View.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
-            viewController.View.Frame = new RectangleF(View.Bounds.Width, 0, View.Bounds.Width - 200, View.Bounds.Height);
+            viewController.View.Frame = new CGRect(View.Bounds.Width, 0, View.Bounds.Width - 200, View.Bounds.Height);
 
             View.Add(viewController.View);
 
@@ -163,7 +184,7 @@ namespace LocalBox_iOS.Views
 
             UIView.Animate(0.5, 0, UIViewAnimationOptions.CurveEaseOut, () =>
             {
-                viewController.View.Frame = new RectangleF(224, 0, View.Bounds.Width - 224, View.Bounds.Height);
+                viewController.View.Frame = new CGRect(224, 0, View.Bounds.Width - 224, View.Bounds.Height);
             }, () => {
                 if(_detail != null)
                     _detail.View.RemoveFromSuperview();
@@ -361,7 +382,7 @@ namespace LocalBox_iOS.Views
 			imageViewSplash.Hidden = false;
 
             float x = (1024 - 372) / 2;
-            PincodeInstellenView instellenView = new PincodeInstellenView(new RectangleF(x, 64f, 372f, 582f));
+            PincodeInstellenView instellenView = new PincodeInstellenView(new CGRect(x, 64f, 372f, 582f));
             instellenView.OnPinFilled += PincodeIngesteld;
             _pinView = instellenView;
 
@@ -391,7 +412,7 @@ namespace LocalBox_iOS.Views
 				imageViewSplash.Hidden = false;
 
                 float x = (1024 - 372) / 2;
-                var instellenView = new PincodeInvoerenView(new RectangleF(x, 64f, 372f, 582f));
+                var instellenView = new PincodeInvoerenView(new CGRect(x, 64f, 372f, 582f));
                 instellenView.OnPinFilled += Resume;
                 _pinView = instellenView;
                 View.Add(instellenView);
@@ -430,7 +451,7 @@ namespace LocalBox_iOS.Views
 				imageViewSplash.Hidden = false;
 
                 float x = (1024 - 372) / 2;
-                var instellenView = new PincodeInvoerenView(new RectangleF(x, 64f, 372f, 582f));
+                var instellenView = new PincodeInvoerenView(new CGRect(x, 64f, 372f, 582f));
                 instellenView.OnPinFilled += PincodeIngesteld;
                 _pinView = instellenView;
                 View.Add(instellenView);

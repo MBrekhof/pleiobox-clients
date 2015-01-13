@@ -54,7 +54,7 @@
       <HintPath>Dll\json.net\lib\android\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Insights">
-      <HintPath>..\LocalBox_Android\packages\Xamarin.Insights.1.8.2.105\lib\MonoAndroid10\Xamarin.Insights.dll</HintPath>
+      <HintPath>Dll\insights\android\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -89,7 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LocalBox_Common;
 
 namespace LocalBox_iOS.Helpers

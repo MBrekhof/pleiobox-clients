@@ -4,7 +4,7 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
-using MonoTouch.Foundation;
+using Foundation;
 using System.CodeDom.Compiler;
 
 namespace LocalBox_iOS.Views
@@ -13,19 +13,19 @@ namespace LocalBox_iOS.Views
 	partial class MenuViewController
 	{
 		[Outlet]
-		MonoTouch.UIKit.UIActivityIndicatorView _indicatorViewLeftCorner { get; set; }
+		UIKit.UIActivityIndicatorView _indicatorViewLeftCorner { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIView kleurenBalk { get; set; }
+		UIKit.UIView kleurenBalk { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UIImageView logo { get; set; }
+		UIKit.UIImageView logo { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITableView MenuFooter { get; set; }
+		UIKit.UITableView MenuFooter { get; set; }
 
 		[Outlet]
-		MonoTouch.UIKit.UITableView MenuTable { get; set; }
+		UIKit.UITableView MenuTable { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

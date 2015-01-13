@@ -1,7 +1,7 @@
-﻿using System;
-using MonoTouch.UIKit;
+using System;
+using UIKit;
 using System.Threading;
-using MonoTouch.Foundation;
+using Foundation;
 
 using Xamarin;
 

@@ -1,15 +1,15 @@
-﻿using System;
-using MonoTouch.UIKit;
+using System;
+using UIKit;
 using System.Linq;
-using System.Drawing;
+using CoreGraphics;
 
 namespace LocalBox_iOS
 {
     public class PinInput : UIView
     {
         private PinDigit[] _pinDigits;
-        private readonly float DigitHeight;
-        private float DigitWidth = 62f; //
+        private readonly nfloat DigitHeight;
+        private nfloat DigitWidth = 62f; //
         public int _currentIndex = 0;
 
         public static readonly UIColor DigitBackgroundColor = UIColor.FromRGB(0x8f, 0xca, 0xe7);
@@ -67,7 +67,7 @@ namespace LocalBox_iOS
             }
         }
 
-        public PinInput(RectangleF frame)
+        public PinInput(CGRect frame)
         {
             Frame = frame;
             DigitHeight = frame.Height;
@@ -75,7 +75,7 @@ namespace LocalBox_iOS
 
             for (int i = 0; i < 5; i++)
             {
-                var digit = new PinDigit(new RectangleF(((Frame.Width - DigitWidth) / 4) * i, 0, DigitWidth, DigitHeight));
+                var digit = new PinDigit(new CGRect(((Frame.Width - DigitWidth) / 4) * i, 0, DigitWidth, DigitHeight));
                 Add(digit);
                 _pinDigits[i] = digit;
             }
@@ -197,7 +197,7 @@ namespace LocalBox_iOS
                 }
             }
 
-            public PinDigit(RectangleF frame)
+            public PinDigit(CGRect frame)
             {
                 Frame = frame;
                 Layer.CornerRadius = 3;
@@ -206,9 +206,9 @@ namespace LocalBox_iOS
                 AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin;
                 // Verticale positie van de * kan alleen getweaked worden (niet berekend).
                 // Het font bepaald de positie binnen het label.
-                float topOffset = frame.Height / 2.9f;
+                nfloat topOffset = frame.Height / 2.9f;
 
-                _bullet = new UILabel(new RectangleF(0f, topOffset, Bounds.Width, 26));
+                _bullet = new UILabel(new CGRect(0f, topOffset, Bounds.Width, 26));
                 _bullet.TextAlignment = UITextAlignment.Center;
                 _bullet.Font = UIFont.BoldSystemFontOfSize(22);
                 _bullet.BackgroundColor = UIColor.Clear;

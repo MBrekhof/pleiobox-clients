@@ -6,12 +6,14 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A1F82138-A39E-45DA-AC90-56C177556092}</ProjectGuid>
-    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>LocalBox_Common</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>LocalBox_Common_iOS</AssemblyName>
     <newfilesearch>OnLoadAutoInsert</newfilesearch>
+    <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,21 +37,21 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
     <Reference Include="System.Json" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Mono.Data.Sqlcipher">
-      <HintPath>Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Dll\json.net\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Insights">
-      <HintPath>..\LocalBox_iOS\packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\Xamarin.Insights.dll</HintPath>
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="Mono.Data.Sqlcipher">
+      <HintPath>Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
-    <Reference Include="PLCrashReporter">
-      <HintPath>..\LocalBox_iOS\packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\PLCrashReporter.dll</HintPath>
+    <Reference Include="PLCrashReporterUnifiedBinding">
+      <HintPath>Dll\insights\ios\PLCrashReporterUnifiedBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>Dll\insights\ios\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -59,8 +61,6 @@
     <Folder Include="Utils\" />
     <Folder Include="Constants\" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <Compile Include="PGP\CryptoHelper.cs" />
     <Compile Include="Data\DataLayer.cs" />
@@ -101,7 +101,5 @@
       <Name>BouncyCastleAPI_iOS</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

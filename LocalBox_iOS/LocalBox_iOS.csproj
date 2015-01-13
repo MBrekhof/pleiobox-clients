@@ -6,11 +6,13 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3DA647B0-D8DE-46F6-A778-2F8534EFF304}</ProjectGuid>
-    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>LocalBox_iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>LocalBox_iOS</AssemblyName>
+    <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,6 +32,7 @@
     <MtouchLink>Full</MtouchLink>
     <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
     <MtouchUseLlvm>true</MtouchUseLlvm>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -61,10 +64,9 @@
     </IpaPackageName>
     <DebugSymbols>true</DebugSymbols>
     <MtouchDebug>true</MtouchDebug>
-    <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
     <MtouchUseThumb>true</MtouchUseThumb>
-    <MtouchLink>Full</MtouchLink>
     <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
+    <MtouchLink>Full</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -78,7 +80,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>full</DebugType>
@@ -94,7 +96,7 @@
     <CodesignKey>iPhone Distribution: Ministerie van Financien</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
     <MtouchLink>None</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
@@ -109,7 +111,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchArch>ARMv7, ARMv7s</MtouchArch>
+    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
     <BuildIpa>true</BuildIpa>
     <IpaPackageName>
     </IpaPackageName>
@@ -122,15 +124,15 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
+    <Reference Include="Xamarin.iOS" />
     <Reference Include="Mono.Data.Sqlcipher">
       <HintPath>..\LocalBox_Common\Dll\sqlcipher\lib\ios\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Insights">
-      <HintPath>packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\Xamarin.Insights.dll</HintPath>
+    <Reference Include="PLCrashReporterUnifiedBinding">
+      <HintPath>..\LocalBox_Common\Dll\insights\ios\PLCrashReporterUnifiedBinding.dll</HintPath>
     </Reference>
-    <Reference Include="PLCrashReporter">
-      <HintPath>packages\Xamarin.Insights.1.8.2.105\lib\MonoTouch10\PLCrashReporter.dll</HintPath>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>..\LocalBox_Common\Dll\insights\ios\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +153,6 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -251,68 +252,29 @@
     <Compile Include="Helpers\Reachability.cs" />
     <Compile Include="Views\Picker\ActionSheetDatePickerCustom.cs" />
     <Compile Include="Views\Pincode\PinHelper.cs" />
+    <Compile Include="Helpers\NSDateHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <InterfaceDefinition Include="Views\HomeController.xib">
-      <DependentUpon>HomeController.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\MenuViewController.xib">
-      <DependentUpon>MenuViewController.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\NodeViewController.xib">
-      <DependentUpon>NodeViewController.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\NodeView.xib">
-      <DependentUpon>NodeView.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\MenuViewCell.xib">
-      <DependentUpon>MenuViewCell.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\MenuFooterViewCell.xib">
-      <DependentUpon>MenuFooterViewCell.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\NodeViewCell.xib">
-      <DependentUpon>NodeViewCell.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\NodeViewCellDetail.xib">
-      <DependentUpon>NodeViewCellDetail.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\NodeViewCellDefault.xib">
-      <DependentUpon>NodeViewCellDefault.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\LocationChooserView.xib">
-      <DependentUpon>LocationChooserView.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\LocationChooserViewCell.xib">
-      <DependentUpon>LocationChooserViewCell.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\FavoriteNodeView.xib">
-      <DependentUpon>FavoriteNodeView.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\Table\MenuViewCellTop.xib">
-      <DependentUpon>MenuViewCellTop.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\Table\MenuViewCellDetail.xib">
-      <DependentUpon>MenuViewCellDetail.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\DelenView.xib">
-      <DependentUpon>DelenView.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\ItemView\BaseItemView.xib">
-      <DependentUpon>BaseItemView.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\AboutViewController.xib">
-      <DependentUpon>AboutViewController.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\IntroductionViewController.xib">
-      <DependentUpon>IntroductionViewController.cs</DependentUpon>
-    </InterfaceDefinition>
-    <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib">
-      <DependentUpon>RegisterLocalBoxViewController.cs</DependentUpon>
-    </InterfaceDefinition>
+    <InterfaceDefinition Include="Views\HomeController.xib" />
+    <InterfaceDefinition Include="Views\MenuViewController.xib" />
+    <InterfaceDefinition Include="Views\NodeViewController.xib" />
+    <InterfaceDefinition Include="Views\NodeView.xib" />
+    <InterfaceDefinition Include="Views\MenuViewCell.xib" />
+    <InterfaceDefinition Include="Views\MenuFooterViewCell.xib" />
+    <InterfaceDefinition Include="Views\NodeViewCell.xib" />
+    <InterfaceDefinition Include="Views\NodeViewCellDetail.xib" />
+    <InterfaceDefinition Include="Views\NodeViewCellDefault.xib" />
+    <InterfaceDefinition Include="Views\LocationChooserView.xib" />
+    <InterfaceDefinition Include="Views\LocationChooserViewCell.xib" />
+    <InterfaceDefinition Include="Views\FavoriteNodeView.xib" />
+    <InterfaceDefinition Include="Views\Table\MenuViewCellTop.xib" />
+    <InterfaceDefinition Include="Views\Table\MenuViewCellDetail.xib" />
+    <InterfaceDefinition Include="Views\DelenView.xib" />
+    <InterfaceDefinition Include="Views\ItemView\BaseItemView.xib" />
+    <InterfaceDefinition Include="Views\AboutViewController.xib" />
+    <InterfaceDefinition Include="Views\IntroductionViewController.xib" />
+    <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_iOS.csproj">
       <Project>{A1F82138-A39E-45DA-AC90-56C177556092}</Project>
@@ -430,4 +392,5 @@
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash.png" />
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash%402x.png" />
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

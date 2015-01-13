@@ -1,7 +1,7 @@
-﻿using System;
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
-using System.Drawing;
+using System;
+using UIKit;
+using Foundation;
+using CoreGraphics;
 using LocalBox_Common;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace LocalBox_iOS.Views
         public FavoriteNodeView(IntPtr handle) : base(handle){}
 
 
-        public static FavoriteNodeView Create (RectangleF frame, NodeViewController nodeViewController, UIColor kleur)
+        public static FavoriteNodeView Create (CGRect frame, NodeViewController nodeViewController, UIColor kleur)
         {
             var view = (FavoriteNodeView)Nib.Instantiate (null, null) [0];
             view.Frame = frame;
@@ -62,7 +62,7 @@ namespace LocalBox_iOS.Views
         public void Refresh(bool reload = true, bool scrollToTop = false) {
             if (scrollToTop)
             {
-                NodeItemTable.ContentOffset = new PointF(0, -NodeItemTableController.RefreshControl.Frame.Height);
+                NodeItemTable.ContentOffset = new CGPoint(0, -NodeItemTableController.RefreshControl.Frame.Height);
                 NodeItemTableController.RefreshControl.BeginRefreshing();
             }
 
@@ -108,12 +108,12 @@ namespace LocalBox_iOS.Views
                 _nodeView = nodeView;
             }
 
-            public override int NumberOfSections(UITableView tableView)
+            public override nint NumberOfSections(UITableView tableView)
             {
                 return 1;
             }
 
-            public override int RowsInSection(UITableView tableview, int section)
+            public override nint RowsInSection(UITableView tableview, nint section)
             {
                 return _node.Count;
             }

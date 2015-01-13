@@ -1,9 +1,9 @@
-﻿using System;
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
+using System;
+using Foundation;
+using UIKit;
 using System.Collections.Generic;
 using LocalBox_Common;
-using System.Drawing;
+using CoreGraphics;
 using System.Linq;
 using LocalBox_iOS.Helpers;
 
@@ -184,12 +184,12 @@ namespace LocalBox_iOS
                 }
             }
 
-            public override int NumberOfSections(UITableView tableView)
+            public override nint NumberOfSections(UITableView tableView)
             {
                 return 1;
             }
 
-            public override int RowsInSection(UITableView tableview, int section)
+            public override nint RowsInSection(UITableView tableview, nint section)
             {
                 if (_users == null)
                 {

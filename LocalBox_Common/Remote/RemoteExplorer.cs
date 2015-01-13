@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Net.Http;
 using System.Json;
@@ -124,6 +124,8 @@ namespace LocalBox_Common.Remote
 
 					var result = JsonConvert.DeserializeObject<DataGroup> (jsonString);
 					return result;
+				} else {
+					return null;
 				}
 			}
 
