@@ -5,10 +5,12 @@ using System.Text;
 using System.Linq;
 using System.Security;
 using System.Net.Security;
+using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+
 using LocalBox_Common.Remote;
-using System.Threading.Tasks;
+
 using Xamarin;
 
 namespace LocalBox_Common
@@ -17,13 +19,18 @@ namespace LocalBox_Common
 	{
 		public static byte[] BytesOfServerCertificate;
 
-
+		public static bool ErrorsOccured = false;
+		public static bool IgnoreSllErrorsInWebView = false;
+		private static bool FoundSelfSignedCertificate = false;
+		private static bool isCertificateChecked = false;
+	
 		public static void GetCertificateFromUrl (string url)
 		{
 			Environment.SetEnvironmentVariable ("MONO_TLS_SESSION_CACHE_TIMEOUT", "0");
 
-			ServicePointManager.CheckCertificateRevocationList = true;
 			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback ((sender, cert, chain, errors) => { 
+
+				isCertificateChecked = true;
 
 				if (errors == SslPolicyErrors.None) {
 					var serverX509Certificate2 = new X509Certificate2 (cert);
@@ -34,15 +41,25 @@ namespace LocalBox_Common
 					if ((errors & System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors) != 0) {
 						if (chain != null && chain.ChainStatus != null) {
 							foreach (System.Security.Cryptography.X509Certificates.X509ChainStatus status in chain.ChainStatus) {
-								if ((cert.Subject == cert.Issuer) &&
-								     (status.Status == System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.UntrustedRoot)) {
 
-									// Self-signed certificates with an untrusted root are valid. 
+								if (status.Status == System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.UntrustedRoot){
+									// Self-signed certificate
+									var serverX509Certificate2 = new X509Certificate2 (cert);
+									BytesOfServerCertificate = serverX509Certificate2.Export (X509ContentType.Cert);
+									FoundSelfSignedCertificate = true;
+
+									return true;
+								} 
+								else if(status.Status == System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.PartialChain){
+									//Happens because app can't retrieve the complete chain
 									var serverX509Certificate2 = new X509Certificate2 (cert);
 									BytesOfServerCertificate = serverX509Certificate2.Export (X509ContentType.Cert);
 
+									IgnoreSllErrorsInWebView = true;
+
 									return true;
-								} else {
+								}
+								else {
 									if (status.Status != System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NoError) {
 
 										// If there are any other errors in the certificate chain, the certificate is invalid,
@@ -59,32 +76,59 @@ namespace LocalBox_Common
 
 			});
 
-			using (var client = new WebClient ()) {
-				try {
-					client.DownloadString (new Uri (url));
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url); 
+			request.KeepAlive = false;
+			request.ContentType = "application/json";
+			request.Timeout	= 3000;
+			request.Method = "GET";
 
-				} catch (Exception ex) {
-					Insights.Report (ex);
-					Console.WriteLine (ex.Message);
-				}
-			}
+			using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
+				Console.WriteLine (response.StatusCode.ToString ());
+			};
 
 		}
 
 
-		public static bool DoesHaveAValidCertificate (string urlToOpen)
+		public static async Task<CertificateValidationStatus> GetCertificateStatusForUrl (string urlToOpen)
 		{
 			BytesOfServerCertificate = null;
 
 			GetCertificateFromUrl (urlToOpen);
-			var certificateBytes = CertificateHelper.BytesOfServerCertificate;
 
-			if (certificateBytes != null) {
-				return true;
-			} else {
-				return false;
+
+			if (ErrorsOccured || !isCertificateChecked) {
+				ResetValues ();
+				return CertificateValidationStatus.Error;
 			}
+			else if (CertificateHelper.BytesOfServerCertificate != null) 
+			{
+				if (FoundSelfSignedCertificate) {
+					ResetValues ();
+					return CertificateValidationStatus.SelfSigned;
+				} 
+				else if (IgnoreSllErrorsInWebView) {
+					return CertificateValidationStatus.ValidWithErrors;
+				}
+				else {
+					ResetValues ();
+					return CertificateValidationStatus.Valid;
+				}
+			}
+			else {
+				ResetValues ();
+				return CertificateValidationStatus.Invalid;
+			}
+
 		}
+
+		private static void ResetValues()
+		{
+			ErrorsOccured = false;
+			IgnoreSllErrorsInWebView = false;
+			FoundSelfSignedCertificate = false;
+			isCertificateChecked = false;
+		}
+
 
 
 		public static bool RenewCertificateForLocalBox (LocalBox localBox)

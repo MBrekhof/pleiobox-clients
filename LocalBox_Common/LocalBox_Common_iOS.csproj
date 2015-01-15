@@ -89,6 +89,7 @@
     <Compile Include="Utils\SslValidator.cs" />
     <Compile Include="Utils\CertificateHelper.cs" />
     <Compile Include="Constants\DocumentConstants.cs" />
+    <Compile Include="Utils\CertificateValidationStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\AboutResources.txt" />

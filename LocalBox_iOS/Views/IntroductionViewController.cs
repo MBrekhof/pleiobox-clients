@@ -5,6 +5,8 @@ using UIKit;
 using LocalBox_iOS.Views;
 using LocalBox_Common;
 using System.Net;
+using LocalBox_iOS.Helpers;
+using System.Threading;
 
 namespace LocalBox_iOS
 {
@@ -59,80 +61,95 @@ namespace LocalBox_iOS
 			};
 		}
 
-		void OpenUrlDialog()
+		void OpenUrlDialog ()
 		{
 			UIAlertView alertOpenUrl = new UIAlertView ("Nieuwe LocalBox", 
-				"Voer hieronder de url naar de te registeren LocalBox in", null, 
-				"Annuleer", "Open URL");
+				                           "Voer hieronder de url naar de te registeren LocalBox in", null, 
+				                           "Annuleer", "Open URL");
 			alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
-			alertOpenUrl.GetTextField(0).Placeholder = "https://yourlocalbox.com";
-			alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => 
-			{
-				if (args.ButtonIndex == 1)
-				{
-					string urlString = ((UIAlertView)sender).GetTextField(0).Text;
+			alertOpenUrl.GetTextField (0).Placeholder = "https://yourlocalbox.com";
+			alertOpenUrl.Clicked += (object sender, UIButtonEventArgs args) => {
+				if (args.ButtonIndex == 1) {
 
-					//Reset certificate validation check - otherwise it will cause errors if there is an active certificate pinning enabled
-					ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+					DialogHelper.ShowBlockingProgressDialog ("Een ogenblik geduld", "URL validatie wordt uitgevoerd");
 
+					ThreadPool.QueueUserWorkItem ((data) => {
+						BeginInvokeOnMainThread (async() => {
+			
+							string urlString = ((UIAlertView)sender).GetTextField (0).Text;
 
-					if(string.IsNullOrEmpty(urlString))
-					{
-						var alertView = new UIAlertView("Error", "URL is niet ingevuld", null, "OK", null);
-						alertView.Show();
-					}
-					else{
-
-						if(urlString.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase))
-						{
-							UIAlertView alertHttpUrl = new UIAlertView ("Waarschuwing", 
-								"U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?", null, 
-								"Annuleer", "Ga verder");
-							alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => 
-							{
-								if (a.ButtonIndex == 1)
-								{
-									if(!string.IsNullOrEmpty(urlString))
-									{
-										OpenInternetBrowser(urlString);
-									}
-								}else {
-									OpenUrlDialog();
-								}
-							};
-							alertHttpUrl.Show();
-						}
-						else if (urlString.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase))
-						{
-							if(CertificateHelper.DoesHaveAValidCertificate(urlString))
-							{
-								OpenInternetBrowser(urlString);
-							}
+							//Reset certificate validation check - otherwise it will cause errors if there is an active certificate pinning enabled
+							ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
+						
+							if (string.IsNullOrEmpty (urlString)) {
+								var alertView = new UIAlertView ("Error", "URL is niet ingevuld", null, "OK", null);
+								alertView.Show ();
+							} 
 							else {
-								UIAlertView alertHttpUrl = new UIAlertView ("Error", 
-									"U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Dit wordt momenteel niet ondersteund door de iOS app.\n\n" +
-									"Als alternatief kunt u, indien de LocalBox server dit ondersteund, een http:// webadres opgeven.", null, 
-									 "OK", null);
-								alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => 
-								{
-									OpenUrlDialog();
-								};
-								alertHttpUrl.Show();
+								if (urlString.StartsWith ("http://", StringComparison.CurrentCultureIgnoreCase)) {
+									UIAlertView alertHttpUrl = new UIAlertView ("Waarschuwing", 
+										                         "U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?", null, 
+										                         "Annuleer", "Ga verder");
+									alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => {
+										if (a.ButtonIndex == 1) {
+											if (!string.IsNullOrEmpty (urlString)) {
+												OpenInternetBrowser (urlString);
+											}
+										} else {
+											OpenUrlDialog ();
+										}
+									};
+									alertHttpUrl.Show ();
+								} else if (urlString.StartsWith ("https://", StringComparison.CurrentCultureIgnoreCase)) {
+
+									var certificateStatus = await CertificateHelper.GetCertificateStatusForUrl (urlString);
+
+									if (certificateStatus == CertificateValidationStatus.Valid || certificateStatus == CertificateValidationStatus.ValidWithErrors) {
+										OpenInternetBrowser (urlString);
+									} else if (certificateStatus == CertificateValidationStatus.SelfSigned) {
+										UIAlertView alertHttpUrl = new UIAlertView ("Error", 
+											                         "U heeft een webadres opgegeven met een SSL certificaat welke niet geverifieerd is. Dit wordt momenteel niet ondersteund door de iOS app.\n\n" +
+											                         "Als alternatief kunt u, indien de LocalBox server dit ondersteund, een http:// webadres opgeven.", null, 
+											                         "OK", null);
+										alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => {
+											OpenUrlDialog ();
+										};
+										alertHttpUrl.Show ();
+									} else if (certificateStatus == CertificateValidationStatus.Invalid) {
+										UIAlertView alertHttpUrl = new UIAlertView ("Error", 
+											                         "U heeft een webadres opgegeven met een ongeldig SSL certificaat. U kunt hierdoor geen verbinding maken met de betreffende LocalBox", null, 
+											                         "OK", null);
+										alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => {
+											OpenUrlDialog ();
+										};
+										alertHttpUrl.Show ();
+									} else {
+										UIAlertView alertHttpUrl = new UIAlertView ("Error", 
+											                         "Er is een fout opgetreden. Controleer de verbinding en webadres en probeer het a.u.b. nogmaals", null, 
+											                         "OK", null);
+										alertHttpUrl.Clicked += (object send, UIButtonEventArgs a) => {
+											OpenUrlDialog ();
+										};
+										alertHttpUrl.Show ();
+									}
+								} 
+								else {
+									UIAlertView alertUrl = new UIAlertView ("Error", 
+										                     "Het opgegeven webadres dient met https:// of http:// te beginnen.", null, 
+										                     "OK", null);
+									alertUrl.Clicked += (object send, UIButtonEventArgs a) => {
+										OpenUrlDialog ();
+									};
+									alertUrl.Show ();
+								}
 							}
-						}else {
-							UIAlertView alertUrl = new UIAlertView ("Error", 
-								"Het opgegeven webadres dient met https:// of http:// te beginnen.", null, 
-								"OK", null);
-							alertUrl.Clicked += (object send, UIButtonEventArgs a) => 
-							{
-								OpenUrlDialog();
-							};
-							alertUrl.Show();
-						}
-					}
+							DialogHelper.HideBlockingProgressDialog ();
+						});
+					});
 				}
+
 			};
-			alertOpenUrl.Show();
+			alertOpenUrl.Show ();
 		}
 
 

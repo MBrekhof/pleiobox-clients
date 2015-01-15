@@ -293,7 +293,7 @@ namespace LocalBox_Droid
 
 			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
 			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
-			buttonOpenUrl.Click +=(sender, args) => {
+			buttonOpenUrl.Click += async (sender, args) => {
 				if (String.IsNullOrEmpty (editTextUrl.Text)) {
 					homeActivity.ShowToast("URL is niet ingevuld");
 				} else {
@@ -314,14 +314,26 @@ namespace LocalBox_Droid
 					}
 					else if(editTextUrl.Text.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase))
 					{
-						bool validCertificate = CertificateHelper.DoesHaveAValidCertificate(editTextUrl.Text);
-						if(validCertificate){
+
+						var certificateStatus = await CertificateHelper.GetCertificateStatusForUrl (editTextUrl.Text);
+
+						if (certificateStatus == CertificateValidationStatus.Valid) {
 							homeActivity.ShowRegisterLocalBoxDialog(editTextUrl.Text, false);
 							dialog.Dismiss();
 						}
+						else if(certificateStatus == CertificateValidationStatus.ValidWithErrors)
+						{
+							homeActivity.ShowRegisterLocalBoxDialog(editTextUrl.Text, true);
+							dialog.Dismiss();
+						}
+						else if (certificateStatus == CertificateValidationStatus.SelfSigned) {
+							ShowSelfSignedCertificateDialog(editTextUrl.Text, dialog);
+						} 
+						else if (certificateStatus == CertificateValidationStatus.Invalid) {
+							ShowInvalidCertificateDialog (editTextUrl.Text, dialog);						
+						} 
 						else {
-							ShowInvalidCertificateDialog(editTextUrl.Text, dialog);
-
+							ShowErrorRegisterDialog(editTextUrl.Text, dialog);
 						}
 					}
 					else {
@@ -352,7 +364,7 @@ namespace LocalBox_Droid
 		}
 
 
-		public void ShowInvalidCertificateDialog(string urlToOpen, AlertDialog urlDialog)
+		public void ShowSelfSignedCertificateDialog(string urlToOpen, AlertDialog urlDialog)
 		{
 			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
 			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
@@ -362,6 +374,31 @@ namespace LocalBox_Droid
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
 				homeActivity.ShowRegisterLocalBoxDialog(urlToOpen, true);
 				urlDialog.Dismiss ();
+				dialogAlert.Dismiss();
+			});
+			dialogAlert.Show ();
+		}
+
+
+		public void ShowInvalidCertificateDialog(string urlToOpen, AlertDialog urlDialog)
+		{
+			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
+			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
+			dialogAlert.SetTitle ("Error");
+			dialogAlert.SetMessage ("U heeft een webadres opgegeven met een ongeldig SSL certificaat. U kunt hierdoor geen verbinding maken met de betreffende LocalBox");
+			dialogAlert.SetButton ("OK", (s, ev) => {
+				dialogAlert.Dismiss();
+			});
+			dialogAlert.Show ();
+		}
+
+		public void ShowErrorRegisterDialog(string urlToOpen, AlertDialog urlDialog)
+		{
+			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
+			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
+			dialogAlert.SetTitle ("Error");
+			dialogAlert.SetMessage ("Er is een fout opgetreden. Controleer de verbinding en webadres en probeer het a.u.b. nogmaals");
+			dialogAlert.SetButton ("OK", (s, ev) => {
 				dialogAlert.Dismiss();
 			});
 			dialogAlert.Show ();

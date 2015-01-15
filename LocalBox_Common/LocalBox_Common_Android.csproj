@@ -86,6 +86,7 @@
     <Compile Include="Utils\CertificateHelper.cs" />
     <Compile Include="Utils\SslValidator.cs" />
     <Compile Include="Constants\DocumentConstants.cs" />
+    <Compile Include="Utils\CertificateValidationStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
