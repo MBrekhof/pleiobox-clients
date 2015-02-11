@@ -27,6 +27,7 @@ namespace LocalBox_Droid
 		public bool ignoreSslError;
 		private WebView webview;
 		public LocalBox localBoxToBeAdded;
+		public string domainUrl;
 
 		public RegisterLocalBoxFragment(string urlToOpen, bool ignoreSslError)
 		{
@@ -54,7 +55,6 @@ namespace LocalBox_Droid
 			Dialog.SetTitle("Registreren");
 
 			View view = layoutInflater.Inflate (Resource.Layout.fragment_register_localbox, viewGroup, false);
-
 			webview = view.FindViewById<WebView>(Resource.Id.webview_register_localbox);
 
 			try{
@@ -73,7 +73,7 @@ namespace LocalBox_Droid
 		}
 
 
-		public async void StartRegistration(string url, string cookieString)
+		public async void GetLocalBoxRegistrationJson(string url, string cookieString)
 		{
 			parentActivity.ShowProgressDialog("Laden...");
 
@@ -87,9 +87,8 @@ namespace LocalBox_Droid
 					localBoxToBeAdded = box;
 
 					//Create request url to get the access token and refresh token
-					var domainUrl = url.Substring (0, url.IndexOf ("/register"));
-					var tokensRequestUrl = 	domainUrl + "/oauth/v2/auth?client_id=" + box.ApiKey +
-						"&response_type=token&redirect_uri=lbox://oauth-return";
+					domainUrl = url.Substring (0, url.IndexOf ("/register"));
+					var tokensRequestUrl = 	domainUrl + "/oauth/v2/auth?client_id=" + box.ApiKey + "&response_type=code&redirect_uri=lbox://oauth-return";
 
 					//Get access token and refresh token
 					webview.LoadUrl(tokensRequestUrl);
@@ -101,9 +100,27 @@ namespace LocalBox_Droid
 			}
 		}
 
-		public void AddLocalBox()
+		public async void GetTokensAndAddLocalBox(string url)
 		{
-			parentActivity.AddLocalBox (localBoxToBeAdded);
+			var tokens = await BusinessLayer.Instance.GetRegistrationTokens (url);
+
+			if (tokens != null && !string.IsNullOrEmpty (tokens.AccessToken) && !string.IsNullOrEmpty (tokens.RefreshToken)) {
+
+				//Get expiration date access token
+				var expiresAsInt = tokens.ExpiresIn;
+				var expiresAsStringWithCorrection = DateTime.UtcNow.AddSeconds (expiresAsInt * 0.9).ToString (); //Expire at 90% of expire duration
+				
+				localBoxToBeAdded.AccessToken = tokens.AccessToken;
+				localBoxToBeAdded.RefreshToken = tokens.RefreshToken;
+				localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
+
+				parentActivity.AddLocalBox (localBoxToBeAdded);
+			} 
+			else {
+				Toast.MakeText (Activity, "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", ToastLength.Long).Show ();
+			}
+			parentActivity.HideProgressDialog ();
+			this.Dismiss ();
 		}
 
 
@@ -116,6 +133,7 @@ namespace LocalBox_Droid
 			private RegisterLocalBoxFragment registerLocalBoxFragment;
 			private string cookieString;
 			private bool localBoxAlreadyAdded = false;
+
 
 			public MyWebViewClient(RegisterLocalBoxFragment registerLocalBoxFragment)
 			{
@@ -153,13 +171,14 @@ namespace LocalBox_Droid
 
 						if (registerLocalBoxFragment.registrationStarted == false) //Voorkomt 2x zelfde aanroep
 						{
-							registerLocalBoxFragment.StartRegistration (url, cookieString);
+							registerLocalBoxFragment.GetLocalBoxRegistrationJson (url, cookieString);
 							registerLocalBoxFragment.registrationStarted = true;
 						}
 					}
 				}
 
 			}
+
 
 			public override void OnReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
 			{
@@ -172,49 +191,42 @@ namespace LocalBox_Droid
 				}
 			}
 
+
 			public override void OnPageStarted (WebView view, string url, Android.Graphics.Bitmap favicon)
 			{
 				base.OnPageStarted (view, url, favicon);
 
 				if (!localBoxAlreadyAdded) {
-				
-					if (url.Contains ("refresh_token=") && url.Contains ("access_token=")) {
+	
+					if (url.StartsWith ("lbox://oauth-return?code=")) { 	
+						if (!string.IsNullOrEmpty (registerLocalBoxFragment.localBoxToBeAdded.ApiKey) &&
+						    !string.IsNullOrEmpty (registerLocalBoxFragment.localBoxToBeAdded.ApiSecret) &&
+						    !string.IsNullOrEmpty (registerLocalBoxFragment.domainUrl)) {
 
-						//Get access token
-						var startIndexAccessToken = url.IndexOf ("access_token=") + "access_token=".Length;
-						var endIndexAccessToken = url.IndexOf ("&expires_in");
-						var accessToken = url.Substring (startIndexAccessToken, endIndexAccessToken - startIndexAccessToken);
+							string code = url.Substring ("lbox://oauth-return?code=".Length);
 
-						//Get refresh token
-						var startIndexRefreshToken = url.IndexOf ("refresh_token=") + "refresh_token=".Length;
-						var refreshToken = url.Substring (startIndexRefreshToken);
-
-						//Get expiration date access token
-						var startIndexExpires = url.IndexOf ("expires_in=") + "expires_in=".Length;
-						var endIndexExpires = url.IndexOf ("&token_type=");
-						var expiresAsInt = int.Parse (url.Substring (startIndexExpires, endIndexExpires - startIndexExpires));
-						var expiresAsStringWithCorrection = DateTime.UtcNow.AddSeconds (expiresAsInt * 0.9).ToString (); //Expire at 90% of expire duration
-
-						if (!string.IsNullOrEmpty (accessToken) && !string.IsNullOrEmpty (refreshToken)) {
-							registerLocalBoxFragment.localBoxToBeAdded.AccessToken = accessToken;
-							registerLocalBoxFragment.localBoxToBeAdded.RefreshToken = refreshToken;
-							registerLocalBoxFragment.localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
-
-							registerLocalBoxFragment.AddLocalBox ();
-							registerLocalBoxFragment.Dismiss ();
-						} else {
-							registerLocalBoxFragment.parentActivity.ShowToast ("Het ophalen van LocalBox data is mislukt. \\nProbeer het a.u.b. opnieuw");
+							string requestUrl = registerLocalBoxFragment.domainUrl +
+							                    "/oauth/v2/token?client_id=" +
+							                    registerLocalBoxFragment.localBoxToBeAdded.ApiKey +
+							                    "&client_secret=" +
+							                    registerLocalBoxFragment.localBoxToBeAdded.ApiSecret +
+							                    "&code=" +
+							                    code +
+												"&grant_type=authorization_code" +
+												"&redirect_uri=lbox://oauth-return";
+								
+							registerLocalBoxFragment.GetTokensAndAddLocalBox (requestUrl);
 						}
+						registerLocalBoxFragment.Dismiss ();
 						localBoxAlreadyAdded = true;
-
-					} else if (url.StartsWith ("lbox://oauth-return")) { 	//User rejected permission
+					}
+					else if (url.StartsWith ("lbox://oauth-return")) { //webview wants to open redirect uri
 						registerLocalBoxFragment.Dismiss ();
 					}
-
 				}
 			}
+
 		}
 
 	}
 }
-

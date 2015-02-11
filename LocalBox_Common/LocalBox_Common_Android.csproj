@@ -87,6 +87,7 @@
     <Compile Include="Utils\SslValidator.cs" />
     <Compile Include="Constants\DocumentConstants.cs" />
     <Compile Include="Utils\CertificateValidationStatus.cs" />
+    <Compile Include="Model\Tokens.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

@@ -115,6 +115,38 @@ namespace LocalBox_Common
 		}
 			
 
+
+		public Task<Tokens> GetRegistrationTokens (string tokensRequestUrl)
+		{
+			return Task.Run (async() => {
+			
+				try {
+					HttpWebRequest request = (HttpWebRequest)WebRequest.Create (tokensRequestUrl); 
+					request.KeepAlive = false;
+					request.ContentType = "application/json";
+					request.Timeout	= 3000;
+					request.Method = "GET";
+
+					using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
+
+						using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
+							var content = reader.ReadToEnd ();
+							if (!string.IsNullOrWhiteSpace (content)) {
+								var tokens = JsonConvert.DeserializeObject<Tokens> (content);
+								return tokens;
+							} else {
+								return null;
+							}
+						}
+					}
+				} catch (Exception ex) {
+					Console.WriteLine (ex.Message);
+					return null;
+				}
+			});
+		}
+
+
 		private void SetKeys (LocalBox localBox)
 		{
 			var explorer = new RemoteExplorer (localBox);
