@@ -84,6 +84,7 @@ namespace LocalBox_iOS.Views
 				alert.Clicked += (s, buttonArgs) => {
 					if (buttonArgs.ButtonIndex == 0) {
 
+						SslValidator.CertificateErrorRaised = false;
 						//Get new certificate from server
 						bool certificateSucessfullyRenewed = CertificateHelper.RenewCertificateForLocalBox (DataLayer.Instance.GetSelectedOrDefaultBox ());
 

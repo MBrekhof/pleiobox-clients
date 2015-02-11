@@ -418,7 +418,6 @@ namespace LocalBox_Droid
 				if (!SslValidator.CertificateErrorRaised) {
 					Toast.MakeText (Android.App.Application.Context, "Data verversen mislukt. Probeer het a.u.b. opnieuw", ToastLength.Short).Show ();
 				}
-				SslValidator.CertificateErrorRaised = false;
 			}
 		}
 

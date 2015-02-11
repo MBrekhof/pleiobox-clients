@@ -66,6 +66,9 @@ namespace LocalBox_Droid
 		{
 			ResetUIToBeginState(false);
 
+
+			SslValidator.CertificateErrorRaised = false;
+
 			//Set selected local box
 			Waardes.Instance.GeselecteerdeBox = foundLocalBoxes[e.Position].Id;
 

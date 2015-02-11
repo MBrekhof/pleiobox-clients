@@ -31,7 +31,7 @@ namespace LocalBox_Common
 				return false;
 			} else {
 
-				if (receivedCertificate.Subject.IndexOf(".xamarin.com", 0, StringComparison.CurrentCultureIgnoreCase) == -1) { //not a call to a Xamarin server so verify certificate
+				if (receivedCertificate.Subject.IndexOf(".xamarin.com", 0, StringComparison.CurrentCultureIgnoreCase) == -1) { //not a call to an Xamarin server so verify certificate
 
 					if (originalServerCertificate.Equals (receivedCertificate)) {
 						return true;

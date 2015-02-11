@@ -29,7 +29,7 @@ namespace LocalBox_Common.Remote
 		{
 			_localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
 
-			if(_localBox.OriginalServerCertificate != null){ //Selected localbox does have a ssl certificate
+			if(_localBox.OriginalServerCertificate != null && SslValidator.CertificateErrorRaised == false){ //Selected localbox does have a ssl certificate
 
 				//Set ssl validator for selected LocalBox
 				SslValidator sslValidator = new SslValidator (_localBox);
@@ -134,12 +134,12 @@ namespace LocalBox_Common.Remote
 
 
 
-		public Task<string> GetActivePEMFromServer ()
-		{
-			string urlToRegistrionJson = _localBox.BaseUrl + "register_app";
-			return null;
-			//TODO
-
+//		public Task<string> GetActivePEMFromServer ()
+//		{
+//			string urlToRegistrionJson = _localBox.BaseUrl + "register_app";
+//			return null;
+//			//TODO
+//
 //			string result = null;
 //
 //			try {
@@ -183,7 +183,7 @@ namespace LocalBox_Common.Remote
 //				Console.WriteLine (ex.Message);					
 //				return null;
 //			}
-		}
+//		}
 
 
 

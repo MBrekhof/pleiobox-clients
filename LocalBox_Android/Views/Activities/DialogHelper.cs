@@ -36,6 +36,8 @@ namespace LocalBox_Droid
 					"extra te controleren?")
 				.SetPositiveButton("Ja", async (s, args) =>
 					{
+						SslValidator.CertificateErrorRaised = false;
+
 						//Get new certificate from server
 						bool newCertificateIsValid = CertificateHelper.RenewCertificateForLocalBox(DataLayer.Instance.GetSelectedOrDefaultBox());
 

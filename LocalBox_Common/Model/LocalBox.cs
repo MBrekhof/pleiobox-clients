@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 
 using SQLite;
 using Xamarin;
+using System.Linq;
 
 
 namespace LocalBox_Common
@@ -46,7 +47,14 @@ namespace LocalBox_Common
 			{
 				try{
 					if(!string.IsNullOrEmpty (pin_cert)){
-						var certByte = Convert.FromBase64String((pin_cert).Replace("\n", ""));
+
+						//Remove invalid characters and words from PEM string
+						pin_cert = pin_cert.Replace ("BEGIN CERTIFICATE", "");
+						pin_cert = pin_cert.Replace ("END CERTIFICATE", "");
+						pin_cert = pin_cert.Replace("-", "");
+						pin_cert = pin_cert.Replace("\n", "");
+
+						var certByte = Convert.FromBase64String(pin_cert);
 						return certByte;
 					}else {
 						return null;
@@ -64,6 +72,14 @@ namespace LocalBox_Common
 				}
 			}
 		}
+
+		public static string StringWordsRemove(string stringToClean)
+		{
+			return string.Join(" ", stringToClean.Split(' ').Except(wordsToRemove));
+		}
+
+		private static List<string> wordsToRemove = "- BEGIN CERTIFICATE END CERTIFICATE \n".Split(' ').ToList();
+
 
 
 

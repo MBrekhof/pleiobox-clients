@@ -310,7 +310,6 @@ namespace LocalBox_iOS.Views
 			if (!SslValidator.CertificateErrorRaised) {
 				DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het ophalen van de map");
 			}
-			SslValidator.CertificateErrorRaised = false;
 		}
 
 		private void ShowErrorCreatingFolder ()

@@ -107,6 +107,8 @@ namespace LocalBox_iOS.Views
                 {
 					try
 					{
+						SslValidator.CertificateErrorRaised = false;
+
                     	Waardes.Instance.GeselecteerdeBox = boxList[indexPath.Row].Id;
 
 						//Reset certificate validation check to default behavior
