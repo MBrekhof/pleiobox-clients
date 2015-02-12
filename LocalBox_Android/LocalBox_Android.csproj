@@ -42,7 +42,6 @@
     <ConsolePause>false</ConsolePause>
     <AndroidSupportedAbis>armeabi-v7a</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
-    <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
@@ -58,6 +57,9 @@
     <Reference Include="Mono.Android.Export" />
     <Reference Include="Xamarin.Insights">
       <HintPath>..\LocalBox_Common\Dll\insights\android\Xamarin.Insights.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\LocalBox_Common\Dll\json.net\lib\android\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
