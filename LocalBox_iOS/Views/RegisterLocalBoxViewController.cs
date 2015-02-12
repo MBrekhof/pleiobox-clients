@@ -1,9 +1,9 @@
 using System;
 using System.Net;
-using CoreGraphics;
 
-using Foundation;
 using UIKit;
+using Foundation;
+using CoreGraphics;
 
 using LocalBox_Common;
 using LocalBox_iOS.Views;
@@ -52,36 +52,34 @@ namespace LocalBox_iOS
 		{
 			try {
 				var url = request.ToString ();
-				if (url.Contains ("refresh_token=") && url.Contains ("access_token=")) {
+			
+				if (url.StartsWith ("lbox://oauth-return?code=")) { 	
+					if (!string.IsNullOrEmpty (localBoxToBeAdded.ApiKey) &&
+						!string.IsNullOrEmpty (localBoxToBeAdded.ApiSecret) &&
+						!string.IsNullOrEmpty (localBoxToBeAdded.BaseUrl)) {
 
-					//Get access token
-					var startIndexAccessToken = url.IndexOf ("access_token=") + "access_token=".Length;
-					var endIndexAccessToken = url.IndexOf ("&expires_in");
-					var accessToken = url.Substring (startIndexAccessToken, endIndexAccessToken - startIndexAccessToken);
+						string code = url.Substring ("lbox://oauth-return?code=".Length);
+						string domain = "";
+						if(localBoxToBeAdded.BaseUrl.EndsWith ("/")){
+							domain = localBoxToBeAdded.BaseUrl.Substring (0, localBoxToBeAdded.BaseUrl.Length - 1);
+						}else {
+							domain = localBoxToBeAdded.BaseUrl;
+						}
 
-					//Get refresh token
-					var startIndexRefreshToken = url.IndexOf ("refresh_token=") + "refresh_token=".Length;
-					var refreshToken = url.Substring (startIndexRefreshToken);
+						string requestUrl = domain +
+							"/oauth/v2/token?client_id=" +
+							localBoxToBeAdded.ApiKey +
+							"&client_secret=" +
+							localBoxToBeAdded.ApiSecret +
+							"&code=" +
+							code +
+							"&grant_type=authorization_code" +
+							"&redirect_uri=lbox://oauth-return";
 
-					//Get expiration date access token
-					var startIndexExpires = url.IndexOf ("expires_in=") + "expires_in=".Length;
-					var endIndexExpires = url.IndexOf ("&token_type=");
-					var expiresAsInt = int.Parse (url.Substring (startIndexExpires, endIndexExpires - startIndexExpires));
-					var expiresAsStringWithCorrection = DateTime.UtcNow.AddSeconds (expiresAsInt * 0.9).ToString (); //Expire at 90% of expire duration
-
-					if (!string.IsNullOrEmpty (accessToken) && !string.IsNullOrEmpty (refreshToken)) {
-						localBoxToBeAdded.AccessToken = accessToken;
-						localBoxToBeAdded.RefreshToken = refreshToken;
-						localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
-
-						homeController.AddLocalBox (localBoxToBeAdded);
-						this.View.RemoveFromSuperview ();
-					} else {
-						new UIAlertView("Error", "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null).Show ();
+						GetTokensAndAddLocalBox (requestUrl);
 					}
 				}
-				else if (url.StartsWith ("lbox://oauth-return"))
-				{ 	//User rejected permission
+				else if (url.StartsWith ("lbox://oauth-return")) { //webview wants to open redirect uri
 					this.View.RemoveFromSuperview ();
 				}
 
@@ -96,6 +94,33 @@ namespace LocalBox_iOS
 				return false;
 			}
 		}
+
+
+
+		public async void GetTokensAndAddLocalBox(string url)
+		{
+			var tokens = await BusinessLayer.Instance.GetRegistrationTokens (url);
+
+			if (tokens != null && !string.IsNullOrEmpty (tokens.AccessToken) && !string.IsNullOrEmpty (tokens.RefreshToken)) {
+
+				//Get expiration date access token
+				var expiresAsInt = tokens.ExpiresIn;
+				var expiresAsStringWithCorrection = DateTime.UtcNow.AddSeconds (expiresAsInt * 0.9).ToString (); //Expire at 90% of expire duration
+
+				localBoxToBeAdded.AccessToken = tokens.AccessToken;
+				localBoxToBeAdded.RefreshToken = tokens.RefreshToken;
+				localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
+
+				homeController.AddLocalBox (localBoxToBeAdded);
+			} 
+			else {
+				new UIAlertView("Error", "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null).Show ();
+			}
+			this.View.RemoveFromSuperview();
+		}
+
+
+
 
 
 		void webViewLoadStarted (object sender, EventArgs e)
@@ -153,7 +178,7 @@ namespace LocalBox_iOS
 					//Create request url to get the access token and refresh token
 					var domainUrl = newUrl.Substring (0, newUrl.IndexOf ("/register"));
 					var tokensRequestUrl = 	domainUrl + "/oauth/v2/auth?client_id=" + box.ApiKey +
-											"&response_type=token&redirect_uri=lbox://oauth-return";
+											"&response_type=code&redirect_uri=lbox://oauth-return";
 
 					//Get access token and refresh token
 					webViewRegisterLocalBox.LoadRequest (new NSUrlRequest (NSUrl.FromString (tokensRequestUrl)));

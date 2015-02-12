@@ -27,12 +27,12 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchArch>ARMv7, ARMv7s</MtouchArch>
+    <MtouchArch>i386</MtouchArch>
     <MtouchUseThumb>true</MtouchUseThumb>
-    <MtouchLink>Full</MtouchLink>
     <MtouchExtraArgs>--compiler:clang++ --linkskip=monotouch</MtouchExtraArgs>
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchLink>None</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -66,7 +66,7 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseThumb>true</MtouchUseThumb>
     <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
-    <MtouchLink>Full</MtouchLink>
+    <MtouchProfiling>true</MtouchProfiling>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -132,6 +132,9 @@
     </Reference>
     <Reference Include="Xamarin.Insights">
       <HintPath>..\LocalBox_Common\Dll\insights\ios\Xamarin.Insights.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\LocalBox_Common\Dll\json.net\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -132,7 +132,7 @@ namespace LocalBox_Common
 						using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
 							var content = reader.ReadToEnd ();
 							if (!string.IsNullOrWhiteSpace (content)) {
-								var tokens = JsonConvert.DeserializeObject<Tokens> (content);
+								var tokens = JsonConvert.DeserializeObject<Tokens> (content.Replace ("/n", ""));
 								return tokens;
 							} else {
 								return null;
@@ -140,6 +140,7 @@ namespace LocalBox_Common
 						}
 					}
 				} catch (Exception ex) {
+					Insights.Report(ex);
 					Console.WriteLine (ex.Message);
 					return null;
 				}
