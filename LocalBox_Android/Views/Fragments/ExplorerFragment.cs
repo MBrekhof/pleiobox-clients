@@ -429,12 +429,14 @@ namespace LocalBox_Droid
 					popupWindow.Dismiss ();
 				}
 
-				Intent intent = new Intent (Intent.ActionView);
+
 
 				string mimeTypeOfClickedItem = MimeTypeHelper.GetMimeType (clickedItem.Path);
 				clickedItem.Type = mimeTypeOfClickedItem;
 
 				if (clickedItem.Type.Equals ("application/pdf")) {
+
+					Intent intent = new Intent (Intent.ActionView);
 
 					new Thread (new ThreadStart (async delegate {
 
@@ -444,8 +446,7 @@ namespace LocalBox_Droid
 						string fullFilePath = await DataLayer.Instance.GetFilePath (clickedItem.Path);
 
 						//Controleer internet verbinding
-						var connectivityManager = (ConnectivityManager)Android.App.Application.Context.GetSystemService 
-											  (Context.ConnectivityService);
+						var connectivityManager = (ConnectivityManager)Android.App.Application.Context.GetSystemService (Context.ConnectivityService);
 						var activeConnection = connectivityManager.ActiveNetworkInfo;
 
 						if ((activeConnection != null) && activeConnection.IsConnected) {  	//Internet verbinding gedetecteerd
@@ -464,11 +465,10 @@ namespace LocalBox_Droid
 							editor.PutString ("pathLastOpenedPdf", clickedItem.Path);
 							editor.PutString ("temporaryFilePath", temporaryFilePath);
 							editor.PutBoolean ("isFavorite", clickedItem.IsFavorite);
-							editor.Apply ();
+							editor.Commit ();
 
 							//Save temporary file in filesystem
-							RemoteExplorer remoteExplorer = new RemoteExplorer ();
-							Byte[] fileBytes = remoteExplorer.GetFile (clickedItem.Path);
+							Byte[] fileBytes = File.ReadAllBytes (fullFilePath);
 
 							File.WriteAllBytes (temporaryFilePath, fileBytes);
 
@@ -476,10 +476,15 @@ namespace LocalBox_Droid
 							intent.SetDataAndType (uri, clickedItem.Type);
 
 							parentActivity.HideProgressDialog ();
-							Activity.StartActivity (intent);
+							if(File.Exists (temporaryFilePath)){
+								Activity.StartActivity (intent);
+							}
+							else {
+								Toast.MakeText (Android.App.Application.Context, "Openen bestand mislukt", ToastLength.Long).Show ();
+							}
 						} else {	
+
 							//Geen internet verbinding
-							
 							var alertDialogConfirmDelete = new Android.App.AlertDialog.Builder (Activity);
 							alertDialogConfirmDelete.SetTitle ("Geen verbinding");
 							alertDialogConfirmDelete.SetMessage ("U heeft momenteel geen internet verbinding. Het maken van PDF annotaties is daarom niet mogelijk.");
@@ -497,20 +502,19 @@ namespace LocalBox_Droid
 					})).Start ();
 				} else {//Ander bestandstype dan PDF openen
 
+
 					//Show progress dialog while loading
 					parentActivity.HideProgressDialog ();
 					parentActivity.ShowProgressDialog (null);
 					string fullFilePath = await DataLayer.Instance.GetFilePath (clickedItem.Path);
 
-					Android.Net.Uri uri = Android.Net.Uri.Parse (CustomContentProvider.CONTENT_URI + fullFilePath);
 
-					intent.SetDataAndType (uri, clickedItem.Type);
-
+					Intent intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse (CustomContentProvider.CONTENT_URI + fullFilePath));
 					intent.SetFlags (ActivityFlags.GrantReadUriPermission);
 					intent.SetFlags (ActivityFlags.NewTask);
 					intent.SetFlags (ActivityFlags.ClearWhenTaskReset);
-
 					Activity.StartActivity (intent);
+
 				}
 			} catch (Exception ex){
 				Insights.Report(ex);

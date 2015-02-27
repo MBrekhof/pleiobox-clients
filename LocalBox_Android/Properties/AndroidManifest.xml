@@ -1,10 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" package="com.belastingdienst.localbox" android:versionCode="1">
-	<uses-sdk android:minSdkVersion="16" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+	package="com.belastingdienst.localbox"
+	android:versionName="1.0"  
+	android:versionCode="1" 
+	android:installLocation="internalOnly">
+
+	<!-- API level -->
+	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="21" />
+
+	<!-- permissions -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+	<!-- tablet only -->
 	<supports-screens android:requiresSmallestWidthDp="600" android:smallScreens="false" android:normalScreens="false" android:largeScreens="true" android:xlargeScreens="true" />
-	<application android:label="LocalBox" android:largeHeap="true" android:icon="@drawable/localbox_appicon">
-	</application>
+
+	<!-- application -->
+	<application android:label="LocalBox" android:largeHeap="true" android:icon="@drawable/localbox_appicon"/>
+
 </manifest>
