@@ -66,7 +66,9 @@ namespace LocalBox_Common
 			}
 			set {
 				try{
-					pin_cert = System.Convert.ToBase64String(OriginalServerCertificate);
+					if(OriginalServerCertificate != null){
+						pin_cert = System.Convert.ToBase64String(OriginalServerCertificate);
+					}
 				} catch (Exception ex){
 					Insights.Report(ex);
 				}
