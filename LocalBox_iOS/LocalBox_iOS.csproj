@@ -136,6 +136,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\LocalBox_Common\Dll\json.net\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Mobile">
+      <HintPath>..\LocalBox_Common\Dll\xamarinmobile\ios\Xamarin.Mobile.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />

@@ -12,6 +12,8 @@ using System.Diagnostics;
 using MessageUI;
 
 using Xamarin;
+using Photos;
+using Xamarin.Media;
 
 namespace LocalBox_iOS.Views
 {
@@ -209,76 +211,69 @@ namespace LocalBox_iOS.Views
 
 			createFolderAlert.Show ();
 		}
-
-		UIPopoverController upoc;
+			
 
 		private void UploadFoto ()
 		{
-			UIImagePickerController upc = new UIImagePickerController ();
-			upc.SourceType = UIImagePickerControllerSourceType.PhotoLibrary;
-			upc.MediaTypes = UIImagePickerController.AvailableMediaTypes (UIImagePickerControllerSourceType.PhotoLibrary);
-			upc.FinishedPickingMedia += (object sender, UIImagePickerMediaPickedEventArgs e) => {
-				if (e.OriginalImage != null) {
-					new ALAssetsLibrary ().AssetForUrl ((NSUrl)e.Info.ValueForKey (new NSString ("UIImagePickerControllerReferenceURL")), (ALAsset asset) => {
-						string filename;
-						NSData data;
-						ALAssetRepresentation representation = asset.DefaultRepresentation;
-						if (representation.Uti.Equals ("public.png")) {
-							data = e.OriginalImage.AsPNG ();
-							filename = representation.Filename;
-						} else {
-							data = e.OriginalImage.AsJPEG ();
-							filename = representation.Filename.Substring (0, representation.Filename.LastIndexOf ('.')) + ".jpg";
-						}
-						string destination = Path.Combine (NodePath, filename);
-						filename = Path.Combine (DocumentConstants.DocumentsPath, filename);
-						NSError err = null;
-						if (data.Save (filename, false, out err)) {
-							upoc.Dismiss (true);
-							UploadFile (destination, filename);
-						} else {
-							DialogHelper.HideProgressDialog ();
-							upoc.Dismiss (true);
-							DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het opslaan van het bestandsnaam");
-						}
-					}, 
-						(NSError error) => {
-							upoc.Dismiss (true);
-							DialogHelper.HideProgressDialog ();
-							DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het achterhalen van de bestandsnaam");
-						}
-					);
-				} else if (e.MediaUrl != null) {
-					var filename = e.MediaUrl.Path.Substring (e.MediaUrl.Path.LastIndexOf ('/') + 1);
+			try {
+				MediaPicker mediaPicker = new MediaPicker ();
+				Camera.PictureFromGallery (mediaPicker, CallbackPhotoMade);
+			} catch (Exception ex) {
+				Insights.Report (ex);
+			}
+		}
+
+		void CallbackPhotoMade (MediaFile obj)
+		{
+			try {
+				InvokeOnMainThread (() => {
+
+					UIImage uiImage = UIImage.FromFile (obj.Path);
+
+					NSData data;
+					string filename = Path.GetFileName (obj.Path);
+
+					if (filename.EndsWith (".png", StringComparison.OrdinalIgnoreCase)) {
+						data = uiImage.AsPNG ();
+					} else {
+						data = uiImage.AsJPEG ();
+					}
+
 					string destination = Path.Combine (NodePath, filename);
-					UploadFile (destination, e.MediaUrl.Path);
+					filename = Path.Combine (DocumentConstants.DocumentsPath, filename);
 
-					upoc.Dismiss (true);
-				} else {
-					upoc.Dismiss (true);
-					DialogHelper.HideProgressDialog ();
-					DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het uploaden van het bestand");
-				}
-			};
-
-			upoc = new UIPopoverController (upc);
-			upoc.PresentFromRect (ConvertRectFromView (UploadFotoButton.Frame, this), ButtonContainer, UIPopoverArrowDirection.Down, true);
+					NSError err = null;
+					if (data.Save (filename, false, out err)) {
+						UploadFile (destination, filename);
+					} else {
+						DialogHelper.HideProgressDialog ();
+						DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het opslaan van het bestandsnaam");
+					}
+				});
+			} catch (Exception ex) {
+				Console.WriteLine (ex.Message);
+			}
 		}
 
 		private void UploadFile (string destination, string filename)
 		{
-			DialogHelper.ShowProgressDialog ("Uploaden", "Bezig met het uploaden van een bestand", async () => {
-				bool result = await DataLayer.Instance.UploadFile (destination, filename);
-				if (!result) {
-					DialogHelper.ShowErrorDialog ("Fout", "Er is iets fout gegaan bij het uploaden van het bestand");
-				} else {
-					UIAlertView alertSuccess = new UIAlertView ("Succesvol", "Het bestand is succesvol geupload", null, "OK");
-					alertSuccess.Show ();
-				}
-				DialogHelper.HideProgressDialog ();
-				File.Delete (filename);
-				Refresh (scrollToTop: true);
-			});
+			try{
+				DialogHelper.ShowProgressDialog ("Uploaden", "Bezig met het uploaden van een bestand", async () => {
+					bool result = await DataLayer.Instance.UploadFile (destination, filename);
+					if (!result) {
+						DialogHelper.ShowErrorDialog ("Fout", "Er is iets fout gegaan bij het uploaden van het bestand");
+					} else {
+						UIAlertView alertSuccess = new UIAlertView ("Succesvol", "Het bestand is succesvol geupload", null, "OK");
+						alertSuccess.Show ();
+					}
+					DialogHelper.HideProgressDialog ();
+					File.Delete (filename);
+					Refresh (scrollToTop: true);
+				});
+			}catch (Exception ex) {
+				Console.WriteLine (ex.Message);
+				Insights.Report (ex);
+			}
 		}
 
 		public async void Refresh (bool refresh = true, bool scrollToTop = false)
