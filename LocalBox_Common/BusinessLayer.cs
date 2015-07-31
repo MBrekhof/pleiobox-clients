@@ -6,8 +6,6 @@ using LocalBox_Common.Remote;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using Xamarin;
 
@@ -116,16 +114,24 @@ namespace LocalBox_Common
 			
 
 
-		public Task<Tokens> GetRegistrationTokens (string tokensRequestUrl)
+		public Task<Tokens> GetRegistrationTokens (string tokensRequestUrl, string postString)
 		{
 			return Task.Run (async() => {
 			
 				try {
 					HttpWebRequest request = (HttpWebRequest)WebRequest.Create (tokensRequestUrl); 
+					request.Method = "POST";
+					request.ContentType = "application/x-www-form-urlencoded";
+
 					request.KeepAlive = false;
-					request.ContentType = "application/json";
 					request.Timeout	= 3000;
-					request.Method = "GET";
+
+					byte[] bytedata = System.Text.Encoding.UTF8.GetBytes(postString);
+					request.ContentLength = bytedata.Length;
+
+					Stream requestStream = request.GetRequestStream();
+					requestStream.Write(bytedata, 0, bytedata.Length);
+					requestStream.Close();
 
 					using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
 

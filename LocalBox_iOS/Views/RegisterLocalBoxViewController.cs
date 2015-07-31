@@ -66,17 +66,14 @@ namespace LocalBox_iOS
 							domain = localBoxToBeAdded.BaseUrl;
 						}
 
-						string requestUrl = domain +
-							"/oauth/v2/token?client_id=" +
-							localBoxToBeAdded.ApiKey +
-							"&client_secret=" +
-							localBoxToBeAdded.ApiSecret +
-							"&code=" +
-							code +
-							"&grant_type=authorization_code" +
-							"&redirect_uri=lbox://oauth-return";
+						string requestUrl = domain + "/oauth/v2/token";
+						string postString = "client_id=" + localBoxToBeAdded.ApiKey +
+						"&client_secret=" + localBoxToBeAdded.ApiSecret +
+						"&code=" + code +
+						"&grant_type=authorization_code" +
+						"&redirect_uri=lbox://oauth-return";
 
-						GetTokensAndAddLocalBox (requestUrl);
+						GetTokensAndAddLocalBox (requestUrl, postString);
 					}
 				}
 				else if (url.StartsWith ("lbox://oauth-return")) { //webview wants to open redirect uri
@@ -97,9 +94,9 @@ namespace LocalBox_iOS
 
 
 
-		public async void GetTokensAndAddLocalBox(string url)
+		public async void GetTokensAndAddLocalBox(string url, string postString)
 		{
-			var tokens = await BusinessLayer.Instance.GetRegistrationTokens (url);
+			var tokens = await BusinessLayer.Instance.GetRegistrationTokens (url, postString);
 
 			if (tokens != null && !string.IsNullOrEmpty (tokens.AccessToken) && !string.IsNullOrEmpty (tokens.RefreshToken)) {
 

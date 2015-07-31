@@ -100,9 +100,9 @@ namespace LocalBox_Droid
 			}
 		}
 
-		public async void GetTokensAndAddLocalBox(string url)
+		public async void GetTokensAndAddLocalBox(string url, string postString)
 		{
-			var tokens = await BusinessLayer.Instance.GetRegistrationTokens (url);
+			var tokens = await BusinessLayer.Instance.GetRegistrationTokens (url, postString);
 
 			if (tokens != null && !string.IsNullOrEmpty (tokens.AccessToken) && !string.IsNullOrEmpty (tokens.RefreshToken)) {
 
@@ -205,17 +205,15 @@ namespace LocalBox_Droid
 
 							string code = url.Substring ("lbox://oauth-return?code=".Length);
 
-							string requestUrl = registerLocalBoxFragment.domainUrl +
-							                    "/oauth/v2/token?client_id=" +
-							                    registerLocalBoxFragment.localBoxToBeAdded.ApiKey +
-							                    "&client_secret=" +
-							                    registerLocalBoxFragment.localBoxToBeAdded.ApiSecret +
-							                    "&code=" +
-							                    code +
+							string requestUrl = registerLocalBoxFragment.domainUrl + "/oauth/v2/token";
+
+							string postString = "client_id=" + registerLocalBoxFragment.localBoxToBeAdded.ApiKey +
+							                    "&client_secret=" + registerLocalBoxFragment.localBoxToBeAdded.ApiSecret +
+							                    "&code=" + code +
 												"&grant_type=authorization_code" +
 												"&redirect_uri=lbox://oauth-return";
 								
-							registerLocalBoxFragment.GetTokensAndAddLocalBox (requestUrl);
+							registerLocalBoxFragment.GetTokensAndAddLocalBox (requestUrl, postString);
 						}
 						registerLocalBoxFragment.Dismiss ();
 						localBoxAlreadyAdded = true;
