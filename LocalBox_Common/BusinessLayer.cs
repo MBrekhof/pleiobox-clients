@@ -178,7 +178,7 @@ namespace LocalBox_Common
 
 					//if (result) {
 					DataLayer.Instance.AddOrUpdateLocalBox (localBox);
-						SetKeys (localBox);
+					SetKeys (localBox);
 					//} else {
 						//Login failure so delete local box
 					//	DataLayer.Instance.DeleteLocalBox (localBox.Id);

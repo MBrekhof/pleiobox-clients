@@ -144,16 +144,13 @@ namespace LocalBox_iOS
 
 				foreach(NSHttpCookie foundCookie in cookies)
 				{
-					if(foundCookie.Name.StartsWith("PHPSESSID"))
+					if(foundCookie.Name.StartsWith("Elgg"))
 					{
 						cookieString = foundCookie.Name + "=" + foundCookie.Value; 
 
 						if(url.EndsWith("register_app")){
-
-							if(webViewRegisterLocalBox.Request.Url.AbsoluteString.Contains(foundCookie.Domain)){ //Get the correct cookie
-								RegisterLocalBox(url);
-								this.View.RemoveFromSuperview();
-							}
+							RegisterLocalBox(url);
+							this.View.RemoveFromSuperview();
 						}
 					}
 				}
