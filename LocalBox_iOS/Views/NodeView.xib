@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -30,7 +29,7 @@
                             <state key="normal" image="IcTop_Terug"/>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" red="0.5607843137254902" green="0.792156862745098" blue="0.90980392156862744" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.035294117647058823" green="0.32941176470588235" blue="0.61568627450980395" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <view contentMode="scaleToFill" id="FLf-pZ-rUi">
                     <rect key="frame" x="0.0" y="949" width="768" height="75"/>
@@ -88,10 +87,6 @@
         </view>
         <tableViewController id="XKm-Nu-U4y">
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
-            <nil key="simulatedTopBarMetrics"/>
-            <nil key="simulatedBottomBarMetrics"/>
-            <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-            <nil key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="view" destination="9Bg-N3-eAa" id="ggk-iA-ux8"/>
             </connections>
