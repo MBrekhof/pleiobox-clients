@@ -1,23 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
-	package="com.belastingdienst.localbox"
-	android:versionName="1.0"  
-	android:versionCode="1" 
-	android:installLocation="internalOnly">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.pleio.pleiobox" android:versionName="1.0" android:versionCode="1" android:installLocation="internalOnly">
 	<!-- API level -->
-	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="21" />
-
+	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="16" />
 	<!-- permissions -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 	<!-- tablet only -->
 	<supports-screens android:requiresSmallestWidthDp="600" android:smallScreens="false" android:normalScreens="false" android:largeScreens="true" android:xlargeScreens="true" />
-
 	<!-- application -->
-	<application android:label="LocalBox" android:largeHeap="true" android:icon="@drawable/localbox_appicon"/>
-
+	<application android:largeHeap="true" android:icon="@drawable/localbox_appicon" android:label="Pleiobox" />
 </manifest>
