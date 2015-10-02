@@ -33,6 +33,7 @@
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchLink>None</MtouchLink>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -47,6 +48,7 @@
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
+    <CodesignKey>iPhone Distribution</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <Optimize>true</Optimize>
@@ -56,7 +58,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>iPhone Distribution: Ministerie van Financien</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7, ARMv7s</MtouchArch>
@@ -65,8 +67,7 @@
     <DebugSymbols>true</DebugSymbols>
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseThumb>true</MtouchUseThumb>
-    <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
-    <MtouchProfiling>true</MtouchProfiling>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -92,8 +93,7 @@
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <BuildIpa>true</BuildIpa>
-    <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
-    <CodesignKey>iPhone Distribution: Ministerie van Financien</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
@@ -106,7 +106,6 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>53C67F50-41B5-487F-A55D-245FAB8E951D</CodesignProvision>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
@@ -375,6 +374,7 @@
     <BundleResource Include="Resources\IcVerplaatsen%402x.png" />
     <BundleResource Include="Resources\IcVerwijderen.png" />
     <BundleResource Include="Resources\IcVerwijderen%402x.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
@@ -396,6 +396,18 @@
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash.png" />
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-152.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-144.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-100.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-80.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-76.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-72.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-58.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-40.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\icon-29.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash-1024.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\splash-2048.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

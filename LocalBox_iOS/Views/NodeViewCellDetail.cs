@@ -56,12 +56,12 @@ namespace LocalBox_iOS.Views
             	List<UIButton> buttons = new List<UIButton>();
             	if (_treeNode.IsDirectory && inRoot && !_treeNode.IsShare)
             	{
-            	    buttons.Add(DelenRootButton());
+            	    //buttons.Add(DelenRootButton());
            	     	buttons.Add(VerwijderenButton());
             	}
             	else if (!_treeNode.IsDirectory && inRoot)
             	{
-                	buttons.Add(DelenButton());
+                	//buttons.Add(DelenButton());
                 	buttons.Add(OpenenMetButton());
                 	buttons.Add(FavorietButton());
 					buttons.Add(VerplaatsButton());
@@ -75,7 +75,7 @@ namespace LocalBox_iOS.Views
             	{
                 	if (!isShare && !IsEncrypted(_treeNode))
                 	{
-                    	buttons.Add(DelenButton());
+                    	//buttons.Add(DelenButton());
                 	}
                 	buttons.Add(OpenenMetButton());
                 	buttons.Add(FavorietButton());

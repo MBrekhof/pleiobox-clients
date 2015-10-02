@@ -12,10 +12,10 @@ namespace LocalBox_iOS
         private nfloat DigitWidth = 62f; //
         public int _currentIndex = 0;
 
-        public static readonly UIColor DigitBackgroundColor = UIColor.FromRGB(0x8f, 0xca, 0xe7);
-        public static readonly UIColor DigitDisabledBackgroundColor = UIColor.FromRGB(0xdc, 0xdc, 0xdc);
-        public static readonly UIColor DigitDoneBackgroundColor = UIColor.FromRGB(189, 189, 189);
-        public static readonly UIColor DigitFilledBackgroundColor = UIColor.FromRGB(104, 168, 200);
+        public static readonly UIColor DigitBackgroundColor = UIColor.FromRGB(170, 170, 170);
+        public static readonly UIColor DigitDisabledBackgroundColor = UIColor.FromRGB(113, 113, 113);
+        public static readonly UIColor DigitDoneBackgroundColor = UIColor.FromRGB(113, 113, 113);
+        public static readonly UIColor DigitFilledBackgroundColor = UIColor.FromRGB(113, 113, 113);
         public static readonly UIColor BorderColor = UIColor.FromRGB(0x3d, 0x79, 0x96);
 
         public event EventHandler OnPinFilled;

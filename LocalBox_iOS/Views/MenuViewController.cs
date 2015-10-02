@@ -37,7 +37,7 @@ namespace LocalBox_iOS.Views
         {
             if (string.IsNullOrEmpty(logoUrl))
             {
-                logo.Image = UIImage.FromBundle("RijkslogoArtboard-1");
+                //logo.Image = UIImage.FromBundle("RijkslogoArtboard-1");
             }
             else
             {;
@@ -45,11 +45,11 @@ namespace LocalBox_iOS.Views
 
                 if (File.Exists(p))
                 {
-                    logo.Image = UIImage.FromFile(p);
+                    //logo.Image = UIImage.FromFile(p);
                 }
                 else
                 {
-                    logo.Image = UIImage.FromBundle("RijkslogoArtboard-1");
+                    //logo.Image = UIImage.FromBundle("RijkslogoArtboard-1");
                 }
             }
 
@@ -70,7 +70,7 @@ namespace LocalBox_iOS.Views
             else
             {
                 // Defaultkleur
-                kleurenBalk.BackgroundColor = UIColor.FromRGB(143, 202, 232);
+                kleurenBalk.BackgroundColor = UIColor.FromRGB(0, 85, 158);
             }
         }
 
@@ -123,11 +123,11 @@ namespace LocalBox_iOS.Views
 						if(boxList[indexPath.Row].BackColor.StartsWith("#")){
                     		_parent.UpdateBalkKleur(boxList[indexPath.Row].BackColor);
 						}
-                    	_parent.SetLogo(boxList[indexPath.Row].LogoUrl);
+                    	//_parent.SetLogo(boxList[indexPath.Row].LogoUrl);
 						_parent._home.UpdateDetail(new NodeViewController(boxList[indexPath.Row].BackColor, _parent._home), true);
 					} catch (Exception ex){
 						Insights.Report(ex);
-						DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van de LocalBox.\n" +
+						DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het openen van de Pleiobox.\n" +
 													 "Probeer het a.u.b. nogmaals.");
 					}
                 }
@@ -145,7 +145,7 @@ namespace LocalBox_iOS.Views
                 {
 
 					UIAlertView alertView = new UIAlertView("Waarschuwing", 
-						"Weet u zeker dat u deze LocalBox wilt verwijderen? \nDeze actie is niet terug te draaien.", 
+						"Weet u zeker dat u deze Pleiobox wilt verwijderen? \nDeze actie is niet terug te draaien.", 
 						null, 
 						"Annuleer",
 						"Verwijder");
@@ -163,7 +163,7 @@ namespace LocalBox_iOS.Views
 								}
 							} catch (Exception ex){
 								Insights.Report(ex);
-								DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het verwijderen van de LocalBox.\n" +
+								DialogHelper.ShowErrorDialog("Fout", "Er is een fout opgetreden bij het verwijderen van de Pleiobox.\n" +
 															 "Probeer het a.u.b. nogmaals.");
 							}
 						}

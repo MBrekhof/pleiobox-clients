@@ -14,6 +14,7 @@ using MessageUI;
 using Xamarin;
 using Photos;
 using Xamarin.Media;
+using System.Threading.Tasks;
 
 namespace LocalBox_iOS.Views
 {
@@ -146,7 +147,7 @@ namespace LocalBox_iOS.Views
 						PublicUrl publicUrl = await DataLayer.Instance.CreatePublicFileShare (forLocation, selectedExpirationDate.Date);
 
 						MFMailComposeViewController mvc = new MFMailComposeViewController ();
-						mvc.SetSubject ("Publieke URL naar gedeeld LocalBox bestand");
+						mvc.SetSubject ("Publieke URL naar gedeeld Pleiobox bestand");
 
 						string bodyText = "Mijn gedeelde bestand: \n" +
 						                   publicUrl.publicUri + "\n \n" +
@@ -217,7 +218,11 @@ namespace LocalBox_iOS.Views
 		{
 			try {
 				MediaPicker mediaPicker = new MediaPicker ();
-				Camera.PictureFromGallery (mediaPicker, CallbackPhotoMade);
+
+				mediaPicker.PickPhotoAsync().ContinueWith( t => {
+					MediaFile file = t.Result;
+					CallbackPhotoMade(t.Result);
+				}, TaskScheduler.FromCurrentSynchronizationContext());
 			} catch (Exception ex) {
 				Insights.Report (ex);
 			}
@@ -226,30 +231,26 @@ namespace LocalBox_iOS.Views
 		void CallbackPhotoMade (MediaFile obj)
 		{
 			try {
-				InvokeOnMainThread (() => {
+				UIImage uiImage = UIImage.FromFile (obj.Path);
+				string filename = Path.GetFileName (obj.Path);
 
-					UIImage uiImage = UIImage.FromFile (obj.Path);
+				NSData data;
+				if (filename.EndsWith (".png", StringComparison.OrdinalIgnoreCase)) {
+					data = uiImage.AsPNG ();
+				} else {
+					data = uiImage.AsJPEG ();
+				}
 
-					NSData data;
-					string filename = Path.GetFileName (obj.Path);
+				string destination = Path.Combine (NodePath, filename);
+				filename = Path.Combine (DocumentConstants.DocumentsPath, filename);
 
-					if (filename.EndsWith (".png", StringComparison.OrdinalIgnoreCase)) {
-						data = uiImage.AsPNG ();
-					} else {
-						data = uiImage.AsJPEG ();
-					}
-
-					string destination = Path.Combine (NodePath, filename);
-					filename = Path.Combine (DocumentConstants.DocumentsPath, filename);
-
-					NSError err = null;
-					if (data.Save (filename, false, out err)) {
-						UploadFile (destination, filename);
-					} else {
-						DialogHelper.HideProgressDialog ();
-						DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het opslaan van het bestandsnaam");
-					}
-				});
+				NSError err = null;
+				if (data.Save (filename, false, out err)) {
+					UploadFile (destination, filename);
+				} else {
+					DialogHelper.HideProgressDialog ();
+					DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden bij het opslaan van het bestandsnaam");
+				}
 			} catch (Exception ex) {
 				Console.WriteLine (ex.Message);
 			}

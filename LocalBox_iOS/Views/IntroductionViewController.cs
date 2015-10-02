@@ -63,7 +63,8 @@ namespace LocalBox_iOS
 
 		void OpenUrlDialog ()
 		{
-			UIAlertView alertOpenUrl = new UIAlertView ("Nieuwe LocalBox", 
+			OpenInternetBrowser ("http://www.pleio.dev");
+			/*UIAlertView alertOpenUrl = new UIAlertView ("Nieuwe LocalBox", 
 				                           "Voer hieronder de url naar de te registeren LocalBox in", null, 
 				                           "Annuleer", "Open URL");
 			alertOpenUrl.AlertViewStyle = UIAlertViewStyle.PlainTextInput;
@@ -149,7 +150,7 @@ namespace LocalBox_iOS
 				}
 
 			};
-			alertOpenUrl.Show ();
+			alertOpenUrl.Show ();*/
 		}
 
 

@@ -16,8 +16,8 @@ namespace LocalBox_iOS
         private nfloat _buttonWidth;
         public static UIColor GridBackgroundColor = UIColor.FromRGB(202, 207, 211);
 //        public static UIColor GridBackgroundColor = UIColor.FromRGB(103, 103, 103);
-        public static UIColor ButtonBackgroundColor = UIColor.FromRGB(0x8f, 0xca, 0xe7);
-        public static UIColor ButtonDownBackgroundColor = UIColor.FromRGB(0x68, 0xa8, 0xc8);
+        public static UIColor ButtonBackgroundColor = UIColor.FromRGB(170, 170, 170);
+        public static UIColor ButtonDownBackgroundColor = UIColor.FromRGB(113, 113, 113);
         public static UIColor DigitColor = UIColor.FromRGB(103, 103, 103);
 
         public Keypad(CGRect bounds)

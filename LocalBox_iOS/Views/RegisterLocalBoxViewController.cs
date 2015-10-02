@@ -104,6 +104,10 @@ namespace LocalBox_iOS
 				var expiresAsInt = tokens.ExpiresIn;
 				var expiresAsStringWithCorrection = DateTime.UtcNow.AddSeconds (expiresAsInt * 0.9).ToString (); //Expire at 90% of expire duration
 
+				this.View.RemoveFromSuperview();
+				//var view = LocationChooserView.Create("/", true, null);
+				//this.View.Add(view);
+
 				localBoxToBeAdded.AccessToken = tokens.AccessToken;
 				localBoxToBeAdded.RefreshToken = tokens.RefreshToken;
 				localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
@@ -111,7 +115,7 @@ namespace LocalBox_iOS
 				homeController.AddLocalBox (localBoxToBeAdded);
 			} 
 			else {
-				new UIAlertView("Error", "Het ophalen van LocalBox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null).Show ();
+				new UIAlertView("Error", "Het ophalen van Pleiobox data is mislukt. \nProbeer het a.u.b. opnieuw", null, "OK", null).Show ();
 			}
 			this.View.RemoveFromSuperview();
 		}

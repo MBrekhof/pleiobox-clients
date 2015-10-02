@@ -124,7 +124,10 @@ namespace LocalBox_iOS.Views
 
 		public void ShowIntroductionView()
 		{
-			_introduction = new UIPageViewController(UIPageViewControllerTransitionStyle.Scroll,
+
+			ShowRegisterLocalBoxView ("http://www.pleio.dev");
+
+			/*_introduction = new UIPageViewController(UIPageViewControllerTransitionStyle.Scroll,
 								UIPageViewControllerNavigationOrientation.Horizontal,
 								UIPageViewControllerSpineLocation.Min);
 
@@ -139,9 +142,9 @@ namespace LocalBox_iOS.Views
 			_introduction.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
 
 			View.Add(_introduction.View);
-			AddChildViewController(_introduction);
+			AddChildViewController(_introduction);*/
 		}
-
+						
         void UpdateMaster(UIViewController viewController)
         {
             if (_master != null)
@@ -259,7 +262,7 @@ namespace LocalBox_iOS.Views
 		{
 			bool result = false;
 	
-			DialogHelper.ShowProgressDialog ("LocalBox toevoegen", "Bezig met het toevoegen van een LocalBox", async () => {
+			DialogHelper.ShowProgressDialog ("Pleiobox toevoegen", "Bezig met het toevoegen van een Pleiobox", async () => {
 			
 				result = await BusinessLayer.Instance.Authenticate (localBoxToAdd);
 
@@ -295,7 +298,7 @@ namespace LocalBox_iOS.Views
 			}
 			else
 			{
-				message = "Bij deze LocalBox is al een sleutel aanwezig, geef de passphrase op van deze sleutel";
+				message = "Bij deze Pleiobox is al een sleutel aanwezig, geef de passphrase op van deze sleutel";
 			}
 
 			UIAlertView createPassPhrase = new UIAlertView("Passphrase", message, null, "Annuleer", "Ok");
@@ -323,7 +326,7 @@ namespace LocalBox_iOS.Views
 
 		private void CreateNewKeyPair(LocalBox localBox, Action onCompletion, bool repeat = false)
 		{
-			string message = repeat ? "De opgegeven passphrases komen niet overeen, probeer het nog eens" : "U moet een passphrase instellen voordat u deze LocalBox kunt gebruiken";
+			string message = repeat ? "De opgegeven passphrases komen niet overeen, probeer het nog eens" : "U moet een passphrase instellen voordat u deze Pleiobox kunt gebruiken";
 
 			UIAlertView createPassPhrase = new UIAlertView("Passphrase", message, null, "Annuleer", "Ok");
 			createPassPhrase.AlertViewStyle = UIAlertViewStyle.LoginAndPasswordInput;
@@ -356,7 +359,7 @@ namespace LocalBox_iOS.Views
 						bool result = await BusinessLayer.Instance.SetPublicAndPrivateKey (localBox, firstField.Text); 
 						if (!result) {
 							DataLayer.Instance.DeleteLocalBox (localBox.Id);
-							DialogHelper.ShowErrorDialog ("Fout", string.Format ("Er is een fout opgetreden bij het toevoegen van de LocalBox {0}. De LocalBox is niet toegevoegd", localBox.Name));
+							DialogHelper.ShowErrorDialog ("Fout", string.Format ("Er is een fout opgetreden bij het toevoegen van de Pleiobox {0}. De Pleiobox is niet toegevoegd", localBox.Name));
 						} 
 						if (onCompletion != null) {
 							onCompletion ();
