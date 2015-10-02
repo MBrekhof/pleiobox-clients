@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
@@ -67,10 +69,6 @@
 	<string>Resources/Images.xcassets/LaunchImage.launchimage</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.pleio.pleiobox</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>Pleiobox</string>
 	<key>NSAppTransportSecurity</key>
@@ -78,5 +76,9 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2</string>
+	<key>CFBundleVersion</key>
+	<string>0.2</string>
 </dict>
 </plist>
