@@ -107,11 +107,18 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+				
+			using (var httpClient = new HttpClient(handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
 				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
+
+
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Get,
@@ -208,7 +215,12 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _localBox.AccessToken;
 
-				using (var httpClient = new HttpClient ()) {
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
+
+				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -244,7 +256,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -284,7 +301,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -322,7 +344,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -362,7 +389,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -395,7 +427,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -437,7 +474,12 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _localBox.AccessToken;
 
-				using (var httpClient = new HttpClient ()) {
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
+
+				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -480,7 +522,12 @@ namespace LocalBox_Common.Remote
 
 				string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
-				using (var httpClient = new HttpClient ()) {
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
+
+				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -522,7 +569,12 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _localBox.AccessToken;
 
-				using (var httpClient = new HttpClient ()) {
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
+
+				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
 					httpClient.DefaultRequestHeaders.ExpectContinue = false;
 					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -566,7 +618,12 @@ namespace LocalBox_Common.Remote
 
 					string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
-					using (var httpClient = new HttpClient ()) {
+					var handler = new HttpClientHandler {
+						Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+						UseProxy = true,
+					};
+
+					using (var httpClient = new HttpClient (handler)) {
 						httpClient.MaxResponseContentBufferSize = int.MaxValue;
 						httpClient.DefaultRequestHeaders.ExpectContinue = false;
 						httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -603,7 +660,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -645,7 +707,12 @@ namespace LocalBox_Common.Remote
 
 					string AccessToken = _localBox.AccessToken;
 
-					using (var httpClient = new HttpClient ()) {
+					var handler = new HttpClientHandler {
+						Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+						UseProxy = true,
+					};
+
+					using (var httpClient = new HttpClient (handler)) {
 						httpClient.MaxResponseContentBufferSize = int.MaxValue;
 						httpClient.DefaultRequestHeaders.ExpectContinue = false;
 						httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -691,7 +758,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -727,7 +799,12 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _localBox.AccessToken;
 
-			using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -769,7 +846,12 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _localBox.AccessToken;
 
-            using (var httpClient = new HttpClient ()) {
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+            using (var httpClient = new HttpClient (handler)) {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
@@ -809,7 +891,12 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _localBox.AccessToken;
 
-            using (var httpClient = new HttpClient())
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+            using (var httpClient = new HttpClient(handler))
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
@@ -850,7 +937,12 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _localBox.AccessToken;
 
-            using (var httpClient = new HttpClient())
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+            using (var httpClient = new HttpClient(handler))
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
@@ -893,7 +985,12 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _localBox.AccessToken;
 
-            using (var httpClient = new HttpClient())
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+            using (var httpClient = new HttpClient(handler))
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;
@@ -936,7 +1033,12 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _localBox.AccessToken;
 
-            using (var httpClient = new HttpClient())
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
+
+            using (var httpClient = new HttpClient(handler))
             {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
                 httpClient.DefaultRequestHeaders.ExpectContinue = false;

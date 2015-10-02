@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Json;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using Xamarin;
+using System.Collections.Generic;
 
 namespace LocalBox_Common.Remote.Authorization
 {
@@ -52,54 +54,63 @@ namespace LocalBox_Common.Remote.Authorization
         {
             StringBuilder localBoxUrl = new StringBuilder();
             localBoxUrl.Append(localBoxBaseUrl);
-			localBoxUrl.Append("oauth/v2/token?");
-            localBoxUrl.AppendFormat("client_id={0}", Uri.EscapeDataString(client_key));
-            localBoxUrl.AppendFormat("&client_secret={0}", Uri.EscapeDataString(client_secret));
-			localBoxUrl.Append("&grant_type=refresh_token");
-			localBoxUrl.AppendFormat("&refresh_token={0}", Uri.EscapeDataString(refreshToken));
+			localBoxUrl.Append("oauth/v2/token");
+            
+			var data = new List<KeyValuePair<string, string>> ();
+			data.Add (new KeyValuePair<string, string> ("client_id", client_key));
+			data.Add (new KeyValuePair<string, string> ("client_secret", client_secret));
+			data.Add (new KeyValuePair<string, string> ("grant_type", "refresh_token"));
+			data.Add (new KeyValuePair<string, string> ("refresh_token", refreshToken));
 
-			return RequestAccessToken(new Uri(localBoxUrl.ToString()));
+			HttpContent content = new FormUrlEncodedContent (data);
+
+			return RequestAccessToken(new Uri(localBoxUrl.ToString()), content);
            
         }
 
-		private bool RequestAccessToken(Uri uri) {
+		private bool RequestAccessToken(Uri uri, HttpContent data) {
 			bool result = false;
 
-			using (var httpClient = new HttpClient())
-            {
-                httpClient.MaxResponseContentBufferSize = int.MaxValue;
-                httpClient.DefaultRequestHeaders.ExpectContinue = false;
-                httpClient.DefaultRequestHeaders.Add("x-li-format", "json");
+			var handler = new HttpClientHandler {
+				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+				UseProxy = true,
+			};
 
-                var httpRequestMessage = new HttpRequestMessage { Method = HttpMethod.Get, RequestUri = uri };
-                var response = httpClient.SendAsync(httpRequestMessage).Result;
+			using (var httpClient = new HttpClient (handler)) {
+				httpClient.MaxResponseContentBufferSize = int.MaxValue;
+				httpClient.DefaultRequestHeaders.ExpectContinue = false;
+				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonString = response.Content.ReadAsStringAsync().Result;
-                    var jsonObject = JsonValue.Parse(jsonString);
+				try {
+					var response = httpClient.PostAsync (uri, data).Result;
+					if (response.IsSuccessStatusCode) {
+						string content = response.Content.ReadAsStringAsync().Result;
+						var jsonObject = JsonValue.Parse (content);
 
-                    _accessToken = jsonObject["access_token"];
+						_accessToken = jsonObject ["access_token"];
 
-					if (!string.IsNullOrEmpty (jsonObject ["refresh_token"])) {
+						if (!string.IsNullOrEmpty (jsonObject ["refresh_token"])) {
 
-						_refreshToken = jsonObject ["refresh_token"];
+							_refreshToken = jsonObject ["refresh_token"];
 
-						int expiry = 0;
-						if (jsonObject ["expires_in"].JsonType == JsonType.Number) {
-							expiry = (int)jsonObject ["expires_in"];
-							// We laten de key al vervallen als al 90% van de tijd is verstreken
-							_expiry = DateTime.UtcNow.AddSeconds (expiry * 0.9);
+							int expiry = 0;
+							if (jsonObject ["expires_in"].JsonType == JsonType.Number) {
+								expiry = (int)jsonObject ["expires_in"];
+								// We laten de key al vervallen als al 90% van de tijd is verstreken
+								_expiry = DateTime.UtcNow.AddSeconds (expiry * 0.9);
 
-							result = true;
+								result = true;
+							}
 						}
+					} else {
+						Debug.WriteLine ("Fout in requestaccesstoken: " + response.Headers); 
 					}
-                }
-                else
-                {
-                    Debug.WriteLine("Fout in requestaccesstoken: " + response.Headers); 
-                }
-            }
+				} catch (Exception ex) {
+					Insights.Report (ex);
+					return false;
+				}
+			} 
+
 			return result;
         }
     }

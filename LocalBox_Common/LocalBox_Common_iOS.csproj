@@ -95,6 +95,7 @@
     <Compile Include="Utils\CertificateValidationStatus.cs" />
     <Compile Include="Model\Tokens.cs" />
     <Compile Include="Helpers\Camera.cs" />
+    <Compile Include="IHttpClientHandlerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\AboutResources.txt" />

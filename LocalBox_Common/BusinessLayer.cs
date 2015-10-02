@@ -37,6 +37,7 @@ namespace LocalBox_Common
 				try {
 					HttpWebRequest request = (HttpWebRequest)WebRequest.Create(boxUrl); 
 
+					request.Proxy = CoreFoundation.CFNetwork.GetDefaultProxy();
 					request.ContentType = "application/json";
 					request.Timeout	= 10000; //10 seconds before timeout
 
@@ -44,6 +45,7 @@ namespace LocalBox_Common
 					if (cookieString != null) {
 						request.Headers.Add (HttpRequestHeader.Cookie, cookieString);
 					}
+						
 					request.Method = "GET";
 				
 					using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
@@ -122,7 +124,7 @@ namespace LocalBox_Common
 					HttpWebRequest request = (HttpWebRequest)WebRequest.Create (tokensRequestUrl); 
 					request.Method = "POST";
 					request.ContentType = "application/x-www-form-urlencoded";
-
+					request.Proxy = CoreFoundation.CFNetwork.GetDefaultProxy();
 					request.KeepAlive = false;
 					request.Timeout	= 3000;
 
