@@ -24,6 +24,12 @@ namespace LocalBox_iOS.Views
 		private UIView _pinView;
 		private UIColor _defaultColor;
 
+		#if DEBUG
+			public const string PleioUrl = "http://www.pleio.dev";
+		#else
+			public const string PleioUrl = "https://www.pleio.nl";
+		#endif
+
         public HomeController () : base ()
         {
         }
@@ -125,7 +131,7 @@ namespace LocalBox_iOS.Views
 		public void ShowIntroductionView()
 		{
 
-			ShowRegisterLocalBoxView ("http://www.pleio.dev");
+			ShowRegisterLocalBoxView (PleioUrl);
 
 			/*_introduction = new UIPageViewController(UIPageViewControllerTransitionStyle.Scroll,
 								UIPageViewControllerNavigationOrientation.Horizontal,
