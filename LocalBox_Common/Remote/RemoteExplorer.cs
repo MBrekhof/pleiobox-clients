@@ -750,10 +750,12 @@ namespace LocalBox_Common.Remote
 			if (!IsAuthorized ()) {
 				ReAuthorise ();
 			}
-					
-			List<ShareInventation> foundShareInventations = new List<ShareInventation> ();
 
-			StringBuilder localBoxUrl = new StringBuilder ();
+			// @todo: clean. Pleio does not use share invitations.
+			List<ShareInventation> foundShareInventations = new List<ShareInventation> ();
+			return foundShareInventations;
+
+			/*StringBuilder localBoxUrl = new StringBuilder ();
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/invitations");
 
 			string AccessToken = _localBox.AccessToken;
@@ -781,7 +783,7 @@ namespace LocalBox_Common.Remote
 					foundShareInventations = JsonConvert.DeserializeObject<List<ShareInventation>> (jsonString);
 				}
 			}
-			return foundShareInventations;
+			return foundShareInventations;*/
 		}
 
 
