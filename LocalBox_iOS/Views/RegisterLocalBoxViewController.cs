@@ -53,12 +53,12 @@ namespace LocalBox_iOS
 			try {
 				var url = request.ToString ();
 			
-				if (url.StartsWith ("lbox://oauth-return?code=")) { 	
+				if (url.StartsWith ("pbox://oauth-return?code=")) { 	
 					if (!string.IsNullOrEmpty (localBoxToBeAdded.ApiKey) &&
 						!string.IsNullOrEmpty (localBoxToBeAdded.ApiSecret) &&
 						!string.IsNullOrEmpty (localBoxToBeAdded.BaseUrl)) {
 
-						string code = url.Substring ("lbox://oauth-return?code=".Length);
+						string code = url.Substring ("pbox://oauth-return?code=".Length);
 						string domain = "";
 						if(localBoxToBeAdded.BaseUrl.EndsWith ("/")){
 							domain = localBoxToBeAdded.BaseUrl.Substring (0, localBoxToBeAdded.BaseUrl.Length - 1);
@@ -71,12 +71,12 @@ namespace LocalBox_iOS
 						"&client_secret=" + localBoxToBeAdded.ApiSecret +
 						"&code=" + code +
 						"&grant_type=authorization_code" +
-						"&redirect_uri=lbox://oauth-return";
+						"&redirect_uri=pbox://oauth-return";
 
 						GetTokensAndAddLocalBox (requestUrl, postString);
 					}
 				}
-				else if (url.StartsWith ("lbox://oauth-return")) { //webview wants to open redirect uri
+				else if (url.StartsWith ("pbox://oauth-return")) { //webview wants to open redirect uri
 					this.View.RemoveFromSuperview ();
 				}
 
@@ -176,7 +176,7 @@ namespace LocalBox_iOS
 					//Create request url to get the access token and refresh token
 					var domainUrl = newUrl.Substring (0, newUrl.IndexOf ("/register"));
 					var tokensRequestUrl = 	domainUrl + "/oauth/v2/auth?client_id=" + box.ApiKey +
-											"&response_type=code&redirect_uri=lbox://oauth-return";
+											"&response_type=code&redirect_uri=pbox://oauth-return";
 
 					//Get access token and refresh token
 					webViewRegisterLocalBox.LoadRequest (new NSUrlRequest (NSUrl.FromString (tokensRequestUrl)));
