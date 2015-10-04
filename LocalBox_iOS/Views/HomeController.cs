@@ -25,7 +25,7 @@ namespace LocalBox_iOS.Views
 		private UIColor _defaultColor;
 
 		#if DEBUG
-			public const string PleioUrl = "https://www.pleio.nl";
+			public const string PleioUrl = "http://www.pleio.dev";
 		#else
 			public const string PleioUrl = "https://www.pleio.nl";
 		#endif
