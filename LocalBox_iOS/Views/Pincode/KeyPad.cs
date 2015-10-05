@@ -15,7 +15,6 @@ namespace LocalBox_iOS
         private nfloat _buttonHeight;
         private nfloat _buttonWidth;
         public static UIColor GridBackgroundColor = UIColor.FromRGB(202, 207, 211);
-//        public static UIColor GridBackgroundColor = UIColor.FromRGB(103, 103, 103);
         public static UIColor ButtonBackgroundColor = UIColor.FromRGB(170, 170, 170);
         public static UIColor ButtonDownBackgroundColor = UIColor.FromRGB(113, 113, 113);
         public static UIColor DigitColor = UIColor.FromRGB(103, 103, 103);

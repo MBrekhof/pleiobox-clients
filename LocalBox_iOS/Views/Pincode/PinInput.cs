@@ -13,7 +13,7 @@ namespace LocalBox_iOS
         public int _currentIndex = 0;
 
         public static readonly UIColor DigitBackgroundColor = UIColor.FromRGB(170, 170, 170);
-        public static readonly UIColor DigitDisabledBackgroundColor = UIColor.FromRGB(113, 113, 113);
+        public static readonly UIColor DigitDisabledBackgroundColor = UIColor.FromRGB(170, 170, 170);
         public static readonly UIColor DigitDoneBackgroundColor = UIColor.FromRGB(113, 113, 113);
         public static readonly UIColor DigitFilledBackgroundColor = UIColor.FromRGB(113, 113, 113);
         public static readonly UIColor BorderColor = UIColor.FromRGB(0x3d, 0x79, 0x96);
