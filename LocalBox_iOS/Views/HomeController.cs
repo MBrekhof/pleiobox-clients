@@ -107,6 +107,14 @@ namespace LocalBox_iOS.Views
 		}
 
 
+		public void ShowAddSitesView()
+		{
+			AddSitesViewController addSitesViewController = new AddSitesViewController(this);
+			addSitesViewController.View.Frame = new CGRect (0, 0, View.Bounds.Width, View.Bounds.Height);
+			View.Add (addSitesViewController.View);
+			AddChildViewController(addSitesViewController);
+
+		}
 
 		public void ShowRegisterLocalBoxView(string urlToOpen)
 		{
@@ -255,7 +263,7 @@ namespace LocalBox_iOS.Views
 			UpdateMaster(new MenuViewController(this));
         }
 
-		public void InitialiseMenuAfterRegistration(){
+		public void InitialiseMenuAfterRegistration() {
 
 
 			UpdateMaster(new MenuViewController(this));
@@ -270,12 +278,14 @@ namespace LocalBox_iOS.Views
 	
 			DialogHelper.ShowProgressDialog ("Pleiobox toevoegen", "Bezig met het toevoegen van een Pleiobox", async () => {
 			
-				result = await BusinessLayer.Instance.Authenticate (localBoxToAdd);
+				//result = await BusinessLayer.Instance.Authenticate (localBoxToAdd);
+				InitialiseMenuAfterRegistration();
+				AppDelegate.localBoxToRegister = null;
 
-				if (result) {
-					ValidateKeyPresence (localBoxToAdd, InitialiseMenuAfterRegistration);
-					AppDelegate.localBoxToRegister = null;
-				}
+				/*if (result) {
+					ValidateKeyPresence (localBoxToAdd, );
+
+				}*/
 			});
 		}
 
@@ -380,13 +390,7 @@ namespace LocalBox_iOS.Views
 			};
 			createPassPhrase.Show();
 		}
-
-
-
-
-
-
-
+			
         public void PincodeInstellen()
         {
 			imageViewSplash.Hidden = false;

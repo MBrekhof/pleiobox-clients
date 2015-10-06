@@ -7,60 +7,83 @@ using System.Net.Http.Headers;
 using Xamarin;
 using System.Collections.Generic;
 
+using XLabs.Platform.Services;
+
 namespace LocalBox_Common.Remote.Authorization
 {
     public class LocalBoxAuthorization
     {
-        readonly string client_key;
-        readonly string client_secret;
-        readonly string localBoxBaseUrl;
+        private string client_key;
+        private string client_secret;
+        private string localBoxBaseUrl;
+
+		private LocalBox _localBox;
+
+		private SecureStorage storage = new SecureStorage();
+		private ASCIIEncoding encoding = new ASCIIEncoding();
 
         private string _accessToken = null;
-
         public string AccessToken { 
-            get { 
-//                if (_expiry <= DateTime.UtcNow)
-//                {
-//                    RefreshAccessToken();
-//                }
-                return _accessToken;
-            }
+            get { return _accessToken; }
         }
-        private string _refreshToken;
 
+        private string _refreshToken;
         public string RefreshToken {
             get { return _refreshToken; }
         }
-        private DateTime _expiry;
 
+        private DateTime _expiry;
         public DateTime Expiry {
-            get {
-                return _expiry;
-            }
+            get { return _expiry; }
         }
 
         public LocalBoxAuthorization(LocalBox localBox)
-        {
-            client_key = localBox.ApiKey;
-            client_secret = localBox.ApiSecret;
-            localBoxBaseUrl = localBox.BaseUrl;
+		{			
+			_localBox = localBox;
 
-			DateTime.TryParse (localBox.DatumTijdTokenExpiratie, out _expiry);
-			//_expiry = new DateTime(1000, 1, 1);
+			client_key = encoding.GetString(storage.Retrieve("client_key"));
+			client_secret = encoding.GetString(storage.Retrieve ("client_secret"));
+
+			_accessToken = encoding.GetString (storage.Retrieve ("access_token"));
+			_refreshToken = encoding.GetString (storage.Retrieve ("refresh_token"));
+
+			var expires = encoding.GetString (storage.Retrieve ("expires"));
+			DateTime.TryParse (expires, out _expiry);
+
+			localBoxBaseUrl = localBox.BaseUrl;
         }
 
+		public bool IsAuthorized()
+		{
+			if (_expiry.Equals (new DateTime (1,1,1))) {
+				// Not nooit geautoriseerd:
+				return true;
+			}
+				
+			if (_expiry.ToLocalTime() > DateTime.Now.ToLocalTime ()) {
+				return true;
+			}
+			// Of nog niet geauthorizeer: doit
+			// of expired: doit.
+			return false;
+		}
 
-		public bool RefreshAccessToken(string refreshToken)
+
+		public bool RefreshAccessToken()
         {
             StringBuilder localBoxUrl = new StringBuilder();
             localBoxUrl.Append(localBoxBaseUrl);
 			localBoxUrl.Append("oauth/v2/token");
+
+			if (_refreshToken == null) {
+				throw new InvalidOperationException ("Refreshtoken is leeg!");
+			}
             
 			var data = new List<KeyValuePair<string, string>> ();
 			data.Add (new KeyValuePair<string, string> ("client_id", client_key));
 			data.Add (new KeyValuePair<string, string> ("client_secret", client_secret));
 			data.Add (new KeyValuePair<string, string> ("grant_type", "refresh_token"));
-			data.Add (new KeyValuePair<string, string> ("refresh_token", refreshToken));
+			data.Add (new KeyValuePair<string, string> ("refresh_token", _refreshToken));
 
 			HttpContent content = new FormUrlEncodedContent (data);
 
@@ -97,11 +120,16 @@ namespace LocalBox_Common.Remote.Authorization
 							if (jsonObject ["expires_in"].JsonType == JsonType.Number) {
 								expiry = (int)jsonObject ["expires_in"];
 								// We laten de key al vervallen als al 90% van de tijd is verstreken
-								_expiry = DateTime.UtcNow.AddSeconds (expiry * 0.9);
+								_expiry = DateTime.UtcNow.AddSeconds (expiry * 0.9).ToLocalTime();
 
 								result = true;
 							}
 						}
+							
+						storage.Store("access_token", encoding.GetBytes(_accessToken));
+						storage.Store("refresh_token", encoding.GetBytes(_refreshToken));
+						storage.Store("expires", encoding.GetBytes(_expiry.ToString()));
+
 					} else {
 						Debug.WriteLine ("Fout in requestaccesstoken: " + response.Headers); 
 					}

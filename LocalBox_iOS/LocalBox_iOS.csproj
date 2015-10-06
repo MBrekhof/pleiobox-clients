@@ -107,6 +107,18 @@
     <Reference Include="Xamarin.Mobile">
       <HintPath>..\LocalBox_Common\Dll\xamarinmobile\ios\Xamarin.Mobile.dll</HintPath>
     </Reference>
+    <Reference Include="ExifLib">
+      <HintPath>packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Core">
+      <HintPath>packages\XLabs.Core.2.0.5679\lib\Xamarin.iOS10\XLabs.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Platform.iOS">
+      <HintPath>packages\XLabs.Platform.2.0.5679\lib\Xamarin.iOS10\XLabs.Platform.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Platform">
+      <HintPath>packages\XLabs.Platform.2.0.5679\lib\Xamarin.iOS10\XLabs.Platform.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -126,6 +138,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -226,6 +239,10 @@
     <Compile Include="Views\Picker\ActionSheetDatePickerCustom.cs" />
     <Compile Include="Views\Pincode\PinHelper.cs" />
     <Compile Include="Helpers\NSDateHelper.cs" />
+    <Compile Include="Views\AddSitesViewController.cs" />
+    <Compile Include="Views\AddSitesViewController.designer.cs">
+      <DependentUpon>AddSitesViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Views\HomeController.xib" />
@@ -247,6 +264,7 @@
     <InterfaceDefinition Include="Views\AboutViewController.xib" />
     <InterfaceDefinition Include="Views\IntroductionViewController.xib" />
     <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib" />
+    <InterfaceDefinition Include="Views\AddSitesViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_iOS.csproj">

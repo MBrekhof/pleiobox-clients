@@ -21,13 +21,15 @@ namespace LocalBox_Common.Remote
 {
 	public class RemoteExplorer
 	{
-		readonly LocalBox _localBox;
+		private LocalBoxAuthorization _authorization;
 
+		readonly LocalBox _localBox;
 		public LocalBox LocalBox { get { return _localBox; } }
 
 		public RemoteExplorer ()
 		{
 			_localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
+			_authorization = new LocalBoxAuthorization (_localBox);
 
 			if(_localBox.OriginalServerCertificate != null && SslValidator.CertificateErrorRaised == false){ //Selected localbox does have a ssl certificate
 
@@ -42,51 +44,18 @@ namespace LocalBox_Common.Remote
 		public RemoteExplorer (LocalBox box)
 		{
 			_localBox = box;
+			_authorization = new LocalBoxAuthorization(box);
 		}
 
 		public bool IsAuthorized ()
 		{
-			DateTime expi;
-			DateTime.TryParse (_localBox.DatumTijdTokenExpiratie, out expi);
-
-			if (expi.Equals (new DateTime (1, 1, 1))) {
-				// Not nooit geautoriseerd:
-				return true;
-			}
-
-
-			if (expi.ToLocalTime () > DateTime.Now.ToLocalTime ()) {
-				return true;
-			}
-			// Of nog niet geauthorizeer: doit
-			// of expired: doit.
-			return false;
+			return _authorization.IsAuthorized();
 		}
-
 
 		private void ReAuthorise ()
 		{
 			try {
-				var localBoxAuthorization = new LocalBoxAuthorization (_localBox);
-
-				// Ververs het access token met het refreshtoken uit de database:
-				string refreshToken = _localBox.RefreshToken;
-
-				if (string.IsNullOrEmpty (refreshToken)) {
-					throw new InvalidOperationException ("Refreshtoken is leeg voor refresh!");
-				} else {
-					localBoxAuthorization.RefreshAccessToken (refreshToken);
-
-					if(localBoxAuthorization.AccessToken != null && localBoxAuthorization.RefreshToken != null){
-						_localBox.AccessToken = localBoxAuthorization.AccessToken;
-						_localBox.DatumTijdTokenExpiratie = localBoxAuthorization.Expiry.ToString ();
-						_localBox.RefreshToken = localBoxAuthorization.RefreshToken;
-
-						DataLayer.Instance.AddOrUpdateLocalBox (_localBox);
-					}else {
-						throw new InvalidOperationException ("Refreshtoken is leeg na refresh!");
-					}
-				}
+				_authorization.RefreshAccessToken ();
 			} catch (Exception ex) { 
 				Insights.Report (ex);
 			}
@@ -105,7 +74,7 @@ namespace LocalBox_Common.Remote
 				localBoxUrl.Append (currentFolderId);
 			}
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -117,8 +86,6 @@ namespace LocalBox_Common.Remote
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
 				httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
 				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
-
-
 
 				var httpRequestMessage = new HttpRequestMessage {
 					Method = HttpMethod.Get,
@@ -135,11 +102,7 @@ namespace LocalBox_Common.Remote
 					return null;
 				}
 			}
-
-			return new DataGroup ();
 		}
-
-
 
 //		public Task<string> GetActivePEMFromServer ()
 //		{
@@ -213,7 +176,7 @@ namespace LocalBox_Common.Remote
 					localBoxUrl.Append (item);
 				}
 
-				string AccessToken = _localBox.AccessToken;
+				string AccessToken = _authorization.AccessToken;
 
 				var handler = new HttpClientHandler {
 					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -254,7 +217,7 @@ namespace LocalBox_Common.Remote
 			StringBuilder localBoxUrl = new StringBuilder ();
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/delete");
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -299,7 +262,7 @@ namespace LocalBox_Common.Remote
 			StringBuilder localBoxUrl = new StringBuilder ();
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/create_folder");
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -342,7 +305,7 @@ namespace LocalBox_Common.Remote
 			StringBuilder localBoxUrl = new StringBuilder ();
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/copy");
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -387,7 +350,7 @@ namespace LocalBox_Common.Remote
 			StringBuilder localBoxUrl = new StringBuilder ();
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/operations/move");
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -425,7 +388,7 @@ namespace LocalBox_Common.Remote
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/files");
 			localBoxUrl.Append (destination);
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -472,7 +435,7 @@ namespace LocalBox_Common.Remote
 				StringBuilder localBoxUrl = new StringBuilder ();
 				localBoxUrl.Append (_localBox.BaseUrl + "lox_api/identities");
 
-				string AccessToken = _localBox.AccessToken;
+				string AccessToken = _authorization.AccessToken;
 
 				var handler = new HttpClientHandler {
 					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -510,6 +473,44 @@ namespace LocalBox_Common.Remote
 			});
 		}
 
+		public Task<List<Site>> GetSites()
+		{
+			return Task.Run (() => {
+				if (!IsAuthorized()) {
+					ReAuthorise();
+				}
+					
+				StringBuilder localBoxUrl = new StringBuilder();
+				localBoxUrl.Append(_localBox.BaseUrl + "lox_api/sites");
+
+				string AccessToken = _authorization.AccessToken;
+
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
+
+				using (var httpClient = new HttpClient (handler)) {
+					httpClient.MaxResponseContentBufferSize = int.MaxValue;
+					httpClient.DefaultRequestHeaders.ExpectContinue = false;
+					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue( "Bearer", Uri.EscapeDataString (AccessToken));
+
+					var httpRequestMessage = new HttpRequestMessage {
+						Method = HttpMethod.Get,
+						RequestUri = new Uri (localBoxUrl.ToString ())
+					};
+					var response = httpClient.SendAsync (httpRequestMessage).Result;
+
+					if (response.IsSuccessStatusCode) {
+						var content = response.Content.ReadAsStringAsync().Result;
+						return JsonConvert.DeserializeObject<List<Site>> (content);
+					} else {
+						return new List<Site>();
+					}
+				}
+			});
+		}
 
 		public Task<bool> ShareFolder (string pathOfFolder, List<Identity> usersToShareWith)
 		{
@@ -518,7 +519,7 @@ namespace LocalBox_Common.Remote
 				localBoxUrl.Append (_localBox.BaseUrl + "lox_api/share_create");
 				localBoxUrl.Append (pathOfFolder);
 
-				string AccessToken = _localBox.AccessToken;
+				string AccessToken = _authorization.AccessToken;
 
 				string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
@@ -567,7 +568,7 @@ namespace LocalBox_Common.Remote
 				localBoxUrl.Append (_localBox.BaseUrl + "lox_api/shares/");
 				localBoxUrl.Append (pathOfShare);
 
-				string AccessToken = _localBox.AccessToken;
+				string AccessToken = _authorization.AccessToken;
 
 				var handler = new HttpClientHandler {
 					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -614,7 +615,7 @@ namespace LocalBox_Common.Remote
 					StringBuilder localBoxUrl = new StringBuilder ();
 					localBoxUrl.Append (_localBox.BaseUrl + "lox_api/shares/" + shareId + "/edit");
 
-					string AccessToken = _localBox.AccessToken;
+					string AccessToken = _authorization.AccessToken;
 
 					string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
@@ -658,7 +659,7 @@ namespace LocalBox_Common.Remote
 			StringBuilder localBoxUrl = new StringBuilder ();
 			localBoxUrl.Append (_localBox.BaseUrl + "lox_api/shares/" + shareId + "/remove");
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -705,7 +706,7 @@ namespace LocalBox_Common.Remote
 					localBoxUrl.Append (_localBox.BaseUrl + "lox_api/links");
 					localBoxUrl.Append (pathOfFileToShare);
 
-					string AccessToken = _localBox.AccessToken;
+					string AccessToken = _authorization.AccessToken;
 
 					var handler = new HttpClientHandler {
 						Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -799,7 +800,7 @@ namespace LocalBox_Common.Remote
 
 			localBoxUrl.Append ("/accept");
 
-			string AccessToken = _localBox.AccessToken;
+			string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -846,7 +847,7 @@ namespace LocalBox_Common.Remote
                 localBoxUrl.Append (name);
             }
 
-            string AccessToken = _localBox.AccessToken;
+            string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -891,7 +892,7 @@ namespace LocalBox_Common.Remote
             StringBuilder localBoxUrl = new StringBuilder();
             localBoxUrl.Append(_localBox.BaseUrl + "lox_api/user");
 
-            string AccessToken = _localBox.AccessToken;
+            string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -937,7 +938,7 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append("lox_api/key");
             localBoxUrl.Append(path);
 
-            string AccessToken = _localBox.AccessToken;
+            string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -985,7 +986,7 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append("lox_api/key_revoke");
             localBoxUrl.Append(path);
 
-            string AccessToken = _localBox.AccessToken;
+            string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
@@ -1033,7 +1034,7 @@ namespace LocalBox_Common.Remote
             localBoxUrl.Append("lox_api/key");
             localBoxUrl.Append(path);
 
-            string AccessToken = _localBox.AccessToken;
+            string AccessToken = _authorization.AccessToken;
 
 			var handler = new HttpClientHandler {
 				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),

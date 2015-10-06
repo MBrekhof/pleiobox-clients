@@ -226,7 +226,11 @@ namespace LocalBox_iOS.Views
                 
 				if (indexPath.Row == 0)
 				{
-					_parent._home.ShowIntroductionView ();
+					if (DataLayer.Instance.GetLocalBoxesSync().Count == 0) {
+						_parent._home.ShowIntroductionView();
+					} else {
+						_parent._home.ShowAddSitesView();
+					}
 				}
 				else if (indexPath.Row == 1)
                 {

@@ -599,15 +599,14 @@ namespace LocalBox_Common
 
 
         public Task<List<Identity>> GetLocalboxUsers()
-        {
-            return Task.Run (() => {
-                var currentBox = GetSelectedOrDefaultBox();
-                var remoteExplorer = new RemoteExplorer();
-                var users = remoteExplorer.GetLocalBoxUsers().Result.Where(e => e.Username != currentBox.User).ToList();
-                return users;
-            });
-        }
-
+		{
+			return Task.Run (() => {
+				var currentBox = GetSelectedOrDefaultBox ();
+				var remoteExplorer = new RemoteExplorer ();
+				var users = remoteExplorer.GetLocalBoxUsers ().Result.Where (e => e.Username != currentBox.User).ToList ();
+				return users;
+			});
+		}
 
     }
 }

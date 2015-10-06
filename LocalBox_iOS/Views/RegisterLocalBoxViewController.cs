@@ -9,6 +9,8 @@ using LocalBox_Common;
 using LocalBox_iOS.Views;
 
 using Xamarin;
+using XLabs.Platform.Services;
+using System.Text;
 
 namespace LocalBox_iOS
 {
@@ -108,9 +110,17 @@ namespace LocalBox_iOS
 				//var view = LocationChooserView.Create("/", true, null);
 				//this.View.Add(view);
 
-				localBoxToBeAdded.AccessToken = tokens.AccessToken;
-				localBoxToBeAdded.RefreshToken = tokens.RefreshToken;
-				localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
+				//localBoxToBeAdded.AccessToken = tokens.AccessToken;
+				//localBoxToBeAdded.RefreshToken = tokens.RefreshToken;
+				//localBoxToBeAdded.DatumTijdTokenExpiratie = expiresAsStringWithCorrection;
+
+				var storage = new SecureStorage();
+				var encoding = new ASCIIEncoding();
+				storage.Store("client_key", encoding.GetBytes(localBoxToBeAdded.ApiKey));
+				storage.Store("client_secret", encoding.GetBytes(localBoxToBeAdded.ApiSecret));
+				storage.Store("access_token", encoding.GetBytes(tokens.AccessToken));
+				storage.Store("refresh_token", encoding.GetBytes(tokens.RefreshToken));
+				storage.Store("expires", encoding.GetBytes(expiresAsStringWithCorrection));
 
 				homeController.AddLocalBox (localBoxToBeAdded);
 			} 
@@ -119,10 +129,6 @@ namespace LocalBox_iOS
 			}
 			this.View.RemoveFromSuperview();
 		}
-
-
-
-
 
 		void webViewLoadStarted (object sender, EventArgs e)
 		{
