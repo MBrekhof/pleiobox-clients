@@ -71,14 +71,14 @@
 	<string>com.pleio.pleiobox</string>
 	<key>CFBundleDisplayName</key>
 	<string>Pleiobox</string>
-	<key>CFBundleShortVersionString</key>
-	<string>0.2.7</string>
-	<key>CFBundleVersion</key>
-	<string>0.2.7</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2.8</string>
+	<key>CFBundleVersion</key>
+	<string>101</string>
 </dict>
 </plist>
