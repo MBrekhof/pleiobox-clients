@@ -213,7 +213,7 @@ namespace LocalBox_iOS.Views
 
             public override nint RowsInSection(UITableView tableview, nint section)
             {
-				return 3;
+				return 2;
             }
 
             public override nint NumberOfSections(UITableView tableView)
@@ -231,12 +231,7 @@ namespace LocalBox_iOS.Views
 					} else {
 						_parent._home.ShowAddSitesView();
 					}
-				}
-				else if (indexPath.Row == 1)
-                {
-                    _parent._home.Lock();
-				}else if (indexPath.Row == 2)
-                {
+				} else if (indexPath.Row == 1) {
                     Waardes.Instance.GeselecteerdeBox = -1;
                     _parent.UpdateBalkKleur(null);
                     _parent.SetLogo(null);
@@ -256,11 +251,7 @@ namespace LocalBox_iOS.Views
 						cell.Titel = "Toevoegen";
 						cell.Image = UIImage.FromBundle("IcBottom-ToevoegenLB");
 						break;
-                    case 1:
-						cell.Titel = "Vergrendelen";
-						cell.Image = UIImage.FromBundle("IcBottom-Vergrendel");
-						break;
-					case 2:
+					case 1:
 						cell.Titel = "Over de app";
 						cell.Image = UIImage.FromBundle("IcBottom-Over-de-app");
 						break;

@@ -13,6 +13,8 @@ namespace LocalBox_iOS
         {
         }
 
+		public int Index = 1;
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();

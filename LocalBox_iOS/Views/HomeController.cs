@@ -12,6 +12,7 @@ using LocalBox_iOS.Views.ItemView;
 
 using Xamarin;
 using System.Net;
+using System.Text;
 
 namespace LocalBox_iOS.Views
 {
@@ -21,7 +22,9 @@ namespace LocalBox_iOS.Views
         private UIViewController _master;
 		private UIViewController _detail;
 		private UIPageViewController _introduction;
-		private UIView _pinView;
+		private UIViewController _welkom;
+		private UIViewController _authentication;
+		private UIViewController _sites;
 		private UIColor _defaultColor;
 
 		#if DEBUG
@@ -41,21 +44,12 @@ namespace LocalBox_iOS.Views
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
             _defaultColor = kleurenBalk.BackgroundColor;
 
 			homeController = this;
 
-			bool databaseCreated = DataLayer.Instance.DatabaseCreated ();
-
-
-			if(!databaseCreated) {
-				PincodeInstellen ();
-			} else {
-				PincodeOpgeven ();
-			}
-
-
-
+			InitialiseMenu ();
         }
 
 		public override void ViewWillAppear (bool animated)
@@ -113,50 +107,65 @@ namespace LocalBox_iOS.Views
 			addSitesViewController.View.Frame = new CGRect (0, 0, View.Bounds.Width, View.Bounds.Height);
 			View.Add (addSitesViewController.View);
 			AddChildViewController(addSitesViewController);
-
 		}
-
-		public void ShowRegisterLocalBoxView(string urlToOpen)
-		{
-			if (urlToOpen.IndexOf("register_app", StringComparison.OrdinalIgnoreCase) < 0) //url misses '/register_app' at the end
-			{
-				if (urlToOpen.EndsWith ("/")) {	//input url is like "www.mylocalbox.nl/"
-					urlToOpen = urlToOpen + "register_app";
-				}
-				else {	//input url is like "www.mylocalbox.nl"
-					urlToOpen = urlToOpen + "/register_app";
-				}
-			}
-
-			RegisterLocalBoxViewController registerLocalBoxViewController = new RegisterLocalBoxViewController (urlToOpen, this);
-			registerLocalBoxViewController.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
-
-			View.Add(registerLocalBoxViewController.View);
-			AddChildViewController(registerLocalBoxViewController);
-		}
-
-
+			
 		public void ShowIntroductionView()
 		{
 
-			ShowRegisterLocalBoxView (PleioUrl);
-
-			/*_introduction = new UIPageViewController(UIPageViewControllerTransitionStyle.Scroll,
+			_introduction = new UIPageViewController(UIPageViewControllerTransitionStyle.Scroll,
 								UIPageViewControllerNavigationOrientation.Horizontal,
 								UIPageViewControllerSpineLocation.Min);
 
-			IntroductionViewController firstPageController = new IntroductionViewController(0, _introduction, this);
+			_introduction.View.BackgroundColor = UIColor.FromRGB (10, 103, 168);
 
-			_introduction.DataSource = new IntroductionPageDataSource(_introduction, this);
+			_welkom = new WelkomPaginaViewController();
+			_sites = new AddSitesViewController (this, _introduction);
+			_authentication = new AuthenticationViewController (PleioUrl, this, _introduction, _sites);
 
-			_introduction.SetViewControllers(new UIViewController[] { firstPageController }, 
-											UIPageViewControllerNavigationDirection.Forward, false, s => { });
 
+			var pages = new UIViewController[] {
+				_welkom,
+				_authentication,
+				_sites
+			};
+
+			var datasource = new IntroductionDataSource(pages);
+			_introduction.DataSource = datasource;
+			_introduction.SetViewControllers(new UIViewController[] {
+				_welkom
+			}, UIPageViewControllerNavigationDirection.Forward, false, s => { });
+				
 			//Dimension
 			_introduction.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
 
+			int ywidth = 330;
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) { //iOS 8
+				ywidth = 75;
+			}
+
+			var pageControl = new UIPageControl {
+				Pages = pages.Length,
+				Frame = new CGRect (
+					_introduction.View.Frame.Width / 2 - 50,  //X
+					_introduction.View.Frame.Height - ywidth, 	//Y
+					100, 										//Width
+					50) 										//Height
+			};
+					
+			pageControl.Enabled = false;
+
+			_introduction.View.AddSubview(pageControl);
+			_introduction.DidFinishAnimating += (s, e) => {
+				if (pageControl.CurrentPage == 1) {
+					pageControl.CurrentPage = 0;
+				} else {
+					pageControl.CurrentPage = 1;
+				}
+			};
+
 			View.Add(_introduction.View);
-			AddChildViewController(_introduction);*/
+			AddChildViewController(_introduction);
 		}
 						
         void UpdateMaster(UIViewController viewController)
@@ -244,20 +253,7 @@ namespace LocalBox_iOS.Views
 				Insights.Report(ex);
 			}
         }
-
-        public void Lock()
-        {
-            if (_master != null)
-                _master.View.RemoveFromSuperview();
-            if (_detail != null)
-                _detail.View.RemoveFromSuperview();
-
-            DataLayer.Instance.LockDatabase();
-            kleurenBalk.BackgroundColor = _defaultColor;
-
-            PincodeOpgeven(null);
-        }
-
+			
         public void InitialiseMenu()
         {
 			UpdateMaster(new MenuViewController(this));
@@ -270,26 +266,6 @@ namespace LocalBox_iOS.Views
 			RemoveDetail();
 			kleurenBalk.BackgroundColor = _defaultColor;
 		}
-
-
-		public void AddLocalBox(LocalBox localBoxToAdd)
-		{
-			bool result = false;
-	
-			DialogHelper.ShowProgressDialog ("Pleiobox toevoegen", "Bezig met het toevoegen van een Pleiobox", async () => {
-			
-				//result = await BusinessLayer.Instance.Authenticate (localBoxToAdd);
-				InitialiseMenuAfterRegistration();
-				AppDelegate.localBoxToRegister = null;
-
-				/*if (result) {
-					ValidateKeyPresence (localBoxToAdd, );
-
-				}*/
-			});
-		}
-
-
 
 		public void ValidateKeyPresence(LocalBox localBox, Action onCompletion) {
 			if (localBox.HasCryptoKeys)
@@ -391,56 +367,8 @@ namespace LocalBox_iOS.Views
 			createPassPhrase.Show();
 		}
 			
-        public void PincodeInstellen()
-        {
-			imageViewSplash.Hidden = false;
-
-            float x = (1024 - 372) / 2;
-            PincodeInstellenView instellenView = new PincodeInstellenView(new CGRect(x, 64f, 372f, 582f));
-            instellenView.OnPinFilled += PincodeIngesteld;
-            _pinView = instellenView;
-
-            View.Add(instellenView);
-        }
-
-        void PincodeIngesteld(object sender, EventArgs e)
-        {
-            if (_pinView != null)
-            {
-                _pinView.RemoveFromSuperview();
-                _pinView = null;
-            }
-
-            InitialiseMenu();
-        }
-
-        public void PincodeOpgeven()
-        {
-            if (_master != null)
-                _master.View.RemoveFromSuperview();
-            if (_detail != null)
-                _detail.View.RemoveFromSuperview();
-
-            if (_pinView == null)
-            {
-				imageViewSplash.Hidden = false;
-
-                float x = (1024 - 372) / 2;
-                var instellenView = new PincodeInvoerenView(new CGRect(x, 64f, 372f, 582f));
-                instellenView.OnPinFilled += Resume;
-                _pinView = instellenView;
-                View.Add(instellenView);
-            }
-        }
-
         void Resume(object sender, EventArgs e)
-        {
-            if (_pinView != null)
-            {
-                _pinView.RemoveFromSuperview();
-                _pinView = null;
-            }
-				
+        {				
             if (AppDelegate.fileToUpload != null)
             {
 				ImportFile(AppDelegate.fileToUpload);
@@ -448,30 +376,7 @@ namespace LocalBox_iOS.Views
             }
 			InitialiseMenu();
         }
-
-
-        public void PincodeOpgeven(LocalBox box)
-        {
-			AppDelegate.localBoxToRegister = box;
-
-			if (_introduction != null)
-            {
-				_introduction.RemoveFromParentViewController();
-				_introduction.View.RemoveFromSuperview();
-            }
-
-            if (_pinView == null)
-            {
-				imageViewSplash.Hidden = false;
-
-                float x = (1024 - 372) / 2;
-                var instellenView = new PincodeInvoerenView(new CGRect(x, 64f, 372f, 582f));
-                instellenView.OnPinFilled += PincodeIngesteld;
-                _pinView = instellenView;
-                View.Add(instellenView);
-            }
-		}
-
+			
 		public async void ImportFile (string pathToFile)
 		{
 			Console.WriteLine ("Filepath van bestaand of nieuw bestand " + pathToFile);

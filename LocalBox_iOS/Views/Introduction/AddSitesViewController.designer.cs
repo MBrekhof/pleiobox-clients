@@ -13,16 +13,38 @@ namespace LocalBox_iOS
 	partial class AddSitesViewController
 	{
 		[Outlet]
+		UIKit.UIActivityIndicatorView ActivityIndicator { get; set; }
+
+		[Outlet]
+		UIKit.UIView BottomMenu { get; set; }
+
+		[Outlet]
 		UIKit.UIButton CancelButton { get; set; }
+
+		[Outlet]
+		UIKit.UIView DarkBackground { get; set; }
 
 		[Outlet]
 		UIKit.UIButton OKButton { get; set; }
 
 		[Outlet]
 		UIKit.UITableView TableView { get; set; }
+
+		[Outlet]
+		UIKit.UIView TopMenu { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (ActivityIndicator != null) {
+				ActivityIndicator.Dispose ();
+				ActivityIndicator = null;
+			}
+
+			if (BottomMenu != null) {
+				BottomMenu.Dispose ();
+				BottomMenu = null;
+			}
+
 			if (CancelButton != null) {
 				CancelButton.Dispose ();
 				CancelButton = null;
@@ -36,6 +58,16 @@ namespace LocalBox_iOS
 			if (TableView != null) {
 				TableView.Dispose ();
 				TableView = null;
+			}
+
+			if (TopMenu != null) {
+				TopMenu.Dispose ();
+				TopMenu = null;
+			}
+
+			if (DarkBackground != null) {
+				DarkBackground.Dispose ();
+				DarkBackground = null;
 			}
 		}
 	}

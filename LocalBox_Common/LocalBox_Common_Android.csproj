@@ -59,6 +59,16 @@
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\LocalBox_Android\packages\Xamarin.Android.Support.v4.22.2.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Android.Export" />
+    <Reference Include="XLabs.Core">
+      <HintPath>..\LocalBox_Android\packages\XLabs.Core.2.0.5679\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Platform.Droid">
+      <HintPath>..\LocalBox_Android\packages\XLabs.Platform.2.0.5679\lib\MonoAndroid\XLabs.Platform.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Platform">
+      <HintPath>..\LocalBox_Android\packages\XLabs.Platform.2.0.5679\lib\MonoAndroid\XLabs.Platform.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
@@ -91,6 +101,7 @@
     <Compile Include="Constants\DocumentConstants.cs" />
     <Compile Include="Utils\CertificateValidationStatus.cs" />
     <Compile Include="Model\Tokens.cs" />
+    <Compile Include="Remote\Model\Site.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

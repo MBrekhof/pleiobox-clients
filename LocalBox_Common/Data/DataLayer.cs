@@ -35,6 +35,10 @@ namespace LocalBox_Common
         DataLayer()
         {
 			databasePath = Path.Combine(DocumentConstants.DocumentsPath, "localbox.db");
+
+			if (database == null) {
+				UnlockDatabase ("");
+			}
         }
             
         public Database DbInstance()

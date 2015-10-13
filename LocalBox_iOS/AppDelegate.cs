@@ -62,7 +62,7 @@ namespace LocalBox_iOS
 			Environment.SetEnvironmentVariable ("MONO_TLS_SESSION_CACHE_TIMEOUT", "0");
 
 			//Initialize Xamarin Insights => API key can be replaced with your own Xamarin Insights API key
-			Insights.Initialize("eef088ee56eae5e8b764cddc809e4a8ddbe119ec");
+			Insights.Initialize("91f27e3df29c7c6f973068c514b1d64cfd895fff");
 
 
             ViewController = new HomeController();
@@ -72,69 +72,18 @@ namespace LocalBox_iOS
             DataLayer.Instance.EmptyDecryptedFolder();
             return true;
         }
-
-        public override void OnActivated(UIApplication application)
-        {
-            if (openUrl){
-                openUrl = false;
-                return;
-            }
-
-            if (_enteredBackground.HasValue)
-            {
-                if ((DateTime.UtcNow - _enteredBackground.Value).TotalMinutes >= 15)
-                {
-                    DataLayer.Instance.LockDatabase();
-
-                    ((HomeController)ViewController).PincodeOpgeven();
-
-                }
-            }
-            _enteredBackground = null;
-        }
-
+			
         public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
         {
             openUrl = true;
 
-            if (_enteredBackground.HasValue)
-            {
-                if ((DateTime.UtcNow - _enteredBackground.Value).TotalMinutes >= 15)
-                {
-                    DataLayer.Instance.LockDatabase();
-                }
-            }
-
-            /*if (url.Scheme.Equals("lbox"))
-            {
-				return OpenLbox(application, url, sourceApplication, annotation);
-            }
-            else */
 			if (url.Scheme.Equals("file"))
             {
                 return OpenFile(application, url, sourceApplication, annotation);
             }
             return true;
         }
-
-		/*
-		private bool OpenLbox(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
-			RegisterLocalBox (url);            
-			Window = new UIWindow (UIScreen.MainScreen.Bounds);
-
-			ViewController = new HomeController();
-			Window.RootViewController = ViewController;
-			Window.MakeKeyAndVisible ();
-
-			return true;
-        }
-
-		private async void RegisterLocalBox(NSUrl url)
-		{
-			localBoxToRegister = await BusinessLayer.Instance.RegisterLocalBox(url.AbsoluteString.Replace("lbox://", "http://"), null, false);
-
-		}*/
-
+			
         bool OpenFile(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
         {
             if (ViewController is HomeController)

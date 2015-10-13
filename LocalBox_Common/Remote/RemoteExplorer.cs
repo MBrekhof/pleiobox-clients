@@ -104,59 +104,6 @@ namespace LocalBox_Common.Remote
 			}
 		}
 
-//		public Task<string> GetActivePEMFromServer ()
-//		{
-//			string urlToRegistrionJson = _localBox.BaseUrl + "register_app";
-//			return null;
-//			//TODO
-//
-//			string result = null;
-//
-//			try {
-//				HttpWebRequest request = (HttpWebRequest)WebRequest.Create (boxUrl); 
-//
-//				request.ContentType = "application/json";
-//				request.Timeout	= 10000; //10 seconds before timeout
-//
-//				//If cookie not null then add to http request header
-//				//if (cookieString != null) {
-//				//request.Headers.Add (HttpRequestHeader.
-//				//}
-//				string authToken = "Bearer" + " " + _localBox.AccessToken;
-//				request.Headers.Add ("Authorization", authToken);
-//				request.Method = "GET";
-//
-//				using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
-//					if (response.StatusCode != HttpStatusCode.OK) {
-//
-//						Console.Out.WriteLine ("Error fetching data. Server returned status code: {0}", response.StatusCode);
-//						return null;
-//					}
-//
-//					using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
-//						var content = reader.ReadToEnd ();
-//						if (string.IsNullOrWhiteSpace (content)) {
-//							Console.Out.WriteLine ("Response contained empty body...");
-//							return null;
-//						} else {
-//							try {
-//								LocalBox box = JsonConvert.DeserializeObject<LocalBox> (content);
-//									
-//								return null;
-//							} catch (Exception ex) {
-//								result = null;
-//							}
-//						}
-//					}
-//				}
-//			} catch (Exception ex) {
-//				Console.WriteLine (ex.Message);					
-//				return null;
-//			}
-//		}
-
-
-
 		public byte[] GetFile (string path)
 		{
 			return DownloadFile (path);

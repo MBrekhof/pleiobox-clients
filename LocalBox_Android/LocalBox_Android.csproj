@@ -43,6 +43,9 @@
     <AndroidSupportedAbis>armeabi-v7a</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidKeyStore>True</AndroidKeyStore>
+    <AndroidSigningKeyStore>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwFB37cZRAQQ+5Xax1rCQsvp50XffJGIfN828FBlqTwMYGpEWRXkpKiq8wJJShj7Qc1mKh9ffJzyOyJAlyMU6XBaRm2Zy7EhvING7icH9vBBm5pgmtcm2FID8/2G3IQFsQCncHHTZi+O5BAY4/1WD72PAf80+HUz1/DZb1VLCDazzijEShNuQb8R3bvRM3Gyn6eFWguvbHdQQQ71MkK3nmvbygeIB6FrokxFJp8koXvCc//zecjFvA1PBTLHg2IRvENzArEYksomd4/0px1AUtRiQbqCxIb7hyZs4Z7a9+/SP1uY6IeXhUazv6cxbwb5apR90bP0QWy+8TVSO4/oRswIDAQAB
+</AndroidSigningKeyStore>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,7 +53,6 @@
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Mono.Android.Support.v4" />
     <Reference Include="Mono.Data.Sqlcipher">
       <HintPath>..\LocalBox_Common\Dll\sqlcipher\lib\android\Mono.Data.Sqlcipher.dll</HintPath>
     </Reference>
@@ -63,6 +65,18 @@
     </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>packages\Xamarin.Android.Support.v4.22.2.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="ExifLib">
+      <HintPath>packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Core">
+      <HintPath>packages\XLabs.Core.2.0.5679\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Platform.Droid">
+      <HintPath>packages\XLabs.Platform.2.0.5679\lib\MonoAndroid\XLabs.Platform.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="XLabs.Platform">
+      <HintPath>packages\XLabs.Platform.2.0.5679\lib\MonoAndroid\XLabs.Platform.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

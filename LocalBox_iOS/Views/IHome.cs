@@ -10,8 +10,6 @@ namespace LocalBox_iOS.Views
 
         void RemoveDetail();
 
-        void Lock();
-
 		void ShowIntroductionView ();
 
 		void ShowAddSitesView();

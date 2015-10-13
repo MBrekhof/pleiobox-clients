@@ -127,7 +127,6 @@
     <Folder Include="Resources\icons\" />
     <Folder Include="Helpers\" />
     <Folder Include="Resources\fonts\" />
-    <Folder Include="Views\Pincode\" />
     <Folder Include="Views\Table\" />
     <Folder Include="Views\ItemView\" />
     <Folder Include="Views\Introduction\" />
@@ -184,10 +183,6 @@
     <Compile Include="Views\NodeViewCellDetail.designer.cs">
       <DependentUpon>NodeViewCellDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Pincode\KeyPad.cs" />
-    <Compile Include="Views\Pincode\PincodeInstellenView.cs" />
-    <Compile Include="Views\Pincode\PinInput.cs" />
-    <Compile Include="Views\Pincode\PincodeInvoerenView.cs" />
     <Compile Include="Views\LocationChooserView.cs" />
     <Compile Include="Views\LocationChooserView.designer.cs">
       <DependentUpon>LocationChooserView.cs</DependentUpon>
@@ -226,21 +221,20 @@
       <DependentUpon>AboutViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ViewHelper.cs" />
-    <Compile Include="Views\IntroductionViewController.cs" />
-    <Compile Include="Views\IntroductionViewController.designer.cs">
-      <DependentUpon>IntroductionViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Introduction\IntroductionPageDatasource.cs" />
-    <Compile Include="Views\RegisterLocalBoxViewController.cs" />
-    <Compile Include="Views\RegisterLocalBoxViewController.designer.cs">
-      <DependentUpon>RegisterLocalBoxViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="Helpers\Reachability.cs" />
     <Compile Include="Views\Picker\ActionSheetDatePickerCustom.cs" />
-    <Compile Include="Views\Pincode\PinHelper.cs" />
     <Compile Include="Helpers\NSDateHelper.cs" />
-    <Compile Include="Views\AddSitesViewController.cs" />
-    <Compile Include="Views\AddSitesViewController.designer.cs">
+    <Compile Include="Views\Introduction\WelkomPaginaViewController.cs" />
+    <Compile Include="Views\Introduction\WelkomPaginaViewController.designer.cs">
+      <DependentUpon>WelkomPaginaViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Introduction\IntroductionDataSource.cs" />
+    <Compile Include="Views\Introduction\AuthenticationViewController.cs" />
+    <Compile Include="Views\Introduction\AuthenticationViewController.designer.cs">
+      <DependentUpon>AuthenticationViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Introduction\AddSitesViewController.cs" />
+    <Compile Include="Views\Introduction\AddSitesViewController.designer.cs">
       <DependentUpon>AddSitesViewController.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -262,9 +256,9 @@
     <InterfaceDefinition Include="Views\DelenView.xib" />
     <InterfaceDefinition Include="Views\ItemView\BaseItemView.xib" />
     <InterfaceDefinition Include="Views\AboutViewController.xib" />
-    <InterfaceDefinition Include="Views\IntroductionViewController.xib" />
-    <InterfaceDefinition Include="Views\RegisterLocalBoxViewController.xib" />
-    <InterfaceDefinition Include="Views\AddSitesViewController.xib" />
+    <InterfaceDefinition Include="Views\Introduction\WelkomPaginaViewController.xib" />
+    <InterfaceDefinition Include="Views\Introduction\AuthenticationViewController.xib" />
+    <InterfaceDefinition Include="Views\Introduction\AddSitesViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_iOS.csproj">

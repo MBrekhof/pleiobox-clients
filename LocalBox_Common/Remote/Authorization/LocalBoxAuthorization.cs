@@ -8,13 +8,14 @@ using Xamarin;
 using System.Collections.Generic;
 
 using XLabs.Platform.Services;
+using System.Threading.Tasks;
 
 namespace LocalBox_Common.Remote.Authorization
 {
     public class LocalBoxAuthorization
     {
-        private string client_key;
-        private string client_secret;
+        private string client_key = "pleiobox";
+		private string client_secret = "Ex3EgyUeoQehogQdF7GqtRaVHYArpa";
         private string localBoxBaseUrl;
 
 		private LocalBox _localBox;
@@ -37,13 +38,14 @@ namespace LocalBox_Common.Remote.Authorization
             get { return _expiry; }
         }
 
+		public LocalBoxAuthorization(string baseUrl)
+		{
+			localBoxBaseUrl = baseUrl;
+		}
+
         public LocalBoxAuthorization(LocalBox localBox)
 		{			
 			_localBox = localBox;
-
-			client_key = encoding.GetString(storage.Retrieve("client_key"));
-			client_secret = encoding.GetString(storage.Retrieve ("client_secret"));
-
 			_accessToken = encoding.GetString (storage.Retrieve ("access_token"));
 			_refreshToken = encoding.GetString (storage.Retrieve ("refresh_token"));
 
@@ -59,8 +61,8 @@ namespace LocalBox_Common.Remote.Authorization
 				// Not nooit geautoriseerd:
 				return true;
 			}
-				
-			if (_expiry.ToLocalTime() > DateTime.Now.ToLocalTime ()) {
+
+			if (_expiry > DateTime.UtcNow.ToLocalTime ()) {
 				return true;
 			}
 			// Of nog niet geauthorizeer: doit
@@ -68,6 +70,59 @@ namespace LocalBox_Common.Remote.Authorization
 			return false;
 		}
 
+		public Task<bool> Authorize(string username, string password)
+		{
+			return Task.Run (() => {
+				StringBuilder localBoxUrl = new StringBuilder ();
+				localBoxUrl.Append (localBoxBaseUrl);
+				localBoxUrl.Append ("/oauth/v2/token");
+
+				var data = new List<KeyValuePair<string, string>> ();
+				data.Add (new KeyValuePair<string, string> ("client_id", client_key));
+				data.Add (new KeyValuePair<string, string> ("client_secret", client_secret));
+				data.Add (new KeyValuePair<string, string> ("grant_type", "password"));
+				data.Add (new KeyValuePair<string, string> ("username", username));
+				data.Add (new KeyValuePair<string, string> ("password", password));
+
+				HttpContent content = new FormUrlEncodedContent (data);
+
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
+
+				using (var httpClient = new HttpClient (handler)) {
+					httpClient.MaxResponseContentBufferSize = int.MaxValue;
+					httpClient.DefaultRequestHeaders.ExpectContinue = false;
+					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+
+					try {
+						var response = httpClient.PostAsync (new Uri (localBoxUrl.ToString ()), content).Result;
+						if (response.IsSuccessStatusCode) {
+							string rawResponse = response.Content.ReadAsStringAsync ().Result;
+							var jsonObject = JsonValue.Parse (rawResponse);
+
+							_accessToken = jsonObject ["access_token"];
+							_refreshToken = jsonObject ["refresh_token"];
+
+							// We laten de key al vervallen als al 90% van de tijd is verstreken
+							_expiry = DateTime.UtcNow.AddSeconds ((int)jsonObject ["expires_in"] * 0.9).ToLocalTime ();
+
+							storage.Store ("access_token", encoding.GetBytes (_accessToken));
+							storage.Store ("refresh_token", encoding.GetBytes (_refreshToken));
+							storage.Store ("expires", encoding.GetBytes (_expiry.ToString ()));
+
+							return true;
+						} else {
+							return false;
+						}
+					} catch (Exception ex) {
+						Insights.Report (ex);
+						return false;
+					}
+				}
+			});
+		}
 
 		public bool RefreshAccessToken()
         {

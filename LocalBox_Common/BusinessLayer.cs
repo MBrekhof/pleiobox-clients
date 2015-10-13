@@ -8,6 +8,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xamarin;
+using System.Text;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using XLabs.Platform.Services;
 
 namespace LocalBox_Common
 {
@@ -28,93 +32,61 @@ namespace LocalBox_Common
 		{
 		}
 
-		public Task<LocalBox> RegisterLocalBox (string boxUrl, string cookieString, bool androidClient)
+		public Task<LocalBox> RegisterLocalBox (string localBoxBaseUrl)
 		{
 			return Task.Run (() => {
 			
 				LocalBox result = null;
 
-				try {
-					HttpWebRequest request = (HttpWebRequest)WebRequest.Create(boxUrl); 
+				StringBuilder localBoxUrl = new StringBuilder();
+				localBoxUrl.Append(localBoxBaseUrl);
+				localBoxUrl.Append("/lox_api/register_app");
 
-					request.Proxy = CoreFoundation.CFNetwork.GetDefaultProxy();
-					request.ContentType = "application/json";
-					request.Timeout	= 10000; //10 seconds before timeout
+				SecureStorage storage = new SecureStorage();
+				ASCIIEncoding encoding = new ASCIIEncoding();
+				var accessToken = encoding.GetString (storage.Retrieve ("access_token"));
 
-					//If cookie not null then add to http request header
-					if (cookieString != null) {
-						request.Headers.Add (HttpRequestHeader.Cookie, cookieString);
-					}
-						
-					request.Method = "GET";
-				
-					using (HttpWebResponse response = request.GetResponse () as HttpWebResponse) {
-						if (response.StatusCode != HttpStatusCode.OK) {
+				var handler = new HttpClientHandler {
+					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
+					UseProxy = true,
+				};
 
-							Console.Out.WriteLine ("Error fetching data. Server returned status code: {0}", response.StatusCode);
-							return result;
-						}
+				using (var httpClient = new HttpClient (handler)) {
+					httpClient.MaxResponseContentBufferSize = int.MaxValue;
+					httpClient.DefaultRequestHeaders.ExpectContinue = false;
+					httpClient.DefaultRequestHeaders.Add ("x-li-format", "json");
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Uri.EscapeDataString (accessToken));
 
-						using (StreamReader reader = new StreamReader (response.GetResponseStream ())) {
-							var content = reader.ReadToEnd ();
-							if (string.IsNullOrWhiteSpace (content)) {
-								Console.Out.WriteLine ("Response contained empty body...");
-								return result;
-							} else {
-								try {
-									//Parse json to LocalBox object
-									LocalBox box = JsonConvert.DeserializeObject<LocalBox> (content);
+					var httpRequestMessage = new HttpRequestMessage {
+						Method = HttpMethod.Get,
+						RequestUri = new Uri (localBoxUrl.ToString ())
+					};
 
-									//Get apikeys from json
-									var apiKeys = JObject.Parse(content).SelectToken("APIKeys").ToString();
+					var response = httpClient.SendAsync (httpRequestMessage).Result;
+					if (response.IsSuccessStatusCode) {
+						try {
+							//Parse json to LocalBox object
+							LocalBox box = JsonConvert.DeserializeObject<LocalBox> (response.Content.ReadAsStringAsync().Result);
 
-									//Parse json to APIKeys list
-									var foundApiKeys = JsonConvert.DeserializeObject<List<APIKeys>> (apiKeys);
-
-									//Get correct APIKey from list
-									foreach(APIKeys foundKeys in foundApiKeys)
-									{
-										if(androidClient == true){
-											if(foundKeys.Name.IndexOf("android", StringComparison.OrdinalIgnoreCase) >= 0)
-											{
-												box.ApiKey = foundKeys.Key;
-												box.ApiSecret = foundKeys.Secret;
-												break;
-											}
-										}else{//iOS
-											if(foundKeys.Name.IndexOf("ios", StringComparison.OrdinalIgnoreCase) >= 0)
-											{
-												box.ApiKey = foundKeys.Key;
-												box.ApiSecret = foundKeys.Secret;
-												break;
-											}
-										}
-									}
-
-									//Voorkomt crash in Android
-									if (DataLayer.Instance.DatabaseUnlocked ()) {
-										box.Id = DataLayer.Instance.AddOrUpdateLocalBox (box);
-									}
-									result = box;
-  
-								} catch (Exception ex){
-									Insights.Report(ex);
-									result = null;
-								}
+							//Voorkomt crash in Android
+							if (DataLayer.Instance.DatabaseUnlocked ()) {
+								box.Id = DataLayer.Instance.AddOrUpdateLocalBox (box);
 							}
+							result = box;
+						} catch (Exception ex){
+							Insights.Report(ex);
+							result = null;
 						}
+					} else {
+						Console.Out.WriteLine ("Error fetching data. Server returned status code: {0}", response.StatusCode);
+						return result;
 					}
 				}
-				catch (Exception ex){
-					Insights.Report(ex);
-					Console.WriteLine(ex.Message);					
-					return result;
-				}
+			
 				return result;
 			});
 		}
 			
-
 
 		public Task<Tokens> GetRegistrationTokens (string tokensRequestUrl, string postString)
 		{
