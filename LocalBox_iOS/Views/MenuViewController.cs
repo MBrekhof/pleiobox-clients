@@ -248,7 +248,7 @@ namespace LocalBox_iOS.Views
                 switch (indexPath.Row)
                 {
                     case 0:
-						cell.Titel = "Toevoegen";
+						cell.Titel = "Site toevoegen";
 						cell.Image = UIImage.FromBundle("IcBottom-ToevoegenLB");
 						break;
 					case 1:
