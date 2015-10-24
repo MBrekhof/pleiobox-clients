@@ -20,6 +20,7 @@ namespace LocalBox_Common
 		public bool IsFavorite { get; set; }
         public bool IsShare { get; set; }
         public bool IsShared { get; set; }
+		public bool IsWritable { get; set; }
 		public bool HasKeys { get; set; }
 
         public bool CheckedForKeys { get; set; }

@@ -101,6 +101,16 @@ namespace LocalBox_iOS.Views
                     encrypted = Node.HasKeys;
                 }
 
+				if (Node.Path.Count (e => e == '/') > 1) {
+					_detail.Node = Node;
+					_detail.Hidden = false;
+					_lpg.Enabled = true;
+				} else {
+					_detail.Node = null;
+					_detail.Hidden = true;
+					_lpg.Enabled = false;
+				}
+
 				_defaultView.Type = UIImage.FromBundle(Node.IsDirectory ?  encrypted ? "icons/IcType-Map-versleuteld" : "icons/IcType-Map" : TypeHelper.MapType(Node.Path));
                 if (Node.IsFavorite == true)
                 {
@@ -118,9 +128,6 @@ namespace LocalBox_iOS.Views
                 {
                     _defaultView.Deel = null;
                 }
-                _lpg.Enabled = true;
-                _detail.Node = Node;
-                _detail.Hidden = false;
             }
 
         }

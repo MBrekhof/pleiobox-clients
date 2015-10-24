@@ -38,6 +38,9 @@ namespace Synchronization.Models
         [DataMember(Name = "is_share")]
         public bool Share { get; set; }
 
+		[DataMember(Name = "is_writable")]
+		public bool IsWritable { get; set; }
+
         [DataMember(Name = "children")]
         public List<DataItem> Items { get; set; }
 
@@ -78,6 +81,9 @@ namespace Synchronization.Models
 
         [DataMember(Name = "is_share")]
         public bool Share { get; set; }
+
+		[DataMember(Name = "is_writable")]
+		public bool IsWritable { get; set; }
 
         [DataMember(Name = "icon")]
         private string _thumbnail;

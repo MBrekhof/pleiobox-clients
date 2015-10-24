@@ -225,7 +225,7 @@ namespace LocalBox_Common
                 on local.Path equals remote.Path
                 select new TreeNode{ Id = local.Id, Name = remote.Name, Type = local.Type, 
 					ParentId = local.ParentId, Path = local.Path, IsDirectory = remote.IsDirectory, HasKeys = remote.HasKeys,
-                IsFavorite = local.IsFavorite, IsShare = remote.IsShare, IsShared = remote.IsShared, LocalBoxId = local.LocalBoxId, IV = local.IV, Key = local.Key, CheckedForKeys = local.CheckedForKeys} ).ToList();
+					IsFavorite = local.IsFavorite, IsShare = remote.IsShare, IsShared = remote.IsShared, IsWritable = remote.IsWritable, LocalBoxId = local.LocalBoxId, IV = local.IV, Key = local.Key, CheckedForKeys = local.CheckedForKeys} ).ToList();
 
             var toAdd = remoteData.Where(e => !inBoth.Contains(e.Path)).ToList();
             var toRemove = localData.Children.Where(e => !inBoth.Contains(e.Path)).ToList();
@@ -254,6 +254,7 @@ namespace LocalBox_Common
                         ParentId = parent,
                         IsShare = di.Share,
                         IsShared = di.Shared,
+						IsWritable = di.IsWritable,
 						LocalBoxId = boxId,
 						HasKeys = di.HasKeys
                     };

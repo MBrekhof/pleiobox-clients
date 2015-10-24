@@ -54,37 +54,22 @@ namespace LocalBox_iOS.Views
             	bool isShare = IsShare(_treeNode);
 
             	List<UIButton> buttons = new List<UIButton>();
-            	if (_treeNode.IsDirectory && inRoot && !_treeNode.IsShare)
-            	{
-            	    //buttons.Add(DelenRootButton());
-           	     	buttons.Add(VerwijderenButton());
-            	}
-            	else if (!_treeNode.IsDirectory && inRoot)
-            	{
-                	//buttons.Add(DelenButton());
-                	buttons.Add(OpenenMetButton());
-                	buttons.Add(FavorietButton());
-					buttons.Add(VerplaatsButton());
-                	buttons.Add(VerwijderenButton());
-            	}
-            	else if (_treeNode.IsDirectory && !inRoot && !isShare)
-            	{
-                	buttons.Add(VerwijderenButton());
-            	}
-            	else if (!_treeNode.IsDirectory && !inRoot)
-            	{
-                	if (!isShare && !IsEncrypted(_treeNode))
-                	{
-                    	//buttons.Add(DelenButton());
-                	}
-                	buttons.Add(OpenenMetButton());
-                	buttons.Add(FavorietButton());
-                	if (!isShare)
-                	{
+				if (_treeNode.IsDirectory && !inRoot)
+				{
+					buttons.Add(VerwijderenButton());
+				}
+				else if (!_treeNode.IsDirectory)
+				{
+					buttons.Add(OpenenMetButton());
+					buttons.Add(FavorietButton());
+
+					if (_treeNode.IsWritable)
+					{
 						buttons.Add(VerplaatsButton());
-                    	buttons.Add(VerwijderenButton());
-                	}
-            	}
+						buttons.Add(VerwijderenButton());
+					}
+				}
+
             	AddButtons(buttons);
 			} catch (Exception ex){
 				Insights.Report(ex);
