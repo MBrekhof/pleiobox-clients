@@ -104,9 +104,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\LocalBox_Common\Dll\json.net\lib\ios\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Mobile">
-      <HintPath>..\LocalBox_Common\Dll\xamarinmobile\ios\Xamarin.Mobile.dll</HintPath>
-    </Reference>
     <Reference Include="ExifLib">
       <HintPath>packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
     </Reference>
@@ -118,6 +115,9 @@
     </Reference>
     <Reference Include="XLabs.Platform">
       <HintPath>packages\XLabs.Platform.2.0.5679\lib\Xamarin.iOS10\XLabs.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Mobile">
+      <HintPath>..\LocalBox_Common\Dll\xamarinmobile\ios\Xamarin.Mobile.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
