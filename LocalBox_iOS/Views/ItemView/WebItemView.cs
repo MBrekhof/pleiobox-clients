@@ -30,7 +30,7 @@ namespace LocalBox_iOS.Views.ItemView
 				Uri relativeUri = fromUri.MakeRelativeUri(toUri);
 				String relativePath = Uri.UnescapeDataString(relativeUri.ToString());
 
-				NSUrl finalUrl = new NSUrl ("#" + relativePath, new NSUrl(viewerPath, false));
+				NSUrl finalUrl = new NSUrl ("#" + relativePath.Replace(" ", "%20"), new NSUrl(viewerPath, false));
 				webView.LoadRequest(new NSUrlRequest(finalUrl));
 				webView.ScalesPageToFit = true;
 				view.ContentView = webView;
