@@ -31,17 +31,6 @@
 		<string>fonts/RijksoverheidSansTextTT-Bold_2_0.ttf</string>
 		<string>fonts/RijksoverheidSansTextTT-Italic_2_0.ttf</string>
 	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>pleiobox.auth</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>pbox</string>
-			</array>
-		</dict>
-	</array>
 	<key>XSAppIconAssets</key>
 	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
 	<key>CFBundleDocumentTypes</key>
