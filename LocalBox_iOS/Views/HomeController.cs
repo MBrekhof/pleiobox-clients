@@ -21,8 +21,6 @@ namespace LocalBox_iOS.Views
 		public static HomeController homeController;
         private UIViewController _master;
 		private UIViewController _detail;
-		private UIPageViewController _introduction;
-		private UIViewController _welkom;
 		private UIViewController _authentication;
 		private UIViewController _sites;
 		private UIColor _defaultColor;
@@ -109,63 +107,37 @@ namespace LocalBox_iOS.Views
 			AddChildViewController(addSitesViewController);
 		}
 			
-		public void ShowIntroductionView()
+
+		public UIPageControl GetIntroductionProgressView(int CurrentPage)
 		{
-
-			_introduction = new UIPageViewController(UIPageViewControllerTransitionStyle.Scroll,
-								UIPageViewControllerNavigationOrientation.Horizontal,
-								UIPageViewControllerSpineLocation.Min);
-
-			_introduction.View.BackgroundColor = UIColor.FromRGB (10, 103, 168);
-
-			_welkom = new WelkomPaginaViewController();
-			_sites = new AddSitesViewController (this, _introduction);
-			_authentication = new AuthenticationViewController (PleioUrl, this, _introduction, _sites);
-
-
-			var pages = new UIViewController[] {
-				_welkom,
-				_authentication,
-				_sites
-			};
-
-			var datasource = new IntroductionDataSource(pages);
-			_introduction.DataSource = datasource;
-			_introduction.SetViewControllers(new UIViewController[] {
-				_welkom
-			}, UIPageViewControllerNavigationDirection.Forward, false, s => { });
-				
-			//Dimension
-			_introduction.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
-
 			int ywidth = 330;
-
 			if (UIDevice.CurrentDevice.CheckSystemVersion (8, 0)) { //iOS 8
 				ywidth = 75;
 			}
-
+				
 			var pageControl = new UIPageControl {
-				Pages = pages.Length,
+				Pages = 2,
 				Frame = new CGRect (
-					_introduction.View.Frame.Width / 2 - 50,  //X
-					_introduction.View.Frame.Height - ywidth, 	//Y
+					_authentication.View.Frame.Width / 2 - 50,  //X
+					_authentication.View.Frame.Height - ywidth, 	//Y
 					100, 										//Width
 					50) 										//Height
 			};
-					
 			pageControl.Enabled = false;
+			pageControl.CurrentPage = CurrentPage;
 
-			_introduction.View.AddSubview(pageControl);
-			_introduction.DidFinishAnimating += (s, e) => {
-				if (pageControl.CurrentPage == 1) {
-					pageControl.CurrentPage = 0;
-				} else {
-					pageControl.CurrentPage = 1;
-				}
-			};
+			return pageControl;
+		}
 
-			View.Add(_introduction.View);
-			AddChildViewController(_introduction);
+		public void ShowIntroductionView()
+		{
+
+			_authentication = new AuthenticationViewController (PleioUrl, this, true);
+			_authentication.View.Frame = new CGRect(0, 0, View.Bounds.Width, View.Bounds.Height);
+			_authentication.View.AddSubview(GetIntroductionProgressView(0));
+
+			View.Add(_authentication.View);
+			AddChildViewController(_authentication);
 		}
 						
         void UpdateMaster(UIViewController viewController)

@@ -18,17 +18,17 @@ namespace LocalBox_iOS
 	{
 
 		TableSource _tableSource;
-		private HomeController homeController;
-		private UIPageViewController _introduction;
+		private HomeController _home;
+		private bool _introduction;
 
 		public AddSitesViewController (HomeController homeController) : base ("AddSitesViewController", null)
 		{
-			this.homeController = homeController;
+			this._home = homeController;
 		}
 
-		public AddSitesViewController (HomeController homeController, UIPageViewController introduction) : base ("AddSitesViewController", null)
+		public AddSitesViewController (HomeController homeController, bool introduction) : base ("AddSitesViewController", null)
 		{
-			this.homeController = homeController;
+			this._home = homeController;
 			this._introduction = introduction;
 
 			// hide top and bottom when in introduction mode
@@ -46,8 +46,12 @@ namespace LocalBox_iOS
 		{
 			base.ViewDidLoad ();
 
-			if (_introduction != null) {
+			if (_introduction == true) {
+				View.AddSubview(_home.GetIntroductionProgressView(1));
+
+				RegistrationExplanation.Hidden = false;
 				TopMenu.Hidden = true;
+
 				BottomMenu.BackgroundColor = null;
 				DarkBackground.BackgroundColor = null;
 			}
@@ -58,7 +62,7 @@ namespace LocalBox_iOS
 				this.View.RemoveFromSuperview();
 			};
 				
-			OKButton.TouchUpInside += async(o, e) => {
+			ToevoegenButton.TouchUpInside += async(o, e) => {
 				if (DataLayer.Instance.GetLocalBoxesSync ().Count > 0) {
 					try {						
 						var localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
@@ -77,13 +81,8 @@ namespace LocalBox_iOS
 							DataLayer.Instance.AddOrUpdateLocalBox(box);
 						}
 
-						homeController.InitialiseMenu();
-
-						if (_introduction != null) {
-							_introduction.View.RemoveFromSuperview();
-						} else {
-							this.View.RemoveFromSuperview();
-						}
+						_home.InitialiseMenu();
+						this.View.RemoveFromSuperview();
 					}catch (Exception ex){
 						Insights.Report(ex);
 					}

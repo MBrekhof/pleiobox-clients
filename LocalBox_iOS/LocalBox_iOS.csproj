@@ -81,11 +81,13 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
     <IpaPackageName>
     </IpaPackageName>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <BuildIpa>true</BuildIpa>
+    <MtouchUseLlvm>true</MtouchUseLlvm>
+    <MtouchUseThumb>true</MtouchUseThumb>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -119,6 +121,7 @@
     <Reference Include="Xamarin.Mobile">
       <HintPath>..\LocalBox_Common\Dll\xamarinmobile\ios\Xamarin.Mobile.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Services" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -224,11 +227,6 @@
     <Compile Include="Helpers\Reachability.cs" />
     <Compile Include="Views\Picker\ActionSheetDatePickerCustom.cs" />
     <Compile Include="Helpers\NSDateHelper.cs" />
-    <Compile Include="Views\Introduction\WelkomPaginaViewController.cs" />
-    <Compile Include="Views\Introduction\WelkomPaginaViewController.designer.cs">
-      <DependentUpon>WelkomPaginaViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Introduction\IntroductionDataSource.cs" />
     <Compile Include="Views\Introduction\AuthenticationViewController.cs" />
     <Compile Include="Views\Introduction\AuthenticationViewController.designer.cs">
       <DependentUpon>AuthenticationViewController.cs</DependentUpon>
@@ -256,7 +254,6 @@
     <InterfaceDefinition Include="Views\DelenView.xib" />
     <InterfaceDefinition Include="Views\ItemView\BaseItemView.xib" />
     <InterfaceDefinition Include="Views\AboutViewController.xib" />
-    <InterfaceDefinition Include="Views\Introduction\WelkomPaginaViewController.xib" />
     <InterfaceDefinition Include="Views\Introduction\AuthenticationViewController.xib" />
     <InterfaceDefinition Include="Views\Introduction\AddSitesViewController.xib" />
   </ItemGroup>
@@ -356,6 +353,28 @@
     <BundleResource Include="Resources\IcVerwijderen.png" />
     <BundleResource Include="Resources\IcVerwijderen%402x.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\pleiobox-logo.png" />
+    <BundleResource Include="Resources\pleiobox-balonnetje.png" />
+    <BundleResource Include="over\viewer\images\kogmbh.png" />
+    <BundleResource Include="over\viewer\images\nlnet.png" />
+    <BundleResource Include="over\viewer\images\texture.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-download.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-fullscreen.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-menuArrows.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-pageDown.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-pageUp.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-presentation.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-zoomIn.png" />
+    <BundleResource Include="over\viewer\images\toolbarButton-zoomOut.png" />
+    <BundleResource Include="over\viewer\index.html" />
+    <BundleResource Include="over\viewer\compatibility.js" />
+    <BundleResource Include="over\viewer\example.local.css" />
+    <BundleResource Include="over\viewer\pdf.js" />
+    <BundleResource Include="over\viewer\pdf.worker.js" />
+    <BundleResource Include="over\viewer\pdfjsversion.js" />
+    <BundleResource Include="over\viewer\text_layer_builder.js" />
+    <BundleResource Include="over\viewer\ui_utils.js" />
+    <BundleResource Include="over\viewer\webodf.js" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

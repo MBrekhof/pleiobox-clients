@@ -74,6 +74,8 @@ namespace LocalBox_iOS.Views
 			}
 
 			view.UploadFotoButton.Hidden = path.Equals ("/");
+			view.MaakFolderButton.Hidden = path.Equals ("/");
+
 			view.HideBackButton ();
 			view.LoadData ();
 			return view;

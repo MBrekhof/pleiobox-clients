@@ -16,15 +16,13 @@ namespace LocalBox_iOS
 	{
 		private string PleioUrl;
 		private HomeController _home;
-		private UIPageViewController _introduction;
-		private UIViewController _addsites;
+		private bool _introduction;
 
-		public AuthenticationViewController (string PleioUrl, HomeController home,  UIPageViewController introduction, UIViewController addsites) : base ("AuthenticationViewController", null)
+		public AuthenticationViewController (string PleioUrl, HomeController home, bool introduction) : base ("AuthenticationViewController", null)
 		{
 			this.PleioUrl = PleioUrl;
 			this._home = home;
 			this._introduction = introduction;
-			this._addsites = addsites;
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -55,11 +53,20 @@ namespace LocalBox_iOS
 
 					if (DataLayer.Instance.GetLocalBoxesSync ().Count  == 0) {
 						await business.RegisterLocalBox(PleioUrl);
+
+						this._home.InitialiseMenuAfterRegistration();
 					}
 
-					this._introduction.SetViewControllers(new UIViewController[] {
-						_addsites
-					}, UIPageViewControllerNavigationDirection.Forward, true, s2 => {});
+					this.View.RemoveFromSuperview();
+
+					// show (second) site-selection screen
+					if (_introduction) {
+						var sites = new AddSitesViewController (_home, true);
+						sites.View.BackgroundColor = UIColor.FromRGB(14, 94, 167);
+						_home.View.Add(sites.View);
+						_home.AddChildViewController(sites);
+					}
+
 				} else {
 					LoginButton.Hidden = false;
 					ActivityIndicator.Hidden = true;
@@ -72,7 +79,7 @@ namespace LocalBox_iOS
 			};
 		}
 
-		public override async void ViewDidAppear(bool didAppear) 
+		public override void ViewDidAppear(bool didAppear) 
 		{
 			ActivityIndicator.Hidden = true;
 			LoginButton.Hidden = false;

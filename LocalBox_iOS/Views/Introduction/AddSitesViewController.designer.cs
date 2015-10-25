@@ -28,7 +28,13 @@ namespace LocalBox_iOS
 		UIKit.UIButton OKButton { get; set; }
 
 		[Outlet]
+		UIKit.UIView RegistrationExplanation { get; set; }
+
+		[Outlet]
 		UIKit.UITableView TableView { get; set; }
+
+		[Outlet]
+		UIKit.UIButton ToevoegenButton { get; set; }
 
 		[Outlet]
 		UIKit.UIView TopMenu { get; set; }
@@ -50,6 +56,11 @@ namespace LocalBox_iOS
 				CancelButton = null;
 			}
 
+			if (DarkBackground != null) {
+				DarkBackground.Dispose ();
+				DarkBackground = null;
+			}
+
 			if (OKButton != null) {
 				OKButton.Dispose ();
 				OKButton = null;
@@ -60,14 +71,19 @@ namespace LocalBox_iOS
 				TableView = null;
 			}
 
+			if (ToevoegenButton != null) {
+				ToevoegenButton.Dispose ();
+				ToevoegenButton = null;
+			}
+
 			if (TopMenu != null) {
 				TopMenu.Dispose ();
 				TopMenu = null;
 			}
 
-			if (DarkBackground != null) {
-				DarkBackground.Dispose ();
-				DarkBackground = null;
+			if (RegistrationExplanation != null) {
+				RegistrationExplanation.Dispose ();
+				RegistrationExplanation = null;
 			}
 		}
 	}

@@ -4,6 +4,7 @@ using CoreGraphics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Web;
 
 using Foundation;
 using UIKit;
@@ -90,11 +91,8 @@ namespace LocalBox_iOS.Views
                     () => filePath = DataLayer.Instance.GetFilePathSync(treeNode.Path),
                     ()=> {
 						try{
-
-                        	var item = 
-                            WebItemView.Create(new CGRect(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
-
-                        	item.Layer.ZPosition = 10;
+                        	var item = WebItemView.Create(new CGRect(View.Frame.Width, 0, width, View.Frame.Height), this, treeNode, filePath, _balkKleur);
+							item.Layer.ZPosition = 10;
                         	_nodes.Add(item);
                         	Add(item);
                         	AnimateViews();
