@@ -69,5 +69,9 @@
 	<string>0.2.9</string>
 	<key>CFBundleVersion</key>
 	<string>107</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+	</array>
 </dict>
 </plist>

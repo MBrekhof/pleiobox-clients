@@ -24,7 +24,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="78d-jF-KCO">
-                    <rect key="frame" x="351" y="79" width="360" height="598"/>
+                    <rect key="frame" x="332" y="79" width="360" height="598"/>
                     <subviews>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UDU-0b-y08">
                             <rect key="frame" x="0.0" y="0.0" width="360" height="67"/>
@@ -97,7 +97,7 @@
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.53000000000000003" colorSpace="calibratedRGB"/>
             <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="599" y="465"/>
+            <point key="canvasLocation" x="682" y="447"/>
         </view>
     </objects>
     <resources>

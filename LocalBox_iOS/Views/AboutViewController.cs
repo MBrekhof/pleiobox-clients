@@ -20,8 +20,24 @@ namespace LocalBox_iOS
             base.ViewDidLoad();
 
             string htmlFile = NSBundle.MainBundle.PathForResource("over/LocalBoxInfo", "html");
-            WebView.LoadRequest(new NSUrlRequest(NSUrl.FromFilename(htmlFile)));
+			WebView.ShouldStartLoad = HandleShouldStartLoad;
+			WebView.LoadRequest(new NSUrlRequest(NSUrl.FromFilename(htmlFile)));
+
         }
+
+		bool HandleShouldStartLoad (UIWebView webView, NSUrlRequest request, UIWebViewNavigationType navigationType)
+		{
+			// Filter out clicked links
+			if(navigationType == UIWebViewNavigationType.LinkClicked) {
+				if(UIApplication.SharedApplication.CanOpenUrl(request.Url)) {
+					// Open in Safari instead
+					UIApplication.SharedApplication.OpenUrl(request.Url);
+					return false;
+				}
+			}
+
+			return true;
+		}
 
         public override void ViewWillAppear(bool animated)
         {
