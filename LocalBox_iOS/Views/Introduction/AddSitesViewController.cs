@@ -101,11 +101,12 @@ namespace LocalBox_iOS
 
 				try {
 					List<Site> sites = await remoteExplorer.GetSites ();
-					for (int i = sites.Count - 1; i >= 0; i--) {
-						foreach (LocalBox box in DataLayer.Instance.GetLocalBoxesSync()) {
-							if (box.BaseUrl == sites [i].Url) {
-								sites.RemoveAt (i);
-								continue;
+
+					foreach (LocalBox box in DataLayer.Instance.GetLocalBoxesSync()) {
+						for (int i = 0; i < sites.Count; i++) {
+							if (box.BaseUrl == sites[i].Url) {
+								sites.RemoveAt(i);
+								break;
 							}
 						}
 					}
