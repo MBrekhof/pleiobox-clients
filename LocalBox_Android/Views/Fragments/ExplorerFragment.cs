@@ -36,6 +36,7 @@ namespace LocalBox_Droid
 		private PopupWindow popupWindow;
 		private ListView explorerListView;
 		private ImageButton buttonUploadFileExplorer;
+		private ImageButton buttonAddFolderExplorer;
 		private ExplorerAdapter explorerAdapter;
 
 		//Default constructor for explorer
@@ -86,13 +87,17 @@ namespace LocalBox_Droid
 			ListView.ItemLongClick += ListView_OnItemLongClick;
 
 			buttonUploadFileExplorer = Activity.FindViewById<ImageButton> (Resource.Id.button_upload_file_explorer);
+			buttonAddFolderExplorer = Activity.FindViewById<ImageButton> (Resource.Id.button_add_folder_explorer);
 
 			if (openedDirectories.Count > 1) {
 				if (favoriteFolderOpened == false) {
 					buttonUploadFileExplorer.Visibility = ViewStates.Visible;
+					buttonAddFolderExplorer.Visibility = ViewStates.Visible;
+
 				}
 			} else {
 				buttonUploadFileExplorer.Visibility = ViewStates.Invisible;
+				buttonAddFolderExplorer.Visibility = ViewStates.Invisible;
 			}
 		}
 

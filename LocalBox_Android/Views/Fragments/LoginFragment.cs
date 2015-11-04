@@ -20,10 +20,12 @@ namespace LocalBox_Droid
 	public class LoginFragment : DialogFragment
 	{
 		private string PleioUrl;
+		private HomeActivity homeActivity;
 
-		public LoginFragment(string pleioUrl)
+		public LoginFragment(string pleioUrl, HomeActivity homeActivity)
 		{
 			PleioUrl = pleioUrl;
+			homeActivity = homeActivity;
 		}
 
 		public override void OnCreate (Bundle savedInstanceState)
@@ -54,16 +56,19 @@ namespace LocalBox_Droid
 
 			var result = await authorization.Authorize (username, password);
 			if (result) {
-				Toast.MakeText (Activity, "Ingelogd", ToastLength.Short).Show ();
-
 				var business = new BusinessLayer();
 
 				if (DataLayer.Instance.GetLocalBoxesSync ().Count == 0) {
 					await business.RegisterLocalBox (PleioUrl);
 				}
 
+				var activity = (HomeActivity) Activity;
+				activity.HideLoginDialog ();
+				activity.menuFragment.UpdateLocalBoxes ();
+
+				Toast.MakeText (Activity, "Ingelogd.", ToastLength.Short).Show ();
 			} else {
-				Toast.MakeText (Activity, "Niet ingelogd", ToastLength.Short).Show ();
+				Toast.MakeText (Activity, "Gebruikersnaam en wachtwoord combinatie is ongeldig.", ToastLength.Short).Show ();
 			}
 		}
 

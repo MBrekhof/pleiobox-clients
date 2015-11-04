@@ -14,6 +14,7 @@ namespace LocalBox_Droid
 	{
 		private Activity context;
 		private List<Site> sitesAll;
+		public List<Identity> sitesMatch;
 
 		public SitesAdapter (Activity context, List<Site> sites) : base ()
 		{

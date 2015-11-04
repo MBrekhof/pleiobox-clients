@@ -363,14 +363,14 @@ namespace LocalBox_Droid
 			// aapt resource value: 0x7f0a002c
 			public const int button_popup_root_delete = 2131361836;
 			
-			// aapt resource value: 0x7f0a0010
-			public const int button_refresh_explorer = 2131361808;
+			// aapt resource value: 0x7f0a000f
+			public const int button_refresh_explorer = 2131361807;
 			
 			// aapt resource value: 0x7f0a0019
 			public const int button_save_pdf = 2131361817;
 			
-			// aapt resource value: 0x7f0a000f
-			public const int button_upload_file_explorer = 2131361807;
+			// aapt resource value: 0x7f0a0010
+			public const int button_upload_file_explorer = 2131361808;
 			
 			// aapt resource value: 0x7f0a0028
 			public const int centerpoint = 2131361832;

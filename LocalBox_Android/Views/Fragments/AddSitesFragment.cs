@@ -20,11 +20,35 @@ namespace LocalBox_Droid
 	public class AddSitesFragment : DialogFragment
 	{
 
-		private List<Site> Sites;
+		private List<Site> sites = new List<Site> ();
+		private SitesAdapter sitesAdapter;
 
-		public override void OnCreate (Bundle savedInstanceState)
+		public async override void OnCreate (Bundle savedInstanceState)
 		{
 			base.OnCreate (savedInstanceState);
+
+			var remoteExplorer = new RemoteExplorer ();
+
+			try {
+				var remoteSites = await remoteExplorer.GetSites ();
+
+				foreach (LocalBox box in DataLayer.Instance.GetLocalBoxesSync()) {
+					for (int i = 0; i < remoteSites.Count; i++) {
+						if (box.BaseUrl == remoteSites[i].Url) {
+							remoteSites.RemoveAt(i);
+							break;
+						}
+					}
+				}
+
+				foreach (Site site in remoteSites) {
+					sites.Add(site);
+				}
+
+				sitesAdapter.NotifyDataSetChanged();
+			} catch (Exception ex) {
+				Insights.Report (ex);
+			}
 		}
 
 		public override View OnCreateView (LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
@@ -32,35 +56,42 @@ namespace LocalBox_Droid
 			Dialog.SetTitle("Site toevoegen");
 
 			View view = layoutInflater.Inflate (Resource.Layout.fragment_add_site, viewGroup, false);
-
-			var remoteExplorer = new RemoteExplorer ();
-
-			List<Site> sites = new List<Site>();
-
-			try {
-				sites = remoteExplorer.GetSites ().Result;
-
-				foreach (LocalBox box in DataLayer.Instance.GetLocalBoxesSync()) {
-					for (int i = 0; i < sites.Count; i++) {
-						if (box.BaseUrl == sites[i].Url) {
-							sites.RemoveAt(i);
-							break;
-						}
-					}
-				}
-			} catch (Exception ex) {
-				Insights.Report (ex);
-			}
-
-
-			var sitesAdapter = new SitesAdapter (Activity, sites);
+			sitesAdapter = new SitesAdapter (Activity, sites);
 
 			var siteListView = view.FindViewById<ListView> (Resource.Id.sitelist);
 			siteListView.Adapter = sitesAdapter;
+			siteListView.ChoiceMode = ChoiceMode.Multiple;
 
 			Button buttonBack = view.FindViewById<Button> (Resource.Id.toevoegen);
 			buttonBack.Click += delegate {
-				Toast.MakeText (Activity, "Nog maken....", ToastLength.Short).Show ();
+
+				var localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
+
+				for (var i = 0; i < siteListView.CheckedItemPositions.Size(); i++) {
+					if (siteListView.CheckedItemPositions.ValueAt(i) == false) {
+						continue;
+					}
+
+					Site site = sites[i];
+
+					LocalBox box = new LocalBox();
+					box.BackColor = localBox.BackColor;
+					box.BaseUrl = site.Url;
+					box.DatumTijdTokenExpiratie = localBox.DatumTijdTokenExpiratie;
+					box.LogoUrl = localBox.LogoUrl;
+					box.Name = site.Name;
+					box.OriginalServerCertificate = null;
+					box.PassPhrase = null;
+					box.PrivateKey = null;
+					box.PublicKey = null;
+					box.User = localBox.User;
+					DataLayer.Instance.AddOrUpdateLocalBox(box);
+				}
+					
+				var activity = (HomeActivity) Activity;
+				activity.ShowToast("Sites toegevoegd...");
+				activity.menuFragment.UpdateLocalBoxes();
+				activity.HideAddSitesDialog();
 			};
 
 			return view;

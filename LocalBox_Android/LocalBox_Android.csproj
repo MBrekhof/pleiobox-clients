@@ -71,7 +71,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LocalBoxApp.cs" />
     <Compile Include="Helper\FontHelper.cs" />
@@ -104,6 +103,7 @@
     <Compile Include="Views\Adapters\SitesAdapter.cs" />
     <Compile Include="Views\Fragments\AddSitesFragment.cs" />
     <Compile Include="Providers\CustomContentProvider.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

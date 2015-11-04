@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="600dp"
-    android:layout_height="400dp"
-    android:background="@drawable/tour_android">
-    <LinearLayout
-        android:orientation="vertical"
+    android:layout_height="400dp">
+    <ListView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/sitelist"
+        android:padding="50px"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:background="#005dac">
-        <ListView
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
-            android:layout_height="332.1dp"
-            android:id="@+id/sitelist"
-            android:padding="50px" />
-        <Button
-            android:text="Toevoegen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/toevoegen" />
-    </LinearLayout>
+        android:layout_height="350dp" />
+    <Button
+        android:text="Toevoegen"
+        android:id="@+id/toevoegen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top" />
 </LinearLayout>

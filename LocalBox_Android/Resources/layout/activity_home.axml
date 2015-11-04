@@ -101,23 +101,23 @@
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="25dp"
-                    android:layout_toLeftOf="@+id/button_upload_file_explorer"
+                    android:layout_toLeftOf="@+id/button_refresh_explorer"
                     android:background="@drawable/ic_bottom_toevoegen" />
-                <ImageButton
-                    android:id="@+id/button_upload_file_explorer"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/ic_bottom_upload" />
                 <ImageButton
                     android:id="@+id/button_refresh_explorer"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_toRightOf="@+id/button_upload_file_explorer"
+                    android:layout_centerHorizontal="true"
                     android:background="@drawable/ic_bottom_sync" />
+                <ImageButton
+                    android:id="@+id/button_upload_file_explorer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_toRightOf="@+id/button_refresh_explorer"
+                    android:background="@drawable/ic_bottom_upload" />
                 <View
                     android:layout_width="15dp"
                     android:layout_height="fill_parent"

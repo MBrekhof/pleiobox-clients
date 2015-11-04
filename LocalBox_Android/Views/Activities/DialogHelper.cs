@@ -18,7 +18,7 @@ namespace LocalBox_Droid
 {
 	public class DialogHelperForHomeActivity
 	{
-		HomeActivity homeActivity;
+		public HomeActivity homeActivity;
 
 		public DialogHelperForHomeActivity (HomeActivity homeActivity)
 		{
@@ -103,16 +103,14 @@ namespace LocalBox_Droid
 			fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
 
 			Android.App.DialogFragment dialogFragmentLogin;
-			LoginFragment loginFragment = new LoginFragment (pleioUrl);
+			LoginFragment loginFragment = new LoginFragment (pleioUrl, homeActivity);
 
-			dialogFragmentLogin = loginFragment;
-			dialogFragmentLogin.Show (fragmentTransaction, "logindialog");
+			homeActivity.dialogLogin = loginFragment;
+			homeActivity.dialogLogin.Show (fragmentTransaction, "logindialog");
 		}
 
 		public void ShowAddSitesDialog()
 		{	
-			homeActivity.ShowProgressDialog (null);
-
 			try {
 				Android.App.FragmentTransaction fragmentTransaction;
 				fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
@@ -120,12 +118,10 @@ namespace LocalBox_Droid
 				Android.App.DialogFragment dialogFragmentAddSites;
 				AddSitesFragment addSitesFragment = new AddSitesFragment ();
 
-				dialogFragmentAddSites = addSitesFragment;
-				dialogFragmentAddSites.Show (fragmentTransaction, "addsitesdialog");
-				homeActivity.HideProgressDialog ();
+				homeActivity.dialogFragmentAddSites = addSitesFragment;
+				homeActivity.dialogFragmentAddSites.Show (fragmentTransaction, "addsitesdialog");
 			} catch (Exception ex) {
 				Insights.Report (ex);
-				homeActivity.HideProgressDialog ();
 			}
 		}
 			
@@ -150,7 +146,7 @@ namespace LocalBox_Droid
 				fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
 
 				List<TreeNode>foundDirectoryTreeNodes 	= new List<TreeNode>();
-				TreeNode rootTreeNode 			= await DataLayer.Instance.GetFolder ("/");
+				TreeNode rootTreeNode = await DataLayer.Instance.GetFolder ("/");
 
 				foreach(TreeNode foundTreeNode in rootTreeNode.Children)
 				{
@@ -183,7 +179,15 @@ namespace LocalBox_Droid
 			homeActivity.RefreshExplorerFragmentData ();
 		}
 
+		public void HideAddSitesDialog ()
+		{
+			homeActivity.dialogFragmentAddSites.Dismiss ();
+		}
 
+		public void HideLoginDialog()
+		{
+			homeActivity.dialogLogin.Dismiss ();
+		}
 
 		public void ShowNewFolderDialog ()
 		{

@@ -37,6 +37,8 @@ namespace LocalBox_Droid
 		public MenuFragment menuFragment;
 		public Android.App.DialogFragment dialogFragmentShare;
 		public Android.App.DialogFragment dialogFragmentMoveFile;
+		public Android.App.DialogFragment dialogFragmentAddSites;
+		public Android.App.DialogFragment dialogLogin;
 		private ImageButton buttonBackExplorer;
 		private ImageButton buttonAddFolderExplorer;
 		private ImageButton buttonUploadFileExplorer;
@@ -404,7 +406,17 @@ namespace LocalBox_Droid
 		{
 			dialogHelper.ShowMoveFileDialog (treeNodeToMove);
 		}
+
+		public void HideLoginDialog()
+		{
+			dialogHelper.HideLoginDialog();
+		}
 			
+		public void HideAddSitesDialog()
+		{
+			dialogHelper.HideAddSitesDialog ();
+		}
+
 		public void HideMoveFileDialog ()
 		{
 			dialogHelper.HideMoveFileDialog ();
