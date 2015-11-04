@@ -1,6 +1,7 @@
 LocalBox_Android/obj
 BouncyCastle/bin
 LocalBox_Common/bin
+LocalBox_Android/bin
 LocalBox_iOS/bin
 LocalBox_iOS/obj
 LocalBox_Common/obj

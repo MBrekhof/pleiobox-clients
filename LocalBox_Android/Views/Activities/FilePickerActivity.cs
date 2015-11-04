@@ -41,22 +41,11 @@ namespace LocalBox_Droid
 		protected override void OnPause ()
 		{
 			base.OnPause ();
-			LockHelper.SetLastActivityOpenedTime ("FilePickerActivity");
 		}
 
 		protected override void OnResume ()
 		{
 			base.OnResume ();
-
-			bool shouldShowLockScreen = LockHelper.ShouldLockApp ("FilePickerActivity");
-
-			if (shouldShowLockScreen) 
-			{
-				//Lock scherm
-				HomeActivity.shouldLockApp = true;
-				StartActivity(typeof(PinActivity));
-				DataLayer.Instance.LockDatabase ();
-			} 
 		}
 
 	}

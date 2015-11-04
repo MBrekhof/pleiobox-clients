@@ -374,6 +374,8 @@
     <BundleResource Include="over\viewer\text_layer_builder.js" />
     <BundleResource Include="over\viewer\ui_utils.js" />
     <BundleResource Include="over\viewer\webodf.js" />
+    <BundleResource Include="Resources\IcBottom-Opslaan-Wit.png" />
+    <BundleResource Include="Resources\IcBottom-Opslaan-Wit%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

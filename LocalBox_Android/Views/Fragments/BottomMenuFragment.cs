@@ -30,8 +30,7 @@ namespace LocalBox_Droid
 			View view = layoutInflater.Inflate(Resource.Layout.fragment_menu, viewGroup, false);
 
 			listValues = new List<string> ();
-			listValues.Add ("Toevoegen");
-			listValues.Add ("Vergrendelen");
+			listValues.Add ("Site toevoegen");
 			listValues.Add ("Over de app");
 
 			ListAdapter = new BottomMenuAdapter(Activity, listValues);
@@ -43,14 +42,13 @@ namespace LocalBox_Droid
 			HomeActivity homeActivity = (HomeActivity)Activity;
 
 			if (position == 0) { //Toevoegen aangeklikt
-				homeActivity.ShowIntroductionDialog ();
+				if (DataLayer.Instance.GetLocalBoxesSync ().Count == 0) {
+					homeActivity.ShowLoginDialog ();
+				} else {
+					homeActivity.ShowAddSitesDialog ();
+				}
 			}
-			else if (position == 1) { //vergrendelen aangeklikt
-				//Lock scherm
-				HomeActivity.shouldLockApp = true;
-				Activity.StartActivity(typeof(PinActivity));
-			} 
-			else if (position == 2){ //Over de app aangeklikt
+			else if (position == 1){ //Over de app aangeklikt
 				homeActivity.ShowAboutAppDialog ();
 			}
 

@@ -76,10 +76,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 				
 			using (var httpClient = new HttpClient(handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -125,10 +122,7 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _authorization.AccessToken;
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -166,11 +160,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
-
+			var handler = new HttpClientHandler {};
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
 				httpClient.DefaultRequestHeaders.ExpectContinue = false;
@@ -211,10 +201,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -254,10 +241,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -299,10 +283,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -337,10 +318,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -384,10 +362,7 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _authorization.AccessToken;
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -432,10 +407,7 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _authorization.AccessToken;
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -470,10 +442,7 @@ namespace LocalBox_Common.Remote
 
 				string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -517,10 +486,7 @@ namespace LocalBox_Common.Remote
 
 				string AccessToken = _authorization.AccessToken;
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -566,10 +532,7 @@ namespace LocalBox_Common.Remote
 
 					string jsonContentString = "{ \"identities\":" + JsonConvert.SerializeObject (usersToShareWith) + "}";
 
-					var handler = new HttpClientHandler {
-						Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-						UseProxy = true,
-					};
+					var handler = new HttpClientHandler {};
 
 					using (var httpClient = new HttpClient (handler)) {
 						httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -608,10 +571,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -655,10 +615,7 @@ namespace LocalBox_Common.Remote
 
 					string AccessToken = _authorization.AccessToken;
 
-					var handler = new HttpClientHandler {
-						Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-						UseProxy = true,
-					};
+					var handler = new HttpClientHandler {};
 
 					using (var httpClient = new HttpClient (handler)) {
 						httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -749,10 +706,7 @@ namespace LocalBox_Common.Remote
 
 			string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -796,10 +750,7 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
             using (var httpClient = new HttpClient (handler)) {
                 httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -841,10 +792,7 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -887,10 +835,7 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -935,10 +880,7 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -983,10 +925,7 @@ namespace LocalBox_Common.Remote
 
             string AccessToken = _authorization.AccessToken;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
             using (var httpClient = new HttpClient(handler))
             {

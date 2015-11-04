@@ -11,13 +11,6 @@
         android:layout_margin="1dp"
         android:background="#403F44">
         <ImageButton
-            android:id="@+id/button_popup_file_share"
-            android:layout_marginRight="25dp"
-            android:layout_toLeftOf="@+id/button_popup_file_openin"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/ic_delen" />
-        <ImageButton
             android:id="@+id/button_popup_file_openin"
             android:layout_marginRight="25dp"
             android:layout_toLeftOf="@+id/button_popup_file_favorite"

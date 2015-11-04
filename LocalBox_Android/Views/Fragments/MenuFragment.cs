@@ -38,7 +38,7 @@ namespace LocalBox_Droid
 		{
 			View view = layoutInflater.Inflate (Resource.Layout.fragment_menu, viewGroup, false);
 
-			imageViewLogo = Activity.FindViewById<ImageView> (Resource.Id.imageViewLogo);
+			//imageViewLogo = Activity.FindViewById<ImageView> (Resource.Id.imageViewLogo);
 
 			SetAdapter ();
 			
@@ -102,11 +102,11 @@ namespace LocalBox_Droid
 				if (File.Exists (pathToLogo)) 
 				{ //Verander logo
 					Android.Net.Uri uriLogo = Android.Net.Uri.Parse (pathToLogo);
-					imageViewLogo.SetImageURI (uriLogo);
+					//imageViewLogo.SetImageURI (uriLogo);
 				} 
 				else //Default logo
 				{
-					imageViewLogo.SetImageResource (Resource.Drawable.beeldmerk_belastingdienst);
+					//imageViewLogo.SetImageResource (Resource.Drawable.beeldmerk_belastingdienst);
 				}
 			}
 
@@ -202,10 +202,10 @@ namespace LocalBox_Droid
 						List<LocalBox> registeredLocalBoxes = await DataLayer.Instance.GetLocalBoxes ();
 						if (registeredLocalBoxes.Count == 0) {
 							HomeActivity homeActivity = (HomeActivity)Activity;
-							homeActivity.ShowIntroductionDialog();
+							homeActivity.ShowLoginDialog();
 						}
 						//Reset logo
-						imageViewLogo.SetImageResource (Resource.Drawable.beeldmerk_belastingdienst);
+						//imageViewLogo.SetImageResource (Resource.Drawable.beeldmerk_belastingdienst);
 					}catch (Exception ex){
 						Insights.Report(ex);
 						Toast.MakeText (Android.App.Application.Context, "Het verwijderen van de LocalBox is mislukt", ToastLength.Short).Show ();

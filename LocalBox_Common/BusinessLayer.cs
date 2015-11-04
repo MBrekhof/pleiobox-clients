@@ -11,7 +11,6 @@ using Xamarin;
 using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using XLabs.Platform.Services;
 
 namespace LocalBox_Common
 {
@@ -42,14 +41,11 @@ namespace LocalBox_Common
 				localBoxUrl.Append(localBoxBaseUrl);
 				localBoxUrl.Append("/lox_api/register_app");
 
-				SecureStorage storage = new SecureStorage();
-				ASCIIEncoding encoding = new ASCIIEncoding();
-				var accessToken = encoding.GetString (storage.Retrieve ("access_token"));
+				Database _database = DataLayer.Instance.DbInstance();
+				Tokens tokens = _database.GetTokens();
+				var accessToken = tokens.AccessToken;
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -96,7 +92,6 @@ namespace LocalBox_Common
 					HttpWebRequest request = (HttpWebRequest)WebRequest.Create (tokensRequestUrl); 
 					request.Method = "POST";
 					request.ContentType = "application/x-www-form-urlencoded";
-					request.Proxy = CoreFoundation.CFNetwork.GetDefaultProxy();
 					request.KeepAlive = false;
 					request.Timeout	= 3000;
 

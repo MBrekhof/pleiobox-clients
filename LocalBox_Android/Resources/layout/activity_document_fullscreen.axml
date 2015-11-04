@@ -5,7 +5,7 @@
     android:layout_height="fill_parent">
     <LinearLayout
         android:id="@+id/document_fullscreen_custom_actionbar"
-        android:background="#8FCAE4"
+        android:background="#005dac"
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <TextView

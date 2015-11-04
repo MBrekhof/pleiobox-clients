@@ -40,7 +40,7 @@ namespace LocalBox_Droid
 		{
 			base.OnCreate(bundle);
 			Thread.Sleep(2000); //milliseconds to show splash
-			StartActivity(typeof(PinActivity));
+			StartActivity(typeof(HomeActivity));
 		}
 
 		protected override void OnResume ()

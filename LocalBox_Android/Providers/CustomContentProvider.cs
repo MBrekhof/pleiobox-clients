@@ -15,10 +15,10 @@ using Xamarin;
 
 namespace LocalBox_Droid
 {
-	[ContentProvider(new string[] { "com.belastingdienst.localbox" }, Exported = true)]
+	[ContentProvider(new string[] { "com.pleio.pleiobox" }, Exported = true)]
 	public class CustomContentProvider : ContentProvider
 	{
-		public static readonly string AUTHORITY = "com.belastingdienst.localbox";
+		public static readonly string AUTHORITY = "com.pleio.pleiobox";
 		public static readonly Android.Net.Uri CONTENT_URI = Android.Net.Uri.Parse("content://" + AUTHORITY);
 
 		public CustomContentProvider()
@@ -35,7 +35,7 @@ namespace LocalBox_Droid
 		public override string GetType (Android.Net.Uri uri)
 		{
 			var mimeType = MimeTypeHelper.GetMimeType(uri.ToString());
-		
+
 			return mimeType;
 		}
 

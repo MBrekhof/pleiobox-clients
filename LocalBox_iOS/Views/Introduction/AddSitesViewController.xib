@@ -66,7 +66,7 @@
                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ve-jO-xSP">
                                     <rect key="frame" x="150" y="16" width="61" height="44"/>
                                     <animations/>
-                                    <state key="normal" image="IcBottom-Opslaan.png">
+                                    <state key="normal" image="IcBottom-Opslaan-Wit.png">
                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="titleShadowColor" red="0.062745098039215685" green="0.48627450980392156" blue="0.15686274509803921" alpha="0.0" colorSpace="calibratedRGB"/>
                                     </state>
@@ -100,7 +100,7 @@
         </view>
     </objects>
     <resources>
-        <image name="IcBottom-Opslaan.png" width="44" height="44"/>
+        <image name="IcBottom-Opslaan-Wit.png" width="16" height="16"/>
         <image name="IcTop_Sluiten" width="16" height="16"/>
     </resources>
 </document>

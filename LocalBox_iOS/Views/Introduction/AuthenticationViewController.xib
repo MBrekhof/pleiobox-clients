@@ -33,7 +33,7 @@
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3fo-4j-FkH">
                     <rect key="frame" x="485" y="337" width="54" height="54"/>
                     <animations/>
-                    <state key="normal" image="IcBottom-Opslaan.png">
+                    <state key="normal" image="IcBottom-Opslaan-Wit.png">
                         <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </state>
                     <userDefinedRuntimeAttributes>
@@ -75,7 +75,7 @@
         </view>
     </objects>
     <resources>
-        <image name="IcBottom-Opslaan.png" width="44" height="44"/>
+        <image name="IcBottom-Opslaan-Wit.png" width="44" height="44"/>
         <image name="pleiobox-balonnetje.png" width="427" height="161"/>
         <image name="pleiobox-logo.png" width="411" height="402"/>
     </resources>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,7 +14,7 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>LocalBox_Android</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
@@ -63,20 +63,11 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\LocalBox_Common\Dll\json.net\lib\android\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>packages\Xamarin.Android.Support.v4.22.2.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
-    </Reference>
     <Reference Include="ExifLib">
       <HintPath>packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll</HintPath>
     </Reference>
-    <Reference Include="XLabs.Core">
-      <HintPath>packages\XLabs.Core.2.0.5679\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="XLabs.Platform.Droid">
-      <HintPath>packages\XLabs.Platform.2.0.5679\lib\MonoAndroid\XLabs.Platform.Droid.dll</HintPath>
-    </Reference>
-    <Reference Include="XLabs.Platform">
-      <HintPath>packages\XLabs.Platform.2.0.5679\lib\MonoAndroid\XLabs.Platform.dll</HintPath>
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>packages\Xamarin.Android.Support.v4.23.0.1.3\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -94,29 +85,25 @@
     <Compile Include="Views\Activities\DocumentFullscreenActivity.cs" />
     <Compile Include="Views\Activities\HomeActivity.cs" />
     <Compile Include="Views\Activities\FilePickerActivity.cs" />
+    <Compile Include="Views\Activities\DialogHelper.cs">
+    </Compile>
     <Compile Include="Views\Adapters\FileListAdapter.cs" />
     <Compile Include="Views\Fragments\FileListFragment.cs" />
     <Compile Include="Helper\LayoutInflateHelper.cs" />
     <Compile Include="Helper\FileSystemHelper.cs" />
-    <Compile Include="Views\Activities\PinActivity.cs" />
     <Compile Include="Helper\LockHelper.cs" />
     <Compile Include="Helper\Constants.cs" />
     <Compile Include="Views\Activities\SplashActivity.cs" />
-    <Compile Include="Views\Fragments\ShareFragment.cs" />
     <Compile Include="Views\Adapters\ShareAdapter.cs" />
     <Compile Include="Views\Fragments\ExplorerFragment.cs" />
-    <Compile Include="Views\Fragments\PIN\PinEnterFragment.cs" />
-    <Compile Include="Views\Fragments\PIN\PinSetUpFragment.cs" />
     <Compile Include="Views\Fragments\AboutAppFragment.cs" />
-    <Compile Include="Views\Fragments\RegisterLocalBoxFragment.cs" />
     <Compile Include="Views\Fragments\MoveFileFragment.cs" />
-    <Compile Include="Providers\CustomContentProvider.cs" />
     <Compile Include="Views\Activities\TemporarilyUnused\PdfActivity.cs" />
     <Compile Include="Views\Activities\VideoPlayerActivity.cs" />
-    <Compile Include="Views\Fragments\PIN\PinHelper.cs" />
-    <Compile Include="Views\Activities\DialogHelper.cs">
-      <DependentUpon>HomeActivity.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Views\Fragments\LoginFragment.cs" />
+    <Compile Include="Views\Adapters\SitesAdapter.cs" />
+    <Compile Include="Views\Fragments\AddSitesFragment.cs" />
+    <Compile Include="Providers\CustomContentProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -171,16 +158,11 @@
     <AndroidResource Include="Resources\drawable\ic_ind_met_mij_gedeeld.png" />
     <AndroidResource Include="Resources\drawable\ic_ind_zelf_gedeeld.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_instellingen.png" />
-    <AndroidResource Include="Resources\layout\pin_digits.axml" />
-    <AndroidResource Include="Resources\layout\pin_keyboard.axml" />
-    <AndroidResource Include="Resources\layout\Pincode_instellen.axml" />
-    <AndroidResource Include="Resources\layout\Pincode.axml" />
     <AndroidResource Include="Resources\values\dimens.xml" />
     <AndroidResource Include="Resources\drawable\icon_backspace.png" />
     <AndroidResource Include="Resources\drawable\bg_pincode_active.xml" />
     <AndroidResource Include="Resources\drawable\bg_pincode_done.xml" />
     <AndroidResource Include="Resources\drawable\bg_pincode.xml" />
-    <AndroidResource Include="Resources\layout\activity_pin.axml" />
     <AndroidResource Include="Resources\layout\custom_popup_folder_root.axml" />
     <AndroidResource Include="Resources\layout\custom_popup_folder_subfolder.axml" />
     <AndroidResource Include="Resources\drawable\splash.png" />
@@ -189,13 +171,11 @@
     <AndroidResource Include="Resources\drawable\list_selector.xml" />
     <AndroidResource Include="Resources\drawable\beeldmerk_belastingdienst.png" />
     <AndroidResource Include="Resources\drawable\splashandroid.png" />
-    <AndroidResource Include="Resources\layout\fragment_share.axml" />
     <AndroidResource Include="Resources\layout\custom_listview_item_share.axml" />
     <AndroidResource Include="Resources\drawable\folder_filepicker.png" />
     <AndroidResource Include="Resources\drawable\file_filepicker.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_opslaan.png" />
     <AndroidResource Include="Resources\layout\activity_pdf.axml" />
-    <AndroidResource Include="Resources\layout\fragment_introduction.axml" />
     <AndroidResource Include="Resources\layout\dialog_new_passphrase.axml" />
     <AndroidResource Include="Resources\layout\dialog_enter_passphrase.axml" />
     <AndroidResource Include="Resources\layout\custom_popup_file_share.axml" />
@@ -214,9 +194,7 @@
     <AndroidResource Include="Resources\drawable\ic_bottom_over_de_app.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_vergrendel.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_toevoegen_lb.png" />
-    <AndroidResource Include="Resources\drawable\localbox_appicon.png" />
     <AndroidResource Include="Resources\layout\dialog_open_url.axml" />
-    <AndroidResource Include="Resources\layout\fragment_register_localbox.axml" />
     <AndroidResource Include="Resources\layout\fragment_move_file.axml" />
     <AndroidResource Include="Resources\drawable\ic_openen.png" />
     <AndroidResource Include="Resources\drawable\ic_bottom_sync.png" />
@@ -224,14 +202,11 @@
     <AndroidResource Include="Resources\drawable\ic_bottom_upload.png" />
     <AndroidResource Include="Resources\layout\activity_videoplayer.axml" />
     <AndroidResource Include="Resources\drawable\tour_android.png" />
+    <AndroidResource Include="Resources\layout\fragment_login.axml" />
+    <AndroidResource Include="Resources\layout\fragment_add_site.axml" />
+    <AndroidResource Include="Resources\drawable\pleiobox_appicon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_Android.csproj">
-      <Project>{787E7C18-AB9F-4008-BCD3-113D29B4FB84}</Project>
-      <Name>LocalBox_Common_Android</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
     <Folder Include="Resources\Anim\" />
@@ -241,20 +216,25 @@
     <Folder Include="Resources\menu\" />
     <Folder Include="Views\Activities\" />
     <Folder Include="Assets\img\" />
-    <Folder Include="Providers\" />
     <Folder Include="Views\Activities\TemporarilyUnused\" />
+    <Folder Include="Providers\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Roboto-Regular.ttf" />
-    <AndroidAsset Include="Assets\img\IcInd-Met-mij-gedeeld.png" />
-    <AndroidAsset Include="Assets\img\IcInd-Nieuw.png" />
-    <AndroidAsset Include="Assets\img\IcInd-favorieten.png" />
-    <AndroidAsset Include="Assets\img\IcInd_Zelf-gedeeld.png" />
-    <AndroidAsset Include="Assets\img\IcLijst-favorieten.png" />
     <AndroidAsset Include="Assets\img\gototop.png" />
-    <AndroidAsset Include="Assets\img\ic_bellen.png" />
-    <AndroidAsset Include="Assets\img\ic_email.png" />
-    <AndroidAsset Include="Assets\img\logoMCC.png" />
     <AndroidAsset Include="Assets\aboutlocalbox.html" />
+    <AndroidAsset Include="Assets\img\ic-delen.png" />
+    <AndroidAsset Include="Assets\img\ic-maak-favoriet.png" />
+    <AndroidAsset Include="Assets\img\ic-toevoegen-box.png" />
+    <AndroidAsset Include="Assets\img\ic-toevoegen.png" />
+    <AndroidAsset Include="Assets\img\ic-uploaden.png" />
+    <AndroidAsset Include="Assets\img\ic-verplaatsen.png" />
+    <AndroidAsset Include="Assets\img\ic-verwijderen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LocalBox_Common\LocalBox_Common_Android.csproj">
+      <Project>{787E7C18-AB9F-4008-BCD3-113D29B4FB84}</Project>
+      <Name>LocalBox_Common_Android</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

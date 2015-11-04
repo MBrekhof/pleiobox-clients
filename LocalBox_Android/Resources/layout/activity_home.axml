@@ -12,15 +12,7 @@
             android:id="@+id/fragment_container_menu_custom_actionbar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#8FCAE4">
-            <ImageView
-                android:id="@+id/imageViewLogo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/beeldmerk_belastingdienst" />
-        </LinearLayout>
+            android:background="#005dac" />
         <RelativeLayout
             android:id="@+id/fragment_container_menu"
             android:layout_width="match_parent"
@@ -73,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="0.0dp"
-                android:background="#8FCAE4"
+                android:background="#005dac"
                 android:orientation="horizontal">
                 <ImageButton
                     android:id="@+id/button_back_explorer"
@@ -143,7 +135,7 @@
                 android:id="@+id/fragment_container_document_custom_actionbar"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#8FCAE4">
+                android:background="#005dac">
                 <ImageButton
                     android:id="@+id/button_fullscreen_document"
                     android:layout_width="35dp"

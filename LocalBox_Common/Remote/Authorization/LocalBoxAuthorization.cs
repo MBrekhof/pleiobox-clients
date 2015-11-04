@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.Net.Http.Headers;
 using Xamarin;
 using System.Collections.Generic;
-
-using XLabs.Platform.Services;
 using System.Threading.Tasks;
 
 namespace LocalBox_Common.Remote.Authorization
@@ -19,9 +17,7 @@ namespace LocalBox_Common.Remote.Authorization
         private string localBoxBaseUrl;
 
 		private LocalBox _localBox;
-
-		private SecureStorage storage = new SecureStorage();
-		private ASCIIEncoding encoding = new ASCIIEncoding();
+		private Database _database = DataLayer.Instance.DbInstance();
 
         private string _accessToken = null;
         public string AccessToken { 
@@ -46,10 +42,12 @@ namespace LocalBox_Common.Remote.Authorization
         public LocalBoxAuthorization(LocalBox localBox)
 		{			
 			_localBox = localBox;
-			_accessToken = encoding.GetString (storage.Retrieve ("access_token"));
-			_refreshToken = encoding.GetString (storage.Retrieve ("refresh_token"));
 
-			var expires = encoding.GetString (storage.Retrieve ("expires"));
+			var tokens = _database.GetTokens ();
+			_accessToken = tokens.AccessToken;
+			_refreshToken = tokens.RefreshToken;
+
+			var expires = tokens.Expires;
 			DateTime.TryParse (expires, out _expiry);
 
 			localBoxBaseUrl = localBox.BaseUrl;
@@ -86,10 +84,7 @@ namespace LocalBox_Common.Remote.Authorization
 
 				HttpContent content = new FormUrlEncodedContent (data);
 
-				var handler = new HttpClientHandler {
-					Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-					UseProxy = true,
-				};
+				var handler = new HttpClientHandler {};
 
 				using (var httpClient = new HttpClient (handler)) {
 					httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -107,10 +102,12 @@ namespace LocalBox_Common.Remote.Authorization
 
 							// We laten de key al vervallen als al 90% van de tijd is verstreken
 							_expiry = DateTime.UtcNow.AddSeconds ((int)jsonObject ["expires_in"] * 0.9).ToLocalTime ();
-
-							storage.Store ("access_token", encoding.GetBytes (_accessToken));
-							storage.Store ("refresh_token", encoding.GetBytes (_refreshToken));
-							storage.Store ("expires", encoding.GetBytes (_expiry.ToString ()));
+						
+							var tokens = _database.GetTokens();
+							tokens.AccessToken = _accessToken;
+							tokens.RefreshToken = _refreshToken;
+							tokens.Expires = _expiry.ToString();
+							_database.UpdateTokens(tokens);
 
 							return true;
 						} else {
@@ -149,10 +146,7 @@ namespace LocalBox_Common.Remote.Authorization
 		private bool RequestAccessToken(Uri uri, HttpContent data) {
 			bool result = false;
 
-			var handler = new HttpClientHandler {
-				Proxy = CoreFoundation.CFNetwork.GetDefaultProxy (),
-				UseProxy = true,
-			};
+			var handler = new HttpClientHandler {};
 
 			using (var httpClient = new HttpClient (handler)) {
 				httpClient.MaxResponseContentBufferSize = int.MaxValue;
@@ -181,9 +175,11 @@ namespace LocalBox_Common.Remote.Authorization
 							}
 						}
 							
-						storage.Store("access_token", encoding.GetBytes(_accessToken));
-						storage.Store("refresh_token", encoding.GetBytes(_refreshToken));
-						storage.Store("expires", encoding.GetBytes(_expiry.ToString()));
+						var tokens = _database.GetTokens();
+						tokens.AccessToken = _accessToken;
+						tokens.RefreshToken = _refreshToken;
+						tokens.Expires = _expiry.ToString();
+						_database.UpdateTokens(tokens);
 
 					} else {
 						Debug.WriteLine ("Fout in requestaccesstoken: " + response.Headers); 

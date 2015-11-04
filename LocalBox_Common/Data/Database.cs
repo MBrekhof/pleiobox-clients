@@ -12,27 +12,9 @@ namespace LocalBox_Common
 {
     public class Database : SQLiteConnection
     {
-//        private static Database _instance = null;
 
         private static readonly Object _dbCreateLock = new Object();
-
         public object Lock { get {return _dbCreateLock; } }
-
-//        public static Database Instance
-//        { 
-//            get
-//            {
-//                lock (_dbCreateLock)
-//                {
-//                    if (_instance == null)
-//                    {
-//                        string db = Path.Combine(Environment.GetFolderPath(DocumentConstants.DocumentsPath, "localbox.db");
-//                        _instance = new Database(db, "1234");
-//                    }
-//                }
-//                return _instance;
-//            }
-//        }
 
         public Database(string dbpath, string password) : base(dbpath, password)
         {
@@ -44,13 +26,14 @@ namespace LocalBox_Common
             CreateTable<TreeNode>();
             CreateTable<Waarde>();
             CreateTable<LocalBox>();
+			CreateTable<Tokens>();
             // debug sql queries, Trace = true;
         }
 
         public void Empty()
         {
             foreach (string tbl in new[] { 
-                "TreeNode", "Waarde", "LocalBox"
+                "TreeNode", "Waarde", "LocalBox", "Tokens"
             })
             {
                 this.Execute(string.Format("delete from {0}", tbl));
@@ -110,14 +93,46 @@ namespace LocalBox_Common
             return a;
         }
 
+		public Tokens GetTokens()
+		{
+			var tokens = this.Query<Tokens> (
+        		"SELECT * FROM Tokens");
+
+			if (tokens.Count > 0) {
+				return tokens[0];
+			} else {
+				return new Tokens();
+			}
+		}
+
+		public int UpdateTokens(Tokens tokens)
+		{
+			tokens.Id = 1;
+			int a = -1;
+			if ((from l in this.Table<Tokens>()
+				where l.Id == tokens.Id
+				select l).Count() == 0)
+			{
+				Transaction(() =>
+					{
+						Insert(tokens);
+						a = tokens.Id;
+					});
+			}
+			else
+			{
+				Update(tokens);
+				a = tokens.Id;
+			}
+
+			return a;
+		}
 
 		public void DeleteLocalBox(int localBoxId)
 		{
 			Execute ("delete from LocalBox where id = ?", localBoxId);
             Execute ("delete from TreeNode where LocalBoxId = ?", localBoxId);
 		}
-
-
 
         public List<LocalBox> GetLocalBoxes()
         {

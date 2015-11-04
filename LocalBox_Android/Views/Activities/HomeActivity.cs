@@ -27,7 +27,7 @@ using Xamarin;
 
 namespace LocalBox_Droid
 {
-	[Activity (Label = "LocalBox", WindowSoftInputMode = SoftInput.AdjustPan, ScreenOrientation = Android.Content.PM.ScreenOrientation.Landscape)]
+	[Activity (Label = "Pleiobox", WindowSoftInputMode = SoftInput.AdjustPan, ScreenOrientation = Android.Content.PM.ScreenOrientation.Landscape)]
 	public class HomeActivity : FragmentActivity
 	{
 		public static List<ExplorerFragment> openedExplorerFragments;
@@ -47,6 +47,12 @@ namespace LocalBox_Droid
 		private View shadowContainerExplorer;
 		private CustomProgressDialog progressDialog =  new CustomProgressDialog();
 		private DialogHelperForHomeActivity dialogHelper;
+
+		#if DEBUG
+			public const string PleioUrl = "https://www.pleio.nl";
+		#else
+			public const string PleioUrl = "https://www.pleio.nl";
+		#endif
 
 		protected override async void OnCreate (Bundle bundle)
 		{
@@ -75,7 +81,7 @@ namespace LocalBox_Droid
 			List<LocalBox> registeredLocalBoxes = await DataLayer.Instance.GetLocalBoxes ();
 			if (registeredLocalBoxes.Count == 0) {
 				if (SplashActivity.intentData == null) {
-					ShowIntroductionDialog ();
+					ShowLoginDialog ();
 				}
 			}
 
@@ -165,13 +171,13 @@ namespace LocalBox_Droid
 				Android.Net.Uri data = SplashActivity.intentData; 
 				String scheme = data.Scheme;
 				if (scheme.Equals ("file")) { //Save annotations
-					UpdatePdfFile (data.Path);
+					//UpdatePdfFile (data.Path);
 				}
 			}
 			else if (SplashActivity.clipData != null) 
 			{
 				Android.Net.Uri uri = SplashActivity.clipData.GetItemAt (0).Uri;
-				UpdatePdfFile (uri.ToString ());
+				//UpdatePdfFile (uri.ToString ());
 			}
 			HideProgressDialog ();
 
@@ -237,17 +243,9 @@ namespace LocalBox_Droid
 		protected override void OnResume ()
 		{
 			base.OnResume ();
-
-			bool shouldShowLockScreen = LockHelper.ShouldLockApp ("HomeActivity");
-			if (shouldShowLockScreen || shouldLockApp) { //Lock scherm
-				HomeActivity.shouldLockApp = true;
-				StartActivity(typeof(PinActivity));
-				DataLayer.Instance.LockDatabase ();
-			} else {
-				ExplorerFragment explorerFragment = GetLastOpenedExplorerFragment ();
-				if (explorerFragment != null && !explorerFragment.favoriteFolderOpened && SplashActivity.intentData == null) {
-					explorerFragment.RefreshData ();
-				}
+			ExplorerFragment explorerFragment = GetLastOpenedExplorerFragment ();
+			if (explorerFragment != null && !explorerFragment.favoriteFolderOpened && SplashActivity.intentData == null) {
+				explorerFragment.RefreshData ();
 			}
 		}
 
@@ -386,28 +384,21 @@ namespace LocalBox_Droid
 			dialogHelper.ShowNewFolderDialog ();
 		}
 
-		public void ShowIntroductionDialog ()
+		public void ShowLoginDialog ()
 		{
-			dialogHelper.ShowIntroductionDialog ();
+			dialogHelper.ShowLoginDialog (PleioUrl);
 		}
 
+		public void ShowAddSitesDialog()
+		{
+			dialogHelper.ShowAddSitesDialog ();
+		}
 
 		public void ShowAboutAppDialog ()
 		{
 			dialogHelper.ShowAboutAppDialog ();
 		}
 			
-		public void ShowShareDialog (string pathOfFolderToShare, bool alreadyShared)
-		{
-			dialogHelper.ShowShareDialog (pathOfFolderToShare, alreadyShared);
-		}
-
-
-		public void HideShareDialog (bool isNewShare)
-		{
-			dialogHelper.HideShareDialog (isNewShare);
-		}
-
 
 		public void ShowMoveFileDialog(TreeNode treeNodeToMove)
 		{
@@ -424,49 +415,9 @@ namespace LocalBox_Droid
 			dialogHelper.ShowShareFileDatePicker (pathToNewFileShare);
 		}
 
-
-	
-			
-
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		///////Below you can find methods to register a new LocalBox 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		//Register new LocalBox part 1
-		public void ShowOpenUrlDialog ()
-		{
-			dialogHelper.ShowOpenUrlDialog ();
-		}
-
-			
-		//Register new LocalBox part 2	
-		public void ShowRegisterLocalBoxDialog (string urlToOpen, bool ignoreSslError)
-		{
-			dialogHelper.ShowRegisterLocalBoxDialog (urlToOpen, ignoreSslError);
-		}
-	
-		//Register new LocalBox part 3
-		public void AddLocalBox(LocalBox lbToAdd)
-		{
-			dialogHelper.AddLocalBox (lbToAdd);
-		}
-
-		//Register new LocalBox part 4
-		public void SetUpPassphrase (LocalBox localBox)
-		{
-			dialogHelper.SetUpPassphrase (localBox);
-		}
-
-		//Register new LocalBox part 4
-		public void EnterPassphrase (LocalBox localBox)
-		{
-			dialogHelper.EnterPassphrase (localBox);
-		}
-			
-
-
-
-
 		public void HideBottomExplorerMenuItems ()
 		{
 			buttonAddFolderExplorer.Visibility 	= ViewStates.Invisible;

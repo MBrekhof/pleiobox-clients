@@ -1,29 +1,28 @@
 ﻿using System;
-using Newtonsoft.Json;
+using SQLite;
+using System.Runtime.Serialization;
 
 namespace LocalBox_Common
 {
+	[DataContract]
 	public class Tokens
 	{
 		public Tokens ()
 		{
 		}
 
-		[JsonProperty(PropertyName = "access_token")]
+		[PrimaryKey]
+		[AutoIncrement]
+		public int Id { get; set; }
+
+		[DataMember]
 		public string AccessToken { get; set; }
 
-		[JsonProperty(PropertyName = "expires_in")]
-		public int ExpiresIn { get; set; }
-
-		[JsonProperty(PropertyName = "token_type")]
-		public string TokenType { get; set; }
-
-		[JsonProperty(PropertyName = "scope")]
-		public string Scope { get; set; }
-
-		[JsonProperty(PropertyName = "refresh_token")]
+		[DataMember]
 		public string RefreshToken { get; set; }
 
+		[DataMember]
+		public string Expires { get; set; }
 	}
 }
 

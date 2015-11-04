@@ -256,20 +256,11 @@ namespace LocalBox_Droid
 			string currentDirectoryName = ExplorerFragment.openedDirectories [numberOfDirectoriesOpened - 1];
 
 			if (selectedItem.IsDirectory == true) { //Directory clicked - so open folder popup layout
-				if (currentDirectoryName.Equals ("/")) {
-
-					if (selectedItem.IsShared || selectedItem.IsShare == false) { //Andermans share
-						popupView = inflater.Inflate (Resource.Layout.custom_popup_folder_root, null);
-						ClickHandlersFolderRootPopupMenu (popupView, selectedItem);
-					} 
-					else {//Eigen share
-						popupView = inflater.Inflate (Resource.Layout.custom_popup_folder_subfolder, null);
-						ClickHandlersFolderSubFolderPopupMenu (popupView, selectedItem);
-					}
-						
-				} else { //Subfolder
+				if (!currentDirectoryName.Equals ("/")) {
 					popupView = inflater.Inflate (Resource.Layout.custom_popup_folder_subfolder, null);
 					ClickHandlersFolderSubFolderPopupMenu (popupView, selectedItem);
+				} else {
+					popupView = inflater.Inflate (Resource.Layout.custom_popup_folder_root, null);
 				}
 			} 
 			else 
@@ -329,51 +320,40 @@ namespace LocalBox_Droid
 				}
 			};
 
-			if (!openedFolderIsShare && !favoriteFolderOpened) {
+			ImageButton buttonMoveFile = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_file_move);
+			ImageButton buttonDeleteFile = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_file_delete);
 
-				ImageButton buttonMoveFile = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_file_move);
-				buttonMoveFile.Click += delegate {
-					popupWindow.Dismiss();
-					parentActivity.ShowMoveFileDialog(selectedItem);
-				};
-					
-				ImageButton buttonDeleteFile = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_file_delete);
-				buttonDeleteFile.Click += delegate {
-					if (selectedItem.Id == lastShownTreeNodeId) {//Document is geopend in document fragment, dus deze resetten
-						parentActivity.ClearContentInDocumentFragment ();
-					}
-					DeleteFolderOrFile (selectedItem.Path);
-				};
+			if (!selectedItem.IsWritable) {
+				buttonMoveFile.Visibility = ViewStates.Invisible;
+				buttonDeleteFile.Visibility = ViewStates.Invisible;
+			} else {
+				if (!favoriteFolderOpened) {
+					buttonMoveFile.Click += delegate {
+						popupWindow.Dismiss();
+						parentActivity.ShowMoveFileDialog(selectedItem);
+					};
 
-				if (openedFolderIsUnencrypted) {
-					ImageButton buttonPublicShareFile = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_file_share);
-					buttonPublicShareFile.Click += delegate {
-						CreatePublicFileShare (selectedItem.Path);
+					buttonDeleteFile.Click += delegate {
+						if (selectedItem.Id == lastShownTreeNodeId) {//Document is geopend in document fragment, dus deze resetten
+							parentActivity.ClearContentInDocumentFragment ();
+						}
+						DeleteFolderOrFile (selectedItem.Path);
 					};
 				}
-			}
+			}				
 		}
-
-		private void ClickHandlersFolderRootPopupMenu (View popupView, TreeNode selectedItem)
-		{
-			ImageButton buttonShareFolder = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_folder_root_share);
-			buttonShareFolder.Click += delegate {
-				popupWindow.Dismiss ();
-				parentActivity.ShowShareDialog(selectedItem.Path, selectedItem.IsShared);
-			};
-
-			ImageButton buttonDeleteFolder = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_folder_root_delete);
-			buttonDeleteFolder.Click += delegate {
-				DeleteFolderOrFile (selectedItem.Path);
-			};
-		}
-
+			
 		private  void ClickHandlersFolderSubFolderPopupMenu (View popupView, TreeNode selectedItem)
 		{
 			ImageButton buttonDeleteFolder = (ImageButton)popupView.FindViewById (Resource.Id.button_popup_folder_subfolder_delete);
-			buttonDeleteFolder.Click += delegate {
-				DeleteFolderOrFile (selectedItem.Path);
-			};
+
+			if (!selectedItem.IsWritable) {
+				buttonDeleteFolder.Visibility = ViewStates.Invisible;
+			} else {
+				buttonDeleteFolder.Click += delegate {
+					DeleteFolderOrFile (selectedItem.Path);
+				};
+			}
 		}
 
 		public async void RefreshData ()

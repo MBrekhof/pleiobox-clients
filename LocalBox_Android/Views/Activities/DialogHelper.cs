@@ -73,8 +73,8 @@ namespace LocalBox_Droid
 							var emailIntent = new Intent (Android.Content.Intent.ActionSend);
 
 							string bodyText = "Mijn gedeelde bestand: \n" +
-							                  createdPublicUrl.publicUri + "\n \n" +
-							                  "Deze link is geldig tot: " + selectedExpirationDate.ToString ("dd-MM-yyyy");
+								createdPublicUrl.publicUri + "\n \n" +
+								"Deze link is geldig tot: " + selectedExpirationDate.ToString ("dd-MM-yyyy");
 
 							emailIntent.PutExtra (Android.Content.Intent.ExtraSubject, "Publieke URL naar gedeeld LocalBox bestand");
 							emailIntent.PutExtra (Android.Content.Intent.ExtraText, bodyText);
@@ -96,24 +96,39 @@ namespace LocalBox_Droid
 			picker.SetTitle ("Selecteer vervaldatum:");
 			picker.Show ();
 		}
-
-
-
-
-
-		public void ShowIntroductionDialog ()
+			
+		public void ShowLoginDialog (string pleioUrl)
 		{
-			var alertDialogIntro = new AlertDialog.Builder (homeActivity);
-			alertDialogIntro.SetView (homeActivity.LayoutInflater.Inflate (Resource.Layout.fragment_introduction, null));
+			Android.App.FragmentTransaction fragmentTransaction;
+			fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
 
-			alertDialogIntro.SetPositiveButton ("Start de registratie van een nieuwe LocalBox", delegate { 
-				ShowOpenUrlDialog();
-				alertDialogIntro.Dispose();
-			});
-			alertDialogIntro.Create ().Show ();
+			Android.App.DialogFragment dialogFragmentLogin;
+			LoginFragment loginFragment = new LoginFragment (pleioUrl);
+
+			dialogFragmentLogin = loginFragment;
+			dialogFragmentLogin.Show (fragmentTransaction, "logindialog");
 		}
 
+		public void ShowAddSitesDialog()
+		{	
+			homeActivity.ShowProgressDialog (null);
 
+			try {
+				Android.App.FragmentTransaction fragmentTransaction;
+				fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
+
+				Android.App.DialogFragment dialogFragmentAddSites;
+				AddSitesFragment addSitesFragment = new AddSitesFragment ();
+
+				dialogFragmentAddSites = addSitesFragment;
+				dialogFragmentAddSites.Show (fragmentTransaction, "addsitesdialog");
+				homeActivity.HideProgressDialog ();
+			} catch (Exception ex) {
+				Insights.Report (ex);
+				homeActivity.HideProgressDialog ();
+			}
+		}
+			
 		public void ShowAboutAppDialog ()
 		{
 			Android.App.FragmentTransaction fragmentTransaction;
@@ -125,51 +140,6 @@ namespace LocalBox_Droid
 			dialogFragmentAboutApp = aboutFragment;
 			dialogFragmentAboutApp.Show (fragmentTransaction, "aboutdialog");
 		}
-
-
-		public async void ShowShareDialog (string pathOfFolderToShare, bool alreadyShared)
-		{
-			homeActivity.ShowProgressDialog (null);
-			try {
-				Android.App.FragmentTransaction fragmentTransaction;
-				fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
-
-				List<Identity> localBoxUsers = await DataLayer.Instance.GetLocalboxUsers();
-				Share shareSettings = null;
-
-				if (alreadyShared) {//Existing share
-					//Get share settings
-					shareSettings = await BusinessLayer.Instance.GetShareSettings (pathOfFolderToShare);
-				}
-
-				ShareFragment shareFragment = new ShareFragment (pathOfFolderToShare, localBoxUsers, shareSettings);
-				homeActivity.dialogFragmentShare = shareFragment;
-
-				homeActivity.HideProgressDialog ();
-				if (localBoxUsers.Count > 0) {
-					homeActivity.dialogFragmentShare.Show (fragmentTransaction, "sharedialog");
-				} else {
-					homeActivity.ShowToast("Geen gebruikers gevonden om mee te kunnen delen");
-				}
-			} catch (Exception ex){
-				Insights.Report(ex);
-				homeActivity.HideProgressDialog ();
-			}
-		}
-
-
-		public void HideShareDialog (bool isNewShare)
-		{
-			homeActivity.dialogFragmentShare.Dismiss ();
-
-			if (isNewShare) {
-				homeActivity.ShowToast ("Map succesvol gedeeld");
-			} else {
-				homeActivity.ShowToast ("Deel instellingen succesvol gewijzigd");
-			}
-			homeActivity.RefreshExplorerFragmentData ();
-		}
-
 
 		public async void ShowMoveFileDialog(TreeNode treeNodeToMove)
 		{
@@ -212,7 +182,7 @@ namespace LocalBox_Droid
 			homeActivity.ShowToast("Bestand succesvol verplaatst");
 			homeActivity.RefreshExplorerFragmentData ();
 		}
-			
+
 
 
 		public void ShowNewFolderDialog ()
@@ -272,84 +242,6 @@ namespace LocalBox_Droid
 			};
 		}
 
-
-
-
-
-
-		public void ShowOpenUrlDialog ()
-		{
-			LayoutInflater factory = LayoutInflateHelper.GetLayoutInflater (homeActivity);
-			View viewNewFolder = factory.Inflate (Resource.Layout.dialog_open_url, null);
-
-			EditText editTextUrl = (EditText)viewNewFolder.FindViewById<EditText> (Resource.Id.editText_dialog_open_url);          
-			editTextUrl.SetHint (Resource.String.yourlocalboxplaceholder);
-
-			var dialogBuilder = new AlertDialog.Builder (homeActivity);
-			dialogBuilder.SetTitle ("Nieuwe LocalBox");
-			dialogBuilder.SetView (viewNewFolder);
-			dialogBuilder.SetPositiveButton ("Open URL", (EventHandler<DialogClickEventArgs>)null);
-			dialogBuilder.SetNegativeButton (Resource.String.cancel, (EventHandler<DialogClickEventArgs>)null);
-			var dialog = dialogBuilder.Create ();
-			dialog.Show ();
-
-			var buttonCancel = dialog.GetButton ((int)DialogButtonType.Negative);
-			var buttonOpenUrl = dialog.GetButton ((int)DialogButtonType.Positive);
-			buttonOpenUrl.Click += async (sender, args) => {
-				if (String.IsNullOrEmpty (editTextUrl.Text)) {
-					homeActivity.ShowToast("URL is niet ingevuld");
-				} else {
-
-					//Reset certificate validation check - otherwise it will cause errors if there is an active certificate pinning enabled
-					ServicePointManager.ServerCertificateValidationCallback = (p1, p2, p3, p4) => true;
-
-					if(editTextUrl.Text.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase))
-					{
-						ShowHttpWarningDialog(editTextUrl.Text, dialog);
-
-						//Dismiss keyboard
-						InputMethodManager manager = (InputMethodManager) homeActivity.GetSystemService(Context.InputMethodService);
-						manager.HideSoftInputFromWindow(editTextUrl.WindowToken, 0);
-
-						//Dismiss dialog
-						dialog.Dismiss();
-					}
-					else if(editTextUrl.Text.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase))
-					{
-
-						var certificateStatus = await CertificateHelper.GetCertificateStatusForUrl (editTextUrl.Text);
-
-						if (certificateStatus == CertificateValidationStatus.Valid) {
-							homeActivity.ShowRegisterLocalBoxDialog(editTextUrl.Text, false);
-							dialog.Dismiss();
-						}
-						else if(certificateStatus == CertificateValidationStatus.ValidWithErrors)
-						{
-							homeActivity.ShowRegisterLocalBoxDialog(editTextUrl.Text, true);
-							dialog.Dismiss();
-						}
-						else if (certificateStatus == CertificateValidationStatus.SelfSigned) {
-							ShowSelfSignedCertificateDialog(editTextUrl.Text, dialog);
-						} 
-						else if (certificateStatus == CertificateValidationStatus.Invalid) {
-							ShowInvalidCertificateDialog (editTextUrl.Text, dialog);						
-						} 
-						else {
-							ShowErrorRegisterDialog(editTextUrl.Text, dialog);
-						}
-					}
-					else {
-						homeActivity.ShowToast("Het opgegeven webadres dient met https:// of http:// te beginnen.");
-					}
-				}
-			};
-			buttonCancel.Click += (sender, args) => {
-				dialog.Dismiss ();
-			};
-		}
-
-
-
 		public void ShowHttpWarningDialog(string urlToOpen, AlertDialog urlDialog)
 		{
 			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
@@ -358,7 +250,6 @@ namespace LocalBox_Droid
 			dialogAlert.SetMessage ("U heeft een http webadres opgegeven. Weet u zeker dat u een onbeveiligde verbinding wilt opzetten?");
 			dialogAlert.SetButton2 ("Cancel", (s, ev) => { dialogAlert.Dismiss(); });
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
-				homeActivity.ShowRegisterLocalBoxDialog(urlToOpen, false);
 				urlDialog.Dismiss ();
 				dialogAlert.Dismiss();
 			});
@@ -374,7 +265,6 @@ namespace LocalBox_Droid
 			dialogAlert.SetMessage ("U heeft een webadres opgegeven met een ssl certificaat welke niet geverifieerd is. Weet u zeker dat u wilt doorgaan?");
 			dialogAlert.SetButton2 ("Cancel", (s, ev) => { dialogAlert.Dismiss(); });
 			dialogAlert.SetButton ("Ga verder", (s, ev) => {
-				homeActivity.ShowRegisterLocalBoxDialog(urlToOpen, true);
 				urlDialog.Dismiss ();
 				dialogAlert.Dismiss();
 			});
@@ -406,28 +296,16 @@ namespace LocalBox_Droid
 			dialogAlert.Show ();
 		}
 
-
-
-		//Register new LocalBox part 2	
-		public void ShowRegisterLocalBoxDialog (string urlToOpen, bool ignoreSslError)
+		public void ShowErrorLoginDialog()
 		{
-			if (urlToOpen.IndexOf("register_app", StringComparison.OrdinalIgnoreCase) < 0) //url misses '/register_app' at the end
-			{
-				if (urlToOpen.EndsWith ("/")) {	//input url is like "www.mylocalbox.nl/"
-					urlToOpen = urlToOpen + "register_app";
-				} 
-				else {	//input url is like "www.mylocalbox.nl"
-					urlToOpen = urlToOpen + "/register_app";
-				}
-			}
-			Android.App.FragmentTransaction fragmentTransaction;
-			fragmentTransaction = homeActivity.FragmentManager.BeginTransaction ();
-
-			Android.App.DialogFragment dialogFragmentRegisterLocalBox;
-			RegisterLocalBoxFragment registerLocalBoxFragment = new RegisterLocalBoxFragment (urlToOpen, ignoreSslError);
-
-			dialogFragmentRegisterLocalBox = registerLocalBoxFragment;
-			dialogFragmentRegisterLocalBox.Show (fragmentTransaction, "registerlocalboxdialog");
+			var dialogAlert = (new AlertDialog.Builder (homeActivity)).Create ();
+			dialogAlert.SetIcon (Android.Resource.Drawable.IcDialogAlert);
+			dialogAlert.SetTitle ("Error");
+			dialogAlert.SetMessage ("Kan niet inloggen met de opgegeven gebruikersnaam en wachtwoord. Controleer de gegevens en probeer het a.u.b. nogmaals");
+			dialogAlert.SetButton ("OK", (s, ev) => {
+				dialogAlert.Dismiss();
+			});
+			dialogAlert.Show ();
 		}
 
 		//Register new LocalBox part 3
@@ -438,14 +316,6 @@ namespace LocalBox_Droid
 			homeActivity.ShowProgressDialog ("LocalBox laden...");
 
 			result = await BusinessLayer.Instance.Authenticate (lbToAdd);
-
-			if (result) {
-				if (lbToAdd.HasCryptoKeys && !lbToAdd.HasPassPhrase) {
-					homeActivity.EnterPassphrase (lbToAdd);
-				} else {
-					homeActivity.SetUpPassphrase (lbToAdd);
-				}
-			}
 
 			homeActivity.HideProgressDialog ();
 		}
@@ -547,7 +417,7 @@ namespace LocalBox_Droid
 							homeActivity.ShowToast("Passphrase onjuist. Probeer het a.u.b. opnieuw");
 						} else {
 							dialog.Dismiss ();
-							homeActivity.ShowToast("Passphrase geaccepteerd en LocalBox succesvol geregistreerd");
+							homeActivity.ShowToast("Passphrase geaccepteerd en Pleiobox succesvol geregistreerd");
 							homeActivity.menuFragment.UpdateLocalBoxes ();
 							SplashActivity.intentData = null;
 						}

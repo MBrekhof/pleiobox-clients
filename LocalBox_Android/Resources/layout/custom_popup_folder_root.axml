@@ -10,24 +10,10 @@
         android:gravity="center_vertical"
         android:layout_margin="1dp"
         android:background="#403F44">
-        <ImageButton
-            android:id="@+id/button_popup_folder_root_share"
-            android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@+id/centerpoint"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/ic_delen" />
         <View
             android:id="@+id/centerpoint"
             android:layout_width="1dp"
             android:layout_height="1dp"
             android:layout_centerHorizontal="true" />
-        <ImageButton
-            android:id="@+id/button_popup_folder_root_delete"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/centerpoint"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/ic_verwijderen" />
     </RelativeLayout>
 </LinearLayout>

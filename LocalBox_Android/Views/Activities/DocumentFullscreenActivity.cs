@@ -68,22 +68,11 @@ namespace LocalBox_Droid
 		protected override void OnPause ()
 		{
 			base.OnPause ();
-			LockHelper.SetLastActivityOpenedTime ("DocumentFullscreenActivity");
 		}
 
 		protected override void OnResume ()
 		{
 			base.OnResume ();
-
-			bool shouldShowLockScreen = LockHelper.ShouldLockApp ("DocumentFullscreenActivity");
-
-			if (shouldShowLockScreen) 
-			{
-				//Lock scherm
-				HomeActivity.shouldLockApp = true;
-				StartActivity(typeof(PinActivity));
-				DataLayer.Instance.LockDatabase ();
-			} 
 		}
 
 	}
