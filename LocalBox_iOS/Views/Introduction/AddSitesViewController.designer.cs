@@ -25,6 +25,9 @@ namespace LocalBox_iOS
 		UIKit.UIView DarkBackground { get; set; }
 
 		[Outlet]
+		UIKit.UILabel GeenSites { get; set; }
+
+		[Outlet]
 		UIKit.UIButton OKButton { get; set; }
 
 		[Outlet]
@@ -41,6 +44,11 @@ namespace LocalBox_iOS
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (GeenSites != null) {
+				GeenSites.Dispose ();
+				GeenSites = null;
+			}
+
 			if (ActivityIndicator != null) {
 				ActivityIndicator.Dispose ();
 				ActivityIndicator = null;
@@ -66,6 +74,11 @@ namespace LocalBox_iOS
 				OKButton = null;
 			}
 
+			if (RegistrationExplanation != null) {
+				RegistrationExplanation.Dispose ();
+				RegistrationExplanation = null;
+			}
+
 			if (TableView != null) {
 				TableView.Dispose ();
 				TableView = null;
@@ -79,11 +92,6 @@ namespace LocalBox_iOS
 			if (TopMenu != null) {
 				TopMenu.Dispose ();
 				TopMenu = null;
-			}
-
-			if (RegistrationExplanation != null) {
-				RegistrationExplanation.Dispose ();
-				RegistrationExplanation = null;
 			}
 		}
 	}

@@ -6,7 +6,6 @@ using UIKit;
 using LocalBox_Common.Remote;
 using LocalBox_Common;
 using LocalBox_Common.Remote.Authorization;
-using XLabs.Platform.Services;
 using System.Text;
 using LocalBox_iOS.Views;
 

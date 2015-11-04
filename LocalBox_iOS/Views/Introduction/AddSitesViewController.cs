@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using LocalBox_Common.Remote;
 using LocalBox_Common;
 
-using XLabs.Platform.Services;
 using System.Text;
 using LocalBox_iOS.Views;
 using Xamarin;
@@ -46,7 +45,7 @@ namespace LocalBox_iOS
 		{
 			base.ViewDidLoad ();
 
-			if (_introduction == true) {
+			if (_introduction) {
 				View.AddSubview(_home.GetIntroductionProgressView(1));
 
 				RegistrationExplanation.Hidden = false;
@@ -54,9 +53,14 @@ namespace LocalBox_iOS
 
 				BottomMenu.BackgroundColor = null;
 				DarkBackground.BackgroundColor = null;
+
+				ToevoegenButton.SetImage (UIImage.FromFile ("IcBottom-Opslaan-Wit.png"), UIControlState.Normal);
+				ToevoegenButton.SetTitleColor (UIColor.White, UIControlState.Normal);
 			}
 
 			ActivityIndicator.Hidden = true;
+
+			GeenSites.Hidden = true;
 
 			CancelButton.TouchUpInside += async (o, e) => {
 				this.View.RemoveFromSuperview();
@@ -104,8 +108,8 @@ namespace LocalBox_iOS
 
 					foreach (LocalBox box in DataLayer.Instance.GetLocalBoxesSync()) {
 						for (int i = 0; i < sites.Count; i++) {
-							if (box.BaseUrl == sites[i].Url) {
-								sites.RemoveAt(i);
+							if (box.BaseUrl == sites [i].Url) {
+								sites.RemoveAt (i);
 								break;
 							}
 						}
@@ -116,7 +120,15 @@ namespace LocalBox_iOS
 
 					_tableSource = new TableSource (sites);
 					TableView.Source = _tableSource;
-					TableView.ReloadData();
+					TableView.ReloadData ();
+
+					if (sites.Count == 0) {
+						GeenSites.Hidden = false;
+
+						if (_introduction) {
+							ToevoegenButton.SetTitle("Verder", UIControlState.Normal);
+						}
+					}
 				} catch (Exception ex) {
 					Insights.Report (ex);
 					DialogHelper.ShowErrorDialog ("Fout", "Er is een fout opgetreden tijdens het ophalen van de sites.");
