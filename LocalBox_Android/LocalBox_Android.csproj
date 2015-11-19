@@ -14,9 +14,9 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <AssemblyName>LocalBox_Android</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.1</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,10 +40,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AndroidSupportedAbis>armeabi-v7a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <AndroidKeyStore>True</AndroidKeyStore>
     <AndroidSigningKeyStore>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwFB37cZRAQQ+5Xax1rCQsvp50XffJGIfN828FBlqTwMYGpEWRXkpKiq8wJJShj7Qc1mKh9ffJzyOyJAlyMU6XBaRm2Zy7EhvING7icH9vBBm5pgmtcm2FID8/2G3IQFsQCncHHTZi+O5BAY4/1WD72PAf80+HUz1/DZb1VLCDazzijEShNuQb8R3bvRM3Gyn6eFWguvbHdQQQ71MkK3nmvbygeIB6FrokxFJp8koXvCc//zecjFvA1PBTLHg2IRvENzArEYksomd4/0px1AUtRiQbqCxIb7hyZs4Z7a9+/SP1uY6IeXhUazv6cxbwb5apR90bP0QWy+8TVSO4/oRswIDAQAB
 </AndroidSigningKeyStore>
   </PropertyGroup>
