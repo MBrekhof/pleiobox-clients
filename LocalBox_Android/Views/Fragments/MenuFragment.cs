@@ -191,7 +191,7 @@ namespace LocalBox_Droid
 
 				var alertDialogConfirmDelete = new Android.App.AlertDialog.Builder (Activity);
 				alertDialogConfirmDelete.SetTitle("Waarschuwing");
-				alertDialogConfirmDelete.SetMessage("Weet u zeker dat u deze LocalBox wilt verwijderen? \nDeze actie is niet terug te draaien.");
+				alertDialogConfirmDelete.SetMessage("Weet u zeker dat u deze Pleiobox wilt verwijderen? \nDeze actie is niet terug te draaien.");
 
 				alertDialogConfirmDelete.SetPositiveButton ("Verwijderen", async delegate { 
 					try{
@@ -208,7 +208,7 @@ namespace LocalBox_Droid
 						//imageViewLogo.SetImageResource (Resource.Drawable.beeldmerk_belastingdienst);
 					}catch (Exception ex){
 						Insights.Report(ex);
-						Toast.MakeText (Android.App.Application.Context, "Het verwijderen van de LocalBox is mislukt", ToastLength.Short).Show ();
+						Toast.MakeText (Android.App.Application.Context, "Het verwijderen van de Pleiobox is mislukt", ToastLength.Short).Show ();
 					}
 				});
 				alertDialogConfirmDelete.SetNegativeButton ("Annuleren", delegate { 

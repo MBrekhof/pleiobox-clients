@@ -41,15 +41,29 @@ namespace LocalBox_Droid
 			try{
 				//Open file in webview
 				WebView webViewDocumentFullscreen 	= FindViewById<WebView> (Resource.Id.webview_document_fullscreen);
-				string fullPath = "file:///" + DocumentFragment.pathOfFile;
 
-				webViewDocumentFullscreen.LoadUrl(fullPath);
+				var fullPath = DocumentFragment.pathOfFile;
 
 				//Resize webview + make it scrollable
 				webViewDocumentFullscreen.Settings.LoadWithOverviewMode = true;
 				webViewDocumentFullscreen.Settings.UseWideViewPort = true; 
 				webViewDocumentFullscreen.Settings.BuiltInZoomControls = true;
+				webViewDocumentFullscreen.Settings.AllowFileAccess = true;
+				webViewDocumentFullscreen.Settings.AllowContentAccess = true;
+				webViewDocumentFullscreen.Settings.DomStorageEnabled = true;
+				webViewDocumentFullscreen.Settings.AllowFileAccessFromFileURLs = true;
+				webViewDocumentFullscreen.Settings.AllowUniversalAccessFromFileURLs = true;
+				webViewDocumentFullscreen.Settings.JavaScriptEnabled = true;
+				webViewDocumentFullscreen.SetWebChromeClient(new WebChromeClient());
 
+				if (fullPath.Contains(".pdf")) {
+					webViewDocumentFullscreen.LoadUrl("file:///android_asset/pdf-viewer/viewer.html?file=" + fullPath.Replace(" ", "%20").Replace(".","%2E"));
+				} else if (fullPath.Contains(".odt")) {
+					webViewDocumentFullscreen.LoadUrl("file:///android_asset/odf-viewer/viewer.html?file=" + fullPath.Replace(" ", "%20").Replace(".","%2E"));
+				} else {
+					webViewDocumentFullscreen.LoadUrl("file:///" + fullPath);
+				}
+					
 				//Set file name
 				TextView textviewFilename = FindViewById<TextView> (Resource.Id.textview_filename_document_fullscreen);
 				textviewFilename.Text = DocumentFragment.fileName;

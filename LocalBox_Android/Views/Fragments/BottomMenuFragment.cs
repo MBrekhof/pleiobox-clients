@@ -30,7 +30,7 @@ namespace LocalBox_Droid
 			View view = layoutInflater.Inflate(Resource.Layout.fragment_menu, viewGroup, false);
 
 			listValues = new List<string> ();
-			listValues.Add ("Site toevoegen");
+			listValues.Add ("Toevoegen");
 			listValues.Add ("Over de app");
 
 			ListAdapter = new BottomMenuAdapter(Activity, listValues);

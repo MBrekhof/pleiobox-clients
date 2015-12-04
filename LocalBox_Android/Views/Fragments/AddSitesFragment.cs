@@ -53,7 +53,7 @@ namespace LocalBox_Droid
 
 		public override View OnCreateView (LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
 		{
-			Dialog.SetTitle("Site toevoegen");
+			Dialog.SetTitle("Sites toevoegen");
 
 			View view = layoutInflater.Inflate (Resource.Layout.fragment_add_site, viewGroup, false);
 			sitesAdapter = new SitesAdapter (Activity, sites);
@@ -67,25 +67,23 @@ namespace LocalBox_Droid
 
 				var localBox = DataLayer.Instance.GetSelectedOrDefaultBox ();
 
-				for (var i = 0; i < siteListView.CheckedItemPositions.Size(); i++) {
-					if (siteListView.CheckedItemPositions.ValueAt(i) == false) {
-						continue;
+				for (var i = 0; i < sites.Count; i++) {
+					if (siteListView.CheckedItemPositions.Get(i)) {
+						Site site = sites[i];
+
+						LocalBox box = new LocalBox();
+						box.BackColor = localBox.BackColor;
+						box.BaseUrl = site.Url;
+						box.DatumTijdTokenExpiratie = localBox.DatumTijdTokenExpiratie;
+						box.LogoUrl = localBox.LogoUrl;
+						box.Name = site.Name;
+						box.OriginalServerCertificate = null;
+						box.PassPhrase = null;
+						box.PrivateKey = null;
+						box.PublicKey = null;
+						box.User = localBox.User;
+						DataLayer.Instance.AddOrUpdateLocalBox(box);
 					}
-
-					Site site = sites[i];
-
-					LocalBox box = new LocalBox();
-					box.BackColor = localBox.BackColor;
-					box.BaseUrl = site.Url;
-					box.DatumTijdTokenExpiratie = localBox.DatumTijdTokenExpiratie;
-					box.LogoUrl = localBox.LogoUrl;
-					box.Name = site.Name;
-					box.OriginalServerCertificate = null;
-					box.PassPhrase = null;
-					box.PrivateKey = null;
-					box.PublicKey = null;
-					box.User = localBox.User;
-					DataLayer.Instance.AddOrUpdateLocalBox(box);
 				}
 					
 				var activity = (HomeActivity) Activity;
