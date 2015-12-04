@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.pleio.pleiobox" android:versionName="1.0" android:installLocation="internalOnly" android:versionCode="2">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.pleio.pleiobox" android:versionName="1.0" android:installLocation="internalOnly" android:versionCode="3">
 	<!-- API level -->
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="16" />
 	<!-- permissions -->
@@ -10,5 +10,5 @@
 	<!-- tablet only -->
 	<supports-screens android:requiresSmallestWidthDp="600" android:smallScreens="false" android:normalScreens="false" android:largeScreens="true" android:xlargeScreens="true" />
 	<!-- application -->
-	<application android:largeHeap="true" android:icon="@drawable/pleiobox_appicon" android:label="Pleiobox" />
+	<application android:largeHeap="true" android:icon="@drawable/pleiobox_appicon" android:label="PleioBox" />
 </manifest>

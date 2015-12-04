@@ -201,8 +201,10 @@ namespace LocalBox_Droid
 					clickedItem.Type = mimeTypeOfClickedItem;
 
 					if (mimeTypeOfClickedItem.Equals ("image/jpeg") ||
-						mimeTypeOfClickedItem.Equals ("image/png")) {
-
+						mimeTypeOfClickedItem.Equals ("image/png") ||
+						mimeTypeOfClickedItem.Equals ("application/pdf") ||
+						mimeTypeOfClickedItem.Equals ("application/vnd.oasis.opendocument.text") ||
+						mimeTypeOfClickedItem.Equals ("text/html")) {
 						lastShownTreeNodeId = clickedItem.Id;
 
 						Android.Support.V4.App.FragmentTransaction fragmentTransaction = Activity.SupportFragmentManager.BeginTransaction ();

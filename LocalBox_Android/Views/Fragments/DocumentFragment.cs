@@ -45,12 +45,26 @@ namespace LocalBox_Droid
 
 			//Open file in webview
 			WebView webViewDocument = Activity.FindViewById<WebView> (Resource.Id.webview_document);
-			webViewDocument.LoadUrl("file:///" + pathOfFile);
 
 			//Resize webview + make it scrollable
 			webViewDocument.Settings.LoadWithOverviewMode = true;
 			webViewDocument.Settings.UseWideViewPort = true; 
 			webViewDocument.Settings.BuiltInZoomControls = true;
+			webViewDocument.Settings.AllowFileAccess = true;
+			webViewDocument.Settings.AllowContentAccess = true;
+			webViewDocument.Settings.DomStorageEnabled = true;
+			webViewDocument.Settings.AllowFileAccessFromFileURLs = true;
+			webViewDocument.Settings.AllowUniversalAccessFromFileURLs = true;
+			webViewDocument.Settings.JavaScriptEnabled = true;
+			webViewDocument.SetWebChromeClient(new WebChromeClient());
+
+			if (pathOfFile.Contains(".pdf")) {
+				webViewDocument.LoadUrl("file:///android_asset/pdf-viewer/viewer.html?file=" + pathOfFile.Replace(" ", "%20").Replace(".","%2E"));
+			} else if (pathOfFile.Contains(".odt")) {
+				webViewDocument.LoadUrl("file:///android_asset/odf-viewer/viewer.html?file=" + pathOfFile.Replace(" ", "%20").Replace(".","%2E"));
+			} else {
+				webViewDocument.LoadUrl("file:///" + pathOfFile);
+			}
 
 			//Show textview with filename
 			TextView textviewFilename = Activity.FindViewById<TextView> (Resource.Id.textview_filename);

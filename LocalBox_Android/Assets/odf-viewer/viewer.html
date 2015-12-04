@@ -1,0 +1,23 @@
+﻿<html>
+ <head>
+  <script src="webodf.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  function init() {
+    var odfelement = document.getElementById("odf"),
+        odfcanvas = new odf.OdfCanvas(odfelement);
+        odfcanvas.load(getParameterByName("file"));
+  }
+window.setTimeout(init, 0);
+  </script>
+ </head>
+ <body>
+  <div id="odf"></div>
+ </body>
+</html>
